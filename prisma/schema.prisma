@@ -12,52 +12,52 @@ datasource db {
 
 model Category {
   id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  typeId      String        @unique @db.ObjectId
-  description String
+  typeId      String        @db.ObjectId
+  name        String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   type        Type          @relation("fk_category_type", fields: [typeId], references: [id])
   subCategory SubCategory[] @relation("fk_sub_category_category")
-  transaction Transaction?  @relation("fk_transaction_category")
+  transaction Transaction[] @relation("fk_transaction_category")
 }
 
 model Type {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  description String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  category    Category?    @relation("fk_category_type")
-  transaction Transaction? @relation("fk_transaction_type")
-  Account     Account?     @relation("fk_account_type")
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Account     Account[]     @relation("fk_account_type")
+  category    Category[]    @relation("fk_category_type")
+  transaction Transaction[] @relation("fk_transaction_type")
 }
 
 model SubCategory {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  categoryId  String       @db.ObjectId
-  description String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  category    Category     @relation("fk_sub_category_category", fields: [categoryId], references: [id])
-  transaction Transaction? @relation("fk_transaction_sub_category")
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  categoryId  String        @db.ObjectId
+  name        String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  category    Category      @relation("fk_sub_category_category", fields: [categoryId], references: [id])
+  transaction Transaction[] @relation("fk_transaction_sub_category")
 }
 
 model Account {
-  id             String       @id @default(auto()) @map("_id") @db.ObjectId
-  typeId         String       @unique @db.ObjectId
-  description    String
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  typeId         String        @db.ObjectId
+  name           String
   initialBalance Float
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  type           Type         @relation("fk_account_type", fields: [typeId], references: [id])
-  transaction    Transaction? @relation("fk_transaction_account")
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  type           Type          @relation("fk_account_type", fields: [typeId], references: [id])
+  transaction    Transaction[] @relation("fk_transaction_account")
 }
 
 model Transaction {
   id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  typeId        String      @unique @db.ObjectId
-  categoryId    String      @unique @db.ObjectId
-  subCategoryId String      @unique @db.ObjectId
-  accountId     String      @unique @db.ObjectId
+  typeId        String      @db.ObjectId
+  categoryId    String      @db.ObjectId
+  subCategoryId String      @db.ObjectId
+  accountId     String      @db.ObjectId
   description   String
   status        String
   value         Float
