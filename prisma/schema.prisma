@@ -28,6 +28,7 @@ model Type {
   updatedAt   DateTime     @updatedAt
   category    Category?    @relation("fk_category_type")
   transaction Transaction? @relation("fk_transaction_type")
+  Account     Account?     @relation("fk_account_type")
 }
 
 model SubCategory {
@@ -40,22 +41,14 @@ model SubCategory {
   transaction Transaction? @relation("fk_transaction_sub_category")
 }
 
-model AccountType {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  description String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  account     Account? @relation("fk_account_account_type")
-}
-
 model Account {
   id             String       @id @default(auto()) @map("_id") @db.ObjectId
-  accountTypeId  String       @unique @db.ObjectId
+  typeId         String       @unique @db.ObjectId
   description    String
   initialBalance Float
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
-  accountType    AccountType  @relation("fk_account_account_type", fields: [accountTypeId], references: [id])
+  type           Type         @relation("fk_account_type", fields: [typeId], references: [id])
   transaction    Transaction? @relation("fk_transaction_account")
 }
 
