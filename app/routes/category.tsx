@@ -27,26 +27,23 @@ interface ICategoryWithType extends ICategory {
 }
 
 export const loader: LoaderFunction = async () => {
-  const category = await prisma.category.findMany({
+  const categoryTypes = await prisma.categoryType.findMany();
+  const categories = await prisma.category.findMany({
     include: {
       type: true,
     },
   });
 
-  const categoryTypes = await prisma.categoryType.findMany();
-
-  return json({ category, categoryTypes });
+  return json({ categories, categoryTypes });
 };
 
 export const action: ActionFunction = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
-  const name = formData.get("name");
-  const typeId = formData.get("typeId");
 
   await prisma.category.create({
     data: {
-      name: String(name),
-      typeId: String(typeId),
+      name: String(formData.get("name")),
+      typeId: String(formData.get("typeId")),
     },
   });
 
@@ -55,7 +52,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 
 export default function Category() {
   const navigate = useNavigate();
-  const { category, categoryTypes } = useLoaderData();
+  const { categories, categoryTypes } = useLoaderData();
 
   return (
     <div className="px-5 mt-5">
@@ -111,23 +108,21 @@ export default function Category() {
             </tr>
           </thead>
           <tbody>
-            {category.map((item: ICategoryWithType) => {
-              return (
-                <tr
-                  key={item.id}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                >
-                  <td className="py-4 px-6">{item.name}</td>
-                  <td className="py-4 px-6">{item.type.description}</td>
-                  <td className="py-4 px-6" colSpan={2}>
-                    <div className="flex">
-                      <PencilSquareIcon height={18} />
-                      <TrashIcon height={18} />
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
+            {categories.map((item: ICategoryWithType) => (
+              <tr
+                key={item.id}
+                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+              >
+                <td className="py-4 px-6">{item.name}</td>
+                <td className="py-4 px-6">{item.type.description}</td>
+                <td className="py-4 px-6" colSpan={2}>
+                  <div className="flex">
+                    <PencilSquareIcon height={18} />
+                    <TrashIcon height={18} />
+                  </div>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

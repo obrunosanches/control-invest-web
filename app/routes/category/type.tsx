@@ -8,11 +8,11 @@ import { prisma } from "~/utils/prisma.server";
 
 export const action: ActionFunction = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
-  const categoryData = Object.fromEntries(formData);
+  const description = formData.get("description");
 
   await prisma.categoryType.create({
     data: {
-      description: String(categoryData.description),
+      description: String(description),
     },
   });
 
