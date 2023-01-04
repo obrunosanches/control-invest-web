@@ -13,7 +13,7 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Button, Label, TextInput, Select } from "flowbite-react";
+import { Button, Label, TextInput, Select, Table, Card } from "flowbite-react";
 
 import type {
   Category as ICategory,
@@ -64,7 +64,7 @@ export default function Category() {
       </div>
 
       <div className="flex justify-center mt-5">
-        <div className="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow-md sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
+        <Card className="w-full max-w-md">
           <Form method="post">
             <Label htmlFor="name" value="Descrição" />
             <TextInput id="name" name="name" required />
@@ -85,46 +85,42 @@ export default function Category() {
               </div>
               <Button onClick={() => navigate("/category/type")}>Tipo</Button>
             </div>
-            <div className="flex justify-end mt-4">
-              <Button type="submit">Salvar</Button>
-            </div>
+            <Button type="submit" className="mt-4">
+              Salvar
+            </Button>
           </Form>
-        </div>
+        </Card>
       </div>
 
-      <div className="overflow-x-auto relative mt-5">
-        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th scope="col" className="py-3 px-6">
-                Descrição
-              </th>
-              <th scope="col" className="py-3 px-6">
-                Tipo
-              </th>
-              <th scope="col" className="py-3 px-6">
-                Ações
-              </th>
-            </tr>
-          </thead>
-          <tbody>
+      <div className="overflow-x-auto relative mt-6">
+        <Table hoverable={true}>
+          <Table.Head>
+            <Table.HeadCell>Descrição</Table.HeadCell>
+            <Table.HeadCell>Tipo</Table.HeadCell>
+            <Table.HeadCell>
+              <span className="sr-only">Actions</span>
+            </Table.HeadCell>
+          </Table.Head>
+          <Table.Body className="divide-y">
             {categories.map((item: ICategoryWithType) => (
-              <tr
-                key={item.id}
-                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-              >
-                <td className="py-4 px-6">{item.name}</td>
-                <td className="py-4 px-6">{item.type.description}</td>
-                <td className="py-4 px-6" colSpan={2}>
+              <Table.Row key={item.id}>
+                <Table.Cell>{item.name}</Table.Cell>
+                <Table.Cell>{item.type.description}</Table.Cell>
+                <Table.Cell>
                   <div className="flex">
-                    <PencilSquareIcon height={18} />
-                    <TrashIcon height={18} />
+                    <Link to="">
+                      <PencilSquareIcon height={18} />
+                    </Link>
+                    <span className="px-2">|</span>
+                    <Link to="">
+                      <TrashIcon height={18} />
+                    </Link>
                   </div>
-                </td>
-              </tr>
+                </Table.Cell>
+              </Table.Row>
             ))}
-          </tbody>
-        </table>
+          </Table.Body>
+        </Table>
       </div>
     </div>
   );
