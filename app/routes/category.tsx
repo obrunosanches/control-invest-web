@@ -1,19 +1,14 @@
+import { json } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
+import { Link, Outlet, useLoaderData, useNavigate } from "@remix-run/react";
+import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { Button, Table } from "flowbite-react";
+
 import type {
   ActionArgs,
   ActionFunction,
   LoaderFunction,
 } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
-import {
-  Form,
-  Link,
-  Outlet,
-  useLoaderData,
-  useNavigate,
-} from "@remix-run/react";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Button, Label, TextInput, Select, Table, Card } from "flowbite-react";
 
 import type {
   Category as ICategory,
@@ -21,6 +16,7 @@ import type {
 } from "@prisma/client";
 
 import { prisma } from "~/utils/prisma.server";
+import Layout from "~/components/layout";
 
 interface ICategoryWithType extends ICategory {
   type: ICategoryType;
@@ -52,44 +48,14 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 
 export default function Category() {
   const navigate = useNavigate();
-  const { categories, categoryTypes } = useLoaderData();
+  const { categories } = useLoaderData();
 
   return (
-    <div className="px-5 mt-5">
+    <Layout>
       <Outlet />
 
-      <div className="flex justify-between items-center">
-        <h1 className="text-xl">Categorias</h1>
-        <Link to="/">Voltar</Link>
-      </div>
-
-      <div className="flex justify-center mt-5">
-        <Card className="w-full max-w-md">
-          <Form method="post">
-            <Label htmlFor="name" value="Descrição" />
-            <TextInput id="name" name="name" required />
-
-            <div className="mt-4 flex items-end">
-              <div className="flex-auto mr-4">
-                <Label htmlFor="typeId" value="Tipo" />
-                <Select id="typeId" name="typeId" required>
-                  <option value="">Selecione o tipo</option>
-                  {categoryTypes.map((item: ICategoryType) => {
-                    return (
-                      <option key={item.id} value={item.id}>
-                        {item.description}
-                      </option>
-                    );
-                  })}
-                </Select>
-              </div>
-              <Button onClick={() => navigate("/category/type")}>Tipo</Button>
-            </div>
-            <Button type="submit" className="mt-4">
-              Salvar
-            </Button>
-          </Form>
-        </Card>
+      <div className="flex justify-end">
+        <Button onClick={() => navigate("/category/new")}>Adicionar</Button>
       </div>
 
       <div className="overflow-x-auto relative mt-6">
@@ -122,6 +88,6 @@ export default function Category() {
           </Table.Body>
         </Table>
       </div>
-    </div>
+    </Layout>
   );
 }

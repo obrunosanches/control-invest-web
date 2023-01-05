@@ -16,19 +16,19 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
     },
   });
 
-  return redirect("/category");
+  return redirect("/category/new");
 };
 
 export default function CategoryType() {
   const navigate = useNavigate();
   const [visible] = useState(true);
 
-  const handleToogle = () => navigate("/category");
+  const handleToogle = () => navigate("/category/new");
 
   return (
-    <Modal show={visible} onClose={handleToogle}>
+    <Modal show={visible} position="top-center" onClose={handleToogle}>
       <Form method="post">
-        <Modal.Header>Tipo de Categoria</Modal.Header>
+        <Modal.Header>Cadastrar Tipo de Categoria</Modal.Header>
         <Modal.Body>
           <Label htmlFor="description" value="Descrição" />
           <TextInput id="description" name="description" required />
