@@ -22,12 +22,12 @@ export const links: LinksFunction = () => {
 
 export default function App() {
   return (
-    <html lang="en">
+    <html lang="pt-BR" className="dark">
       <head>
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="bg-gray-800">
         <Outlet />
         <ScrollRestoration />
         <Scripts />
