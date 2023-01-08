@@ -2,8 +2,11 @@
 </script>
 
 <template>
-  <h1>Vite + Vue</h1>
+  <div class="h-screen flex justify-center items-center">
+    <h1 class="text-3xl font-bold underline">Vite + Vue + Tailwind</h1>
+  </div>
 </template>
 
 <style scoped>
+
 </style>
