@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import Layout from './components/Layout.vue';
+
 </script>
 
 <template>
-  <div class="h-screen flex justify-center items-center">
+  <Layout>
     <h1 class="text-3xl text-gray-400 font-bold underline">Vite + Vue + Tailwind</h1>
-  </div>
+  </Layout>
 </template>
 
 <style scoped>
