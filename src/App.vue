@@ -4,7 +4,7 @@ import Layout from './components/Layout.vue';
 </script>
 
 <template>
-  <Layout>
+  <Layout class="h-screen">
     <h1 class="text-3xl text-gray-400 font-bold underline">Vite + Vue + Tailwind</h1>
   </Layout>
 </template>
