@@ -61,7 +61,7 @@ const layoutClasses = computed(() => {
         </SidebarItemGroup>
       </Sidebar>
 
-      <main class="w-full ml-64 p-5 text-white bg-gray-900">
+      <main class="w-full ml-0 md:ml-64 p-5 text-white bg-gray-900">
         <slot />
       </main>
     </div>
