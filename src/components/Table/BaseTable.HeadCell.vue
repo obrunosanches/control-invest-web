@@ -17,6 +17,6 @@ const className = computed(() => {
 
 <template>
   <th scope="col" :class="className">
-    <slot />
+    <slot></slot>
   </th>
 </template>

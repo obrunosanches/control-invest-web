@@ -10,7 +10,7 @@ const props = defineProps({
 <template>
   <li>
     <a :href="props.href" class="flex items-center p-2 text-base font-normal rounded-lg text-white hover:bg-gray-700">
-      <slot />
+      <slot></slot>
     </a>
   </li>
 </template>

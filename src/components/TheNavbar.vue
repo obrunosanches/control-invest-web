@@ -27,7 +27,7 @@ const navbarClasses = computed(() => {
 <template>
   <nav :class="navbarClasses">
     <div class="container flex flex-wrap items-center">
-      <slot />
+      <slot></slot>
     </div>
   </nav>
 </template>
