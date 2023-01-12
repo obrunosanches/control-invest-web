@@ -28,7 +28,7 @@ provide('hoverable', props.hoverable)
 <template>
   <div class="relative overflow-x-auto shadow-md">
     <table :class="props.className">
-      <slot />
+      <slot></slot>
     </table>
   </div>
 </template>

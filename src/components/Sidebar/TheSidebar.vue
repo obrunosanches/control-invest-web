@@ -14,7 +14,7 @@ const props = defineProps({
 <template>
   <aside :class="props.className" :aria-label="props.label">
     <div class="px-3 py-4 overflow-y-auto">
-      <slot />
+      <slot></slot>
     </div>
   </aside>
 </template>

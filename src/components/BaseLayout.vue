@@ -2,10 +2,10 @@
 import { computed } from 'vue';
 import classNames from 'classnames';
 
-import Navbar from './Navbar.vue';
-import Sidebar from './Sidebar/Sidebar.vue';
-import SidebarItemGroup from './Sidebar/Sidebar.ItemGroup.vue';
-import SidebarItem from './Sidebar/Sidebar.Item.vue';
+import Navbar from './TheNavbar.vue';
+import Sidebar from './Sidebar/TheSidebar.vue';
+import SidebarItemGroup from './Sidebar/TheSidebar.ItemGroup.vue';
+import SidebarItem from './Sidebar/TheSidebar.Item.vue';
 
 const props = defineProps({
   className: {
@@ -62,7 +62,7 @@ const layoutClasses = computed(() => {
       </Sidebar>
 
       <main class="w-full ml-0 md:ml-64 p-5 text-white bg-gray-900">
-        <slot />
+        <slot></slot>
       </main>
     </div>
   </div>

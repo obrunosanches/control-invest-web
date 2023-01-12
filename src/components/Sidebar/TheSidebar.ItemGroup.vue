@@ -9,6 +9,6 @@ const props = defineProps({
 
 <template>
   <ul :class="props.className">
-    <slot />
+    <slot></slot>
   </ul>
 </template>
