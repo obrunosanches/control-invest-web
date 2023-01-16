@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "prisma": "^4.8.1",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"
   },
