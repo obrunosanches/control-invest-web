@@ -62,7 +62,9 @@
 
     <div class="md:col-span-2">
       <div class="border-t border-gray-700 p-5">
-        <span class="text-white">Footer</span>
+        <a href="https://github.com/obrunosanches" target="_blank">
+          <span class="text-gray-400 text-sm">Bruno Sanches &copy; 2023</span>
+        </a>
       </div>
     </div>
   </div>
