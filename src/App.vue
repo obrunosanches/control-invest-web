@@ -14,25 +14,25 @@
       <SidebarItemGroup className="flex justify-around md:block space-y-0 md:space-y-2">
         <SidebarItem href="/">
           <template v-slot:before>
-            <IconDashboard />
+            <IconDashboard class="hidden md:block mr-3" />
           </template>
           Dashboard
         </SidebarItem>
         <SidebarItem href="/transactions">
           <template v-slot:before>
-            <IconTransaction />
+            <IconTransaction class="hidden md:block mr-3" />
           </template>
           Transações
         </SidebarItem>
         <SidebarItem href="/categories">
           <template v-slot:before>
-            <IconCategory />
+            <IconCategory class="hidden md:block mr-3" />
           </template>
           <router-link to="/categories">Categorias</router-link>
         </SidebarItem>
         <SidebarItem href="/accounts">
           <template v-slot:before>
-            <IconAccount />
+            <IconAccount class="hidden md:block mr-3" />
           </template>
           Contas
         </SidebarItem>
