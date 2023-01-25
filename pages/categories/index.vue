@@ -1,5 +1,15 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import type { Category as ICategory } from "@prisma/client";
+
 import Button from '~/components/TheButton.vue';
+
+const categories: any = ref<ICategory[]>([])
+
+onMounted(async () => {
+  const { data } = await useFetch<ICategory[]>('/api/category')
+  categories.value = data.value
+})
 </script>
 
 <template>
@@ -12,4 +22,10 @@ import Button from '~/components/TheButton.vue';
       </Button>
     </NuxtLink>
   </div>
+
+  <ul>
+    <li v-for="item in categories" :key="item.name">
+      {{ item.name }}
+    </li>
+  </ul>
 </template>
