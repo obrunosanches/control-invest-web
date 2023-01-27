@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import type { Category as ICategory } from "@prisma/client";
+import type { Category as ICategory, CategoryType as ICategoryType, } from "@prisma/client";
 
 import Button from '~/components/TheButton.vue';
 import BaseTable from '~/components/Table/BaseTable.vue';
@@ -10,11 +10,15 @@ import BaseTableBody from '~/components/Table/BaseTable.Body.vue';
 import BaseTableRow from '~/components/Table/BaseTable.BodyRow.vue';
 import BaseTableCell from '~~/components/Table/BaseTable.BodyCell.vue';
 
-const categories: any = ref<ICategory[]>([])
+interface ICategoryWithType extends ICategory {
+  type: ICategoryType;
+}
+
+const categories = ref<ICategoryWithType[]>([])
 
 onMounted(async () => {
-  const { data } = await useFetch<ICategory[]>('/api/category')
-  categories.value = data.value
+  const { data } = await useFetch<ICategoryWithType[]>('/api/category')
+  categories.value = data.value ?? []
 })
 </script>
 
@@ -23,7 +27,7 @@ onMounted(async () => {
 
   <div class="flex justify-end">
     <NuxtLink to="categories/new">
-      <Button  type="button" color="default">
+      <Button type="button" color="default">
         Adicionar
       </Button>
     </NuxtLink>
