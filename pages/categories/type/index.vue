@@ -10,11 +10,11 @@ import BaseTableBody from '~/components/Table/BaseTable.Body.vue';
 import BaseTableRow from '~/components/Table/BaseTable.BodyRow.vue';
 import BaseTableCell from '~~/components/Table/BaseTable.BodyCell.vue';
 
-const categoryTypes: any = ref<ICategoryType[]>([])
+const categoryTypes = ref<ICategoryType[]>([])
 
 onMounted(async () => {
   const { data } = await useFetch<ICategoryType[]>('/api/category/type')
-  categoryTypes.value = data.value
+  categoryTypes.value = data.value ?? []
 })
 </script>
 
@@ -35,7 +35,7 @@ onMounted(async () => {
       <BaseTableHeadCell><span class="sr-only">actions</span></BaseTableHeadCell>
     </BaseTableHead>
     <BaseTableBody>
-      <BaseTableRow v-for="item in categoryTypes" :key="item.name">
+      <BaseTableRow v-for="item in categoryTypes" :key="item.description">
         <BaseTableCell>
           {{ item.description }}
         </BaseTableCell>
