@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
 import type { Category as ICategory, CategoryType as ICategoryType, } from "@prisma/client";
 
 import Button from '~/components/TheButton.vue';
@@ -17,12 +16,9 @@ interface ICategoryWithType extends ICategory {
   type: ICategoryType;
 }
 
-const categories = ref<ICategoryWithType[]>([])
+// TODO: Use pinia to control store
 
-onMounted(async () => {
-  const { data } = await useFetch<ICategoryWithType[]>('/api/category')
-  categories.value = data.value ?? []
-})
+const { data: categories } = await useAsyncData<ICategoryWithType[]>('category', () => $fetch(`/api/category`))
 </script>
 
 <template>
@@ -36,7 +32,7 @@ onMounted(async () => {
     </NuxtLink>
   </div>
 
-  <BaseTable v-if="categories.length" class="w-full text-sm text-left text-gray-400 mt-8" striped>
+  <BaseTable v-if="categories?.length" class="w-full text-sm text-left text-gray-400 mt-8" striped>
     <BaseTableHead class="text-xs text-gray-400 uppercase bg-gray-700">
       <BaseTableHeadCell>Name</BaseTableHeadCell>
       <BaseTableHeadCell><span class="sr-only">actions</span></BaseTableHeadCell>
