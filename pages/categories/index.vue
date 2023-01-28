@@ -8,7 +8,10 @@ import BaseTableHead from '~/components/Table/BaseTable.Head.vue';
 import BaseTableHeadCell from '~/components/Table/BaseTable.HeadCell.vue';
 import BaseTableBody from '~/components/Table/BaseTable.Body.vue';
 import BaseTableRow from '~/components/Table/BaseTable.BodyRow.vue';
-import BaseTableCell from '~~/components/Table/BaseTable.BodyCell.vue';
+import BaseTableCell from '~/components/Table/BaseTable.BodyCell.vue';
+import AddRegisttryIcon from '~~/components/Icons/AddRegisttryIcon.vue';
+import EditRegisttryIcon from '~~/components/Icons/EditRegisttryIcon.vue';
+import RemoveRegisttryIcon from '~~/components/Icons/RemoveRegisttryIcon.vue';
 
 interface ICategoryWithType extends ICategory {
   type: ICategoryType;
@@ -43,10 +46,16 @@ onMounted(async () => {
         <BaseTableCell>
           {{ item.name }}
         </BaseTableCell>
-        <BaseTableCell>
-          <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-          <span class="px-2 text-gray-300">|</span>
-          <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Remove</a>
+        <BaseTableCell class="flex justify-end items-center gap-2">
+          <router-link :to="`categories/${item.id}`">
+            <AddRegisttryIcon class="text-green-600" />
+          </router-link>
+          <router-link :to="`categories/${item.id}`">
+            <EditRegisttryIcon class="text-blue-600" />
+          </router-link>
+          <router-link :to="`categories/${item.id}`">
+            <RemoveRegisttryIcon class="text-red-500" />
+          </router-link>
         </BaseTableCell>
       </BaseTableRow>
     </BaseTableBody>
