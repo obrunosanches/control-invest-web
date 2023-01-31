@@ -1,32 +1,34 @@
-const hide = (element: HTMLDivElement) => element.classList.add("hidden");
-const show = (element: HTMLDivElement) => element.classList.remove("hidden");
+import { DirectiveBinding } from "vue";
+
+const getModalElementByTarget = (target: string) => document.getElementById(target) as HTMLDivElement;
+
+export const show = (element: HTMLDivElement) => element.classList.remove("hidden");
+export const hide = (target: string) => {
+  const $modalContainerElement = getModalElementByTarget(target);
+  $modalContainerElement.classList.add("hidden");
+}
 
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.directive("modal-show", (element: HTMLButtonElement, binding) => {
+  nuxtApp.vueApp.directive("modal-show", (element: HTMLButtonElement, binding: DirectiveBinding) => {
     element.addEventListener("click", () => {
-      const $modalContainerElement = document.getElementById(binding.value) as HTMLDivElement;
+      const $modalContainerElement = getModalElementByTarget(binding.value);
       show($modalContainerElement)
     });
   });
 
-  nuxtApp.vueApp.directive("modal-hide", (element: HTMLButtonElement, binding) => {
-    const $modalContainerElement = document.getElementById(binding.value ) as HTMLDivElement;
+  nuxtApp.vueApp.directive("modal-hide", (element: HTMLButtonElement, binding: DirectiveBinding) => {
+    const target = binding.value
+    const $modalContainerElement = getModalElementByTarget(target);
     const $modalElemnt = $modalContainerElement.querySelector('[role="dialog"]') as HTMLDivElement;
 
     $modalElemnt?.addEventListener("click", (element) => {
-      if (element.target === $modalElemnt) {
-        hide($modalContainerElement);
-      }
+      (element.target === $modalElemnt) && hide(target);
     });
 
     $modalContainerElement.addEventListener("keydown", (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        hide($modalContainerElement);
-      }
+      (event.key === "Escape") && hide(target);
     });
 
-    element.addEventListener("click", () => {
-      hide($modalContainerElement)
-    });
+    element.addEventListener("click", () => hide(target));
   });
 });
