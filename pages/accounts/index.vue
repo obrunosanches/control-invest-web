@@ -19,18 +19,38 @@ const accountTypeModalTarget: string = "accountTypeModal"
 const handleSubmit = async (event: Event): Promise<void> => {
   const form = event.target as HTMLFormElement
   const formData = new FormData(form)
-  const description = formData.get("description")
 
-  const { data: accountType } = await useFetch('/api/account/type', {
+  if (form.getAttribute('id')?.includes('type')) {
+    const description = formData.get("description")
+
+    const { data: accountType } = await useFetch('/api/account/type', {
+      method: 'post',
+      body: {
+        description
+      }
+    })
+
+    form.reset()
+    accountTypes.value?.push(accountType.value as IAccountType)
+    hide(accountTypeModalTarget)
+    return void 0
+  }
+
+  const name = formData.get("name")
+  const accountTypeId = formData.get("accountTypeId")
+  const initialBalance = formData.get("initialBalance")
+
+  await useFetch('/api/account', {
     method: 'post',
     body: {
-      description
+      name,
+      accountTypeId,
+      initialBalance
     }
   })
 
   form.reset()
-  accountTypes.value?.push(accountType.value as IAccountType)
-  hide(accountTypeModalTarget)
+  hide(accountModalTarget)
 }
 </script>
 
@@ -51,7 +71,7 @@ const handleSubmit = async (event: Event): Promise<void> => {
       <ModalBody :hasTitle="true">
         <div class="flex gap-4 items-end">
           <fieldset class="flex-auto">
-            <FormInput name="description" label="Descrição" />
+            <FormInput name="name" label="Nome" />
           </fieldset>
 
           <fieldset class="flex-auto">
