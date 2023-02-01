@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { hide } from '~/plugins/modal';
+
 import Button from '~/components/TheButton.vue';
 import Modal from '~/components/Modal/TheModal.vue';
 import ModalHeader from '~/components/Modal/TheModal.Header.vue';
@@ -13,8 +15,17 @@ const accountTypeModalTarget: string = "accountTypeModal"
 const handleSubmit = async (event: Event): Promise<void> => {
   const form = event.target as HTMLFormElement
   const formData = new FormData(form)
+  const description = formData.get("description")
+
+  await useFetch('/api/account/type', {
+    method: 'post',
+    body: {
+      description
+    }
+  })
 
   form.reset()
+  hide(accountTypeModalTarget)
 }
 </script>
 
