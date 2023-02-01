@@ -60,7 +60,7 @@ const handleSubmit = async (event: Event) => {
     <form novalidate @submit.prevent="handleSubmit">
       <ModalBody :hasTitle="true">
         <fieldset>
-          <FormInput name="name" label="Descrição" />
+          <FormInput name="name" label="Nome" />
         </fieldset>
       </ModalBody>
       <ModalFooter>
