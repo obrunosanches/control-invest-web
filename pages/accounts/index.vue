@@ -49,11 +49,17 @@ const handleSubmit = async (event: Event): Promise<void> => {
     <ModalHeader :target="accountModalTarget" title="Cadastrar tipo de conta" />
     <form id="account" novalidate @submit.prevent="handleSubmit">
       <ModalBody :hasTitle="true">
-        <fieldset>
-          <FormInput name="description" label="Descrição" />
-        </fieldset>
-        <div class="flex mt-6 gap-4 items-end">
+        <div class="flex gap-4 items-end">
+          <fieldset class="flex-auto">
+            <FormInput name="description" label="Descrição" />
+          </fieldset>
 
+          <fieldset class="flex-auto">
+            <FormInput name="initialBalance" label="Valor inicial" />
+          </fieldset>
+        </div>
+
+        <div class="flex mt-6 gap-4 items-end">
           <fieldset class="flex-auto">
             <Select name="accountTypeId" label="Tipo">
               <option selected>Selecione o tipo</option>
