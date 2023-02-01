@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { Category as ICategory, CategoryType as ICategoryType, } from "@prisma/client";
 
+import { hide } from "~/plugins/modal";
+
 import Button from '~/components/TheButton.vue';
 import Modal from '~/components/Modal/TheModal.vue';
 import ModalHeader from '~/components/Modal/TheModal.Header.vue';
@@ -18,6 +20,7 @@ import AddRegisttryIcon from '~~/components/Icons/AddRegisttryIcon.vue';
 import EditRegisttryIcon from '~~/components/Icons/EditRegisttryIcon.vue';
 import RemoveRegisttryIcon from '~~/components/Icons/RemoveRegisttryIcon.vue';
 
+
 interface ICategoryWithType extends ICategory {
   type: ICategoryType;
 }
@@ -28,10 +31,27 @@ const categoryModalTarget: string = "categoryModal"
 const categoryTypeModalTarget: string = "categoryTypeModal"
 
 const { data: categories } = await useAsyncData<ICategoryWithType[]>('category', () => $fetch(`/api/category`))
+const { data: categoryTypes } = await useAsyncData<ICategoryType[]>('categoryTypes', () => $fetch(`/api/category/type`))
 
 const handleSubmit = async (event: Event): Promise<void> => {
   const form = event.target as HTMLFormElement
   const formData = new FormData(form)
+
+  if (form.getAttribute('id')?.includes('type')) {
+    const description = formData.get("description")
+
+    const { data: accountType } = await useFetch('/api/account/type', {
+      method: 'post',
+      body: {
+        description
+      }
+    })
+
+    form.reset()
+    categoryTypes.value?.push(accountType.value as ICategoryType)
+    hide(categoryTypeModalTarget)
+    return void 0
+  }
   
   form.reset()
 }
@@ -58,6 +78,9 @@ const handleSubmit = async (event: Event): Promise<void> => {
           <fieldset class="flex-auto">
             <Select name="typeId" label="Tipo">
               <option selected>Selecione o tipo</option>
+              <option v-for="{ id, description } in categoryTypes" :key="id" :value="id">
+                {{ description }}
+              </option>
             </Select>
           </fieldset>
 
