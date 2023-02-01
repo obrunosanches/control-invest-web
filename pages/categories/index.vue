@@ -25,6 +25,7 @@ interface ICategoryWithType extends ICategory {
 // TODO: Use pinia to control store
 
 const categoryModalTarget: string = "categoryModal"
+const categoryTypeModalTarget: string = "categoryTypeModal"
 
 const { data: categories } = await useAsyncData<ICategoryWithType[]>('category', () => $fetch(`/api/category`))
 
@@ -60,10 +61,26 @@ const handleSubmit = async (event: Event): Promise<void> => {
             </Select>
           </fieldset>
 
-          <Button type="button" color="default">
+          <Button type="button" color="default" v-modal-show="categoryTypeModalTarget">
             Tipo
           </Button>
         </div>
+      </ModalBody>
+      <ModalFooter class="text-right">
+        <Button type="submit" color="default">
+          Confirmar
+        </Button>
+      </ModalFooter>
+    </form>
+  </Modal>
+
+  <Modal ref="modalElement" :target="categoryTypeModalTarget" size="md" position="top-center" class="mt-16">
+    <ModalHeader :target="categoryTypeModalTarget" title="Cadastrar novo tipo de categoria" />
+    <form id="category-type" novalidate @submit.prevent="handleSubmit">
+      <ModalBody :hasTitle="true">
+        <fieldset>
+          <FormInput name="description" label="Descrição" />
+        </fieldset>
       </ModalBody>
       <ModalFooter class="text-right">
         <Button type="submit" color="default">
