@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { AccountType as IAccountType } from '@prisma/client'
+
 import { hide } from '~/plugins/modal';
 
 import Button from '~/components/TheButton.vue';
@@ -9,6 +11,8 @@ import ModalFooter from '~/components/Modal/TheModal.Footer.vue';
 import FormInput from '~/components/Form/FormInput.vue';
 import Select from '~/components/Form/FormSelect.vue';
 
+const { data: accountTypes } = await useAsyncData<IAccountType[]>('accountTypes', () => $fetch('/api/account/type'))
+
 const accountModalTarget: string = "accountModal"
 const accountTypeModalTarget: string = "accountTypeModal"
 
@@ -17,7 +21,7 @@ const handleSubmit = async (event: Event): Promise<void> => {
   const formData = new FormData(form)
   const description = formData.get("description")
 
-  await useFetch('/api/account/type', {
+  const { data: accountType } = await useFetch('/api/account/type', {
     method: 'post',
     body: {
       description
@@ -25,6 +29,7 @@ const handleSubmit = async (event: Event): Promise<void> => {
   })
 
   form.reset()
+  accountTypes.value?.push(accountType.value as IAccountType)
   hide(accountTypeModalTarget)
 }
 </script>
@@ -52,6 +57,9 @@ const handleSubmit = async (event: Event): Promise<void> => {
           <fieldset class="flex-auto">
             <Select name="accountTypeId" label="Tipo">
               <option selected>Selecione o tipo</option>
+              <option v-for="{ id, description } in accountTypes" :key="id" :value="id">
+                {{ description }}
+              </option>
             </Select>
           </fieldset>
 
