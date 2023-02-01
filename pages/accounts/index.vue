@@ -8,6 +8,7 @@ import FormInput from '~/components/Form/FormInput.vue';
 import Select from '~/components/Form/FormSelect.vue';
 
 const accountModalTarget: string = "accountModal"
+const accountTypeModalTarget: string = "accountTypeModal"
 
 const handleSubmit = async (event: Event): Promise<void> => {
   const form = event.target as HTMLFormElement
@@ -43,10 +44,26 @@ const handleSubmit = async (event: Event): Promise<void> => {
             </Select>
           </fieldset>
 
-          <Button type="button" color="default">
+          <Button type="button" color="default" v-modal-show="accountTypeModalTarget">
             Tipo
           </Button>
         </div>
+      </ModalBody>
+      <ModalFooter class="text-right">
+        <Button type="submit" color="default">
+          Confirmar
+        </Button>
+      </ModalFooter>
+    </form>
+  </Modal>
+
+  <Modal ref="modalElement" :target="accountTypeModalTarget" size="md" position="top-center" class="mt-16">
+    <ModalHeader :target="accountTypeModalTarget" title="Cadastrar tipo de conta" />
+    <form id="account-type" novalidate @submit.prevent="handleSubmit">
+      <ModalBody :hasTitle="true">
+        <fieldset>
+          <FormInput name="description" label="Descrição" />
+        </fieldset>
       </ModalBody>
       <ModalFooter class="text-right">
         <Button type="submit" color="default">
