@@ -21,14 +21,6 @@ onMounted(async () => {
 <template>
   <h2 class="text-2xl">Tipo de categoria</h2>
 
-  <div class="flex justify-end">
-    <NuxtLink to="type/new">
-      <Button type="button" color="default">
-        Adicionar
-      </Button>
-    </NuxtLink>
-  </div>
-
   <BaseTable v-if="categoryTypes.length" class="w-full text-sm text-left text-gray-400 mt-8" striped>
     <BaseTableHead class="text-xs text-gray-400 uppercase bg-gray-700">
       <BaseTableHeadCell>Descrição</BaseTableHeadCell>
