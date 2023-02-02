@@ -20,7 +20,6 @@ import AddRegisttryIcon from '~~/components/Icons/AddRegisttryIcon.vue';
 import EditRegisttryIcon from '~~/components/Icons/EditRegisttryIcon.vue';
 import RemoveRegisttryIcon from '~~/components/Icons/RemoveRegisttryIcon.vue';
 
-
 interface ICategoryWithType extends ICategory {
   type: ICategoryType;
 }
@@ -52,8 +51,27 @@ const handleSubmit = async (event: Event): Promise<void> => {
     hide(categoryTypeModalTarget)
     return void 0
   }
-  
+
+  const name = formData.get("name")
+  const typeId = formData.get("typeId")
+
+  const { data: category } = await useFetch('/api/category', {
+    method: 'post',
+    body: {
+      name,
+      typeId
+    }
+  })
+
+  const type = categoryTypes.value?.find(item => item.id === typeId) as ICategoryType
+  const categoryWithType = {
+    ...category.value,
+    type
+  } as ICategoryWithType
+
   form.reset()
+  categories.value?.push(categoryWithType)
+  hide(categoryModalTarget)
 }
 </script>
 
