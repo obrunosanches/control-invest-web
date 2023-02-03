@@ -24,10 +24,14 @@ interface ICategoryWithType extends ICategory {
   type: ICategoryType;
 }
 
+type actionCategoryFormModalType = 'new' | 'edit'
+
 // TODO: Use pinia to control store
 
 const categoryModalTarget: string = "categoryModal"
 const categoryTypeModalTarget: string = "categoryTypeModal"
+const categorySelected = ref<ICategoryWithType | null>(null)
+const actionCategoryFormModal = ref<actionCategoryFormModalType>('new')
 
 const { data: categories } = await useAsyncData<ICategoryWithType[]>('category', () => $fetch(`/api/category`))
 const { data: categoryTypes } = await useAsyncData<ICategoryType[]>('categoryTypes', () => $fetch(`/api/category/type`))
@@ -73,30 +77,38 @@ const handleSubmit = async (event: Event): Promise<void> => {
   categories.value?.push(categoryWithType)
   hide(categoryModalTarget)
 }
+
+const selected = (item: ICategoryWithType | null) => {
+  actionCategoryFormModal.value = item === null ? 'new' : 'edit'
+  categorySelected.value = item
+}
+
+const titleCategoryModal = computed(() => actionCategoryFormModal.value === 'new' ? 'Cadastrar nova categoria' : 'Editar categoria')
 </script>
 
 <template>
   <h2 class="text-2xl">Categorias</h2>
 
   <div class="flex justify-end">
-    <Button type="button" color="default" v-modal-show="categoryModalTarget">
+    <Button type="button" color="default" @click="selected(null)" v-modal-show="categoryModalTarget">
       Adicionar
     </Button>
   </div>
 
   <Modal ref="modalElement" :target="categoryModalTarget" position="top-center" class="mt-16">
-    <ModalHeader :target="categoryModalTarget" title="Cadastrar nova categoria" />
+    <ModalHeader :target="categoryModalTarget" :title="titleCategoryModal" />
     <form id="category" novalidate @submit.prevent="handleSubmit">
       <ModalBody :hasTitle="true">
         <fieldset>
-          <FormInput name="name" label="Nome" />
+          <FormInput name="name" label="Nome" :value="categorySelected?.name" />
         </fieldset>
 
         <div class="flex mt-6 gap-4 items-end">
           <fieldset class="flex-auto">
             <Select name="typeId" label="Tipo">
               <option selected>Selecione o tipo</option>
-              <option v-for="{ id, description } in categoryTypes" :key="id" :value="id">
+              <option v-for="{ id, description } in categoryTypes" :key="id" :value="id"
+                :selected="categorySelected?.typeId === id">
                 {{ description }}
               </option>
             </Select>
@@ -145,12 +157,12 @@ const handleSubmit = async (event: Event): Promise<void> => {
           <router-link :to="`categories/${item.id}`">
             <AddRegisttryIcon class="text-green-600" />
           </router-link>
-          <router-link :to="`categories/${item.id}`">
+          <Button @click="selected(item)" class="bg-transparent" v-modal-show="categoryModalTarget">
             <EditRegisttryIcon class="text-blue-600" />
-          </router-link>
-          <router-link :to="`categories/${item.id}`">
+          </Button>
+          <Button @click="selected(item)" class="bg-transparent">
             <RemoveRegisttryIcon class="text-red-500" />
-          </router-link>
+          </Button>
         </BaseTableCell>
       </BaseTableRow>
     </BaseTableBody>
