@@ -29,6 +29,7 @@ type actionCategoryFormModalType = 'new' | 'edit'
 // TODO: Use pinia to control store
 
 const categoryModalTarget: string = "categoryModal"
+const categoryDeleteModalTarget: string = "categoryDeleteModal"
 const categoryTypeModalTarget: string = "categoryTypeModal"
 const categorySelected = ref<ICategoryWithType | null>(null)
 const actionCategoryFormModal = ref<actionCategoryFormModalType>('new')
@@ -143,6 +144,29 @@ const titleCategoryModal = computed(() => actionCategoryFormModal.value === 'new
     </form>
   </Modal>
 
+  <Modal ref="modalElement" :target="categoryDeleteModalTarget" size="md" position="top-center" class="mt-16">
+    <ModalHeader :target="categoryDeleteModalTarget" />
+    <ModalBody :hasTitle="false">
+      <div class="p-6 text-center">
+        <svg aria-hidden="true" class="mx-auto mb-4 text-gray-400 w-14 h-14 dark:text-gray-200" fill="none"
+          stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Tem certeza que deseja excluir: "{{ categorySelected?.name }}"?
+        </h3>
+        <button v-modal-hide="categoryDeleteModalTarget" type="button"
+          class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
+          Confirmar
+        </button>
+        <button v-modal-hide="categoryDeleteModalTarget" type="button"
+          class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+          Cancelar
+        </button>
+      </div>
+    </ModalBody>
+  </Modal>
+
   <BaseTable v-if="categories?.length" class="w-full text-sm text-left text-gray-400 mt-8" striped>
     <BaseTableHead class="text-xs text-gray-400 uppercase bg-gray-700">
       <BaseTableHeadCell>Name</BaseTableHeadCell>
@@ -160,7 +184,7 @@ const titleCategoryModal = computed(() => actionCategoryFormModal.value === 'new
           <Button @click="selected(item)" class="bg-transparent" v-modal-show="categoryModalTarget">
             <EditRegisttryIcon class="text-blue-600" />
           </Button>
-          <Button @click="selected(item)" class="bg-transparent">
+          <Button @click="selected(item)" class="bg-transparent" v-modal-show="categoryDeleteModalTarget">
             <RemoveRegisttryIcon class="text-red-500" />
           </Button>
         </BaseTableCell>
