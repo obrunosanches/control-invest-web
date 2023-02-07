@@ -13,7 +13,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="flex items-center justify-between rounded-t p-5 border-b dark:border-gray-600" aria-labelledby="modal-title">
+  <div class="flex items-center justify-between rounded-t p-5" :class="props.title ? 'border-b dark:border-gray-600' : 'pb-0'" aria-labelledby="modal-title">
     <h3 :v-if="props.title" class="text-xl font-medium dark:text-white">
       {{ props.title }}
     </h3>
