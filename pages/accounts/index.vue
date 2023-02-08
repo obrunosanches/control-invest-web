@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AccountType as IAccountType } from '@prisma/client'
+import { Account as IAccount, AccountType as IAccountType } from '@prisma/client'
 
 import { hide } from '~/plugins/modal';
 
@@ -10,11 +10,29 @@ import ModalBody from '~/components/Modal/TheModal.Body.vue';
 import ModalFooter from '~/components/Modal/TheModal.Footer.vue';
 import FormInput from '~/components/Form/FormInput.vue';
 import Select from '~/components/Form/FormSelect.vue';
+import BaseTable from '~/components/Table/BaseTable.vue';
+import BaseTableHead from '~/components/Table/BaseTable.Head.vue';
+import BaseTableHeadCell from '~/components/Table/BaseTable.HeadCell.vue';
+import BaseTableBody from '~/components/Table/BaseTable.Body.vue';
+import BaseTableRow from '~/components/Table/BaseTable.BodyRow.vue';
+import BaseTableCell from '~/components/Table/BaseTable.BodyCell.vue';
+import EditRegisttryIcon from '~~/components/Icons/EditRegisttryIcon.vue';
+import RemoveRegisttryIcon from '~~/components/Icons/RemoveRegisttryIcon.vue';
+
+interface IAccountWithType extends IAccount {
+  accountType: IAccountType;
+}
+
+type actionFormModalType = 'new' | 'edit'
 
 const { data: accountTypes } = await useAsyncData<IAccountType[]>('accountTypes', () => $fetch('/api/account/type'))
+const { data: accounts } = await useAsyncData<IAccountWithType[]>('account', () => $fetch('/api/account'))
 
 const accountModalTarget: string = "accountModal"
+const accountDeleteModalTarget: string = "accountDeleteModal"
 const accountTypeModalTarget: string = "accountTypeModal"
+const accountySelected = ref<IAccountWithType | null>(null)
+const actionFormModal = ref<actionFormModalType>('new')
 
 const handleSubmit = async (event: Event): Promise<void> => {
   const form = event.target as HTMLFormElement
@@ -52,6 +70,11 @@ const handleSubmit = async (event: Event): Promise<void> => {
   form.reset()
   hide(accountModalTarget)
 }
+
+const selected = (item: IAccountWithType | null) => {
+  actionFormModal.value = item === null ? 'new' : 'edit'
+  accountySelected.value = item
+}
 </script>
 
 <template>
@@ -60,7 +83,7 @@ const handleSubmit = async (event: Event): Promise<void> => {
   </h1>
 
   <div class="flex justify-end">
-    <Button type="button" color="default" v-modal-show="accountModalTarget">
+    <Button type="button" color="default" @click="selected(null)" v-modal-show="accountModalTarget">
       Adicionar
     </Button>
   </div>
@@ -71,11 +94,11 @@ const handleSubmit = async (event: Event): Promise<void> => {
       <ModalBody :hasTitle="true">
         <div class="flex gap-4 items-end">
           <fieldset class="flex-auto">
-            <FormInput name="name" label="Nome" />
+            <FormInput name="name" label="Nome" :value="accountySelected?.name" />
           </fieldset>
 
           <fieldset class="flex-auto">
-            <FormInput name="initialBalance" label="Valor inicial" />
+            <FormInput name="initialBalance" label="Valor inicial" :value="accountySelected?.initialBalance" />
           </fieldset>
         </div>
 
@@ -83,7 +106,8 @@ const handleSubmit = async (event: Event): Promise<void> => {
           <fieldset class="flex-auto">
             <Select name="accountTypeId" label="Tipo">
               <option selected>Selecione o tipo</option>
-              <option v-for="{ id, description } in accountTypes" :key="id" :value="id">
+              <option v-for="{ id, description } in accountTypes" :key="id" :value="id"
+                :selected="accountySelected?.accountTypeId === id">
                 {{ description }}
               </option>
             </Select>
@@ -117,4 +141,26 @@ const handleSubmit = async (event: Event): Promise<void> => {
       </ModalFooter>
     </form>
   </Modal>
+
+  <BaseTable v-if="accounts?.length" class="w-full text-sm text-left text-gray-400 mt-8" striped>
+    <BaseTableHead class="text-xs text-gray-400 uppercase bg-gray-700">
+      <BaseTableHeadCell>Name</BaseTableHeadCell>
+      <BaseTableHeadCell><span class="sr-only">actions</span></BaseTableHeadCell>
+    </BaseTableHead>
+    <BaseTableBody>
+      <BaseTableRow v-for="item in accounts" :key="item.name">
+        <BaseTableCell>
+          {{ item.name }}
+        </BaseTableCell>
+        <BaseTableCell class="flex justify-end items-center gap-2">
+          <Button @click="selected(item)" class="bg-transparent" v-modal-show="accountModalTarget">
+            <EditRegisttryIcon class="text-blue-600" />
+          </Button>
+          <Button @click="selected(item)" class="bg-transparent" v-modal-show="accountDeleteModalTarget">
+            <RemoveRegisttryIcon class="text-red-500" />
+          </Button>
+        </BaseTableCell>
+      </BaseTableRow>
+    </BaseTableBody>
+  </BaseTable>
 </template>
