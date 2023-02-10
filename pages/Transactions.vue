@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import type { Account as IAccount, Category as ICategory, SubCategory as ISubCategory } from "@prisma/client";
+import type {
+  Account as IAccount,
+  Category as ICategory,
+  CategoryType as ICategoryType,
+  SubCategory as ISubCategory
+} from "@prisma/client";
 
 
 import { hide } from '~/plugins/modal';
@@ -16,7 +21,16 @@ const transactionModalTarget: string = "accountModal"
 
 const { data: accounts } = await useAsyncData<IAccount[]>('account', () => $fetch('/api/account'))
 const { data: categories } = await useAsyncData<ICategory[]>('category', () => $fetch(`/api/category`))
+const { data: categoryTypes } = await useAsyncData<ICategoryType[]>('categoryTypes', () => $fetch('/api/category/type'))
+
+const categoryType = ref<ICategoryType>()
 const subCategories = ref<ISubCategory[]>([])
+
+onMounted(() => {
+  if (categoryTypes.value?.length) {
+    categoryType.value = categoryTypes.value[0]
+  }
+})
 
 const handleSubmit = async (event: Event): Promise<void> => {
   const form = event.target as HTMLFormElement
@@ -26,6 +40,12 @@ const handleSubmit = async (event: Event): Promise<void> => {
 
   form.reset()
   hide(transactionModalTarget)
+}
+
+const selectCategoryType = async (event: Event) => {
+  const { value } = event.target as HTMLSelectElement
+
+  categoryType.value = categoryTypes.value?.find(item => item.id === value)
 }
 
 const selectSubCategory = async (event: Event) => {
@@ -43,14 +63,22 @@ const selectSubCategory = async (event: Event) => {
     Transações
   </h1>
 
-  <div class="flex justify-end">
-    <Button type="button" color="default" v-modal-show="transactionModalTarget">
-      Adicionar
-    </Button>
+  <div class="flex justify-between items-center">
+    <Select name="typeId" @change="selectCategoryType" class="w-auto">
+      <option v-for="{id, description} in categoryTypes" :key="id" :value="id">
+        {{ description }}
+      </option>
+    </Select>
+
+    <div class="mt-4">
+      <Button type="button" color="default" v-modal-show="transactionModalTarget">
+        Adicionar
+      </Button>
+    </div>
   </div>
 
   <Modal ref="modalElement" :target="transactionModalTarget" position="top-center" class="mt-16">
-    <ModalHeader :target="transactionModalTarget" title="Cadastrar transação" />
+    <ModalHeader :target="transactionModalTarget" :title="`Cadastrar transação - ${categoryType?.description}`" />
     <form id="account" novalidate @submit.prevent="handleSubmit">
       <ModalBody :hasTitle="true">
         <div class="flex gap-4 items-end">
