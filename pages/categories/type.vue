@@ -2,7 +2,6 @@
 import { onMounted, ref } from 'vue'
 import type { CategoryType as ICategoryType } from "@prisma/client";
 
-import Button from '~/components/TheButton.vue';
 import BaseTable from '~/components/Table/BaseTable.vue';
 import BaseTableHead from '~/components/Table/BaseTable.Head.vue';
 import BaseTableHeadCell from '~/components/Table/BaseTable.HeadCell.vue';
