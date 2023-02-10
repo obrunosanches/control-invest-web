@@ -6,7 +6,8 @@ import Label from './FormLabel.vue';
 
 const props = defineProps({
   label: {
-    type: String
+    type: String,
+    default: null
   }
 })
 
