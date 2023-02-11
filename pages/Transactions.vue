@@ -6,7 +6,6 @@ import type {
   SubCategory as ISubCategory
 } from "@prisma/client";
 
-
 import { hide } from '~/plugins/modal';
 
 import Button from '~/components/TheButton.vue';
@@ -20,9 +19,9 @@ import Select from '~/components/Form/FormSelect.vue';
 const transactionModalTarget: string = "accountModal"
 
 const { data: accounts } = await useAsyncData<IAccount[]>('account', () => $fetch('/api/account'))
-const { data: categories } = await useAsyncData<ICategory[]>('category', () => $fetch(`/api/category`))
 const { data: categoryTypes } = await useAsyncData<ICategoryType[]>('categoryTypes', () => $fetch('/api/category/type'))
 
+const categories = ref<ICategory[]>([])
 const categoryType = ref<ICategoryType>()
 const subCategories = ref<ISubCategory[]>([])
 
@@ -30,6 +29,15 @@ onMounted(() => {
   if (categoryTypes.value?.length) {
     categoryType.value = categoryTypes.value[0]
   }
+
+  window.addEventListener('on-show-modal', async () => {
+    const typeId = categoryType.value?.id ?? null
+    const { data } = await useFetch<ICategory[]>(`/api/category/type/${typeId}`)
+
+    console.log('on-show-modal')
+
+    categories.value = data.value as ICategory[]
+  });
 })
 
 const handleSubmit = async (event: Event): Promise<void> => {
@@ -65,7 +73,7 @@ const selectSubCategory = async (event: Event) => {
 
   <div class="flex justify-between items-center">
     <Select name="typeId" @change="selectCategoryType" class="w-auto">
-      <option v-for="{id, description} in categoryTypes" :key="id" :value="id">
+      <option v-for="{ id, description } in categoryTypes" :key="id" :value="id">
         {{ description }}
       </option>
     </Select>
