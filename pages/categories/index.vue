@@ -91,7 +91,7 @@ const titleCategoryModal = computed(() => actionCategoryFormModal.value === 'new
   <h2 class="text-2xl">Categorias</h2>
 
   <div class="flex justify-end">
-    <Button type="button" color="default" @click="selected(null)" v-modal-show="categoryModalTarget">
+    <Button type="button" color="default" @click="selected(null)" v-show-modal="categoryModalTarget">
       Adicionar
     </Button>
   </div>
@@ -115,7 +115,7 @@ const titleCategoryModal = computed(() => actionCategoryFormModal.value === 'new
             </Select>
           </fieldset>
 
-          <Button type="button" color="default" v-modal-show="categoryTypeModalTarget">
+          <Button type="button" color="default" v-show-modal="categoryTypeModalTarget">
             Tipo
           </Button>
         </div>
@@ -155,11 +155,11 @@ const titleCategoryModal = computed(() => actionCategoryFormModal.value === 'new
         </svg>
         <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Tem certeza que deseja excluir: "{{ categorySelected?.name }}"?
         </h3>
-        <button v-modal-hide="categoryDeleteModalTarget" type="button"
+        <button v-hide-modal="categoryDeleteModalTarget" type="button"
           class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
           Confirmar
         </button>
-        <button v-modal-hide="categoryDeleteModalTarget" type="button"
+        <button v-hide-modal="categoryDeleteModalTarget" type="button"
           class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
           Cancelar
         </button>
@@ -181,10 +181,10 @@ const titleCategoryModal = computed(() => actionCategoryFormModal.value === 'new
           <router-link :to="`categories/${item.id}`">
             <AddRegisttryIcon class="text-green-600" />
           </router-link>
-          <Button @click="selected(item)" class="bg-transparent" v-modal-show="categoryModalTarget">
+          <Button @click="selected(item)" class="bg-transparent" v-show-modal="categoryModalTarget">
             <EditRegisttryIcon class="text-blue-600" />
           </Button>
-          <Button @click="selected(item)" class="bg-transparent" v-modal-show="categoryDeleteModalTarget">
+          <Button @click="selected(item)" class="bg-transparent" v-show-modal="categoryDeleteModalTarget">
             <RemoveRegisttryIcon class="text-red-500" />
           </Button>
         </BaseTableCell>

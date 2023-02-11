@@ -50,7 +50,7 @@ const handleSubmit = async (event: Event) => {
   <h2 class="text-2xl">{{ catogory?.name }}</h2>
 
   <div class="flex justify-end">
-    <Button type="button" color="default" v-modal-show="modalId">
+    <Button type="button" color="default" v-show-modal="modalId">
       Adicionar
     </Button>
   </div>

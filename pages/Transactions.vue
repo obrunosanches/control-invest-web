@@ -34,8 +34,6 @@ onMounted(() => {
     const typeId = categoryType.value?.id ?? null
     const { data } = await useFetch<ICategory[]>(`/api/category/type/${typeId}`)
 
-    console.log('on-show-modal')
-
     categories.value = data.value as ICategory[]
   });
 })
@@ -43,8 +41,6 @@ onMounted(() => {
 const handleSubmit = async (event: Event): Promise<void> => {
   const form = event.target as HTMLFormElement
   const formData = Object.fromEntries(new FormData(form))
-
-  console.log('formData', formData)
 
   form.reset()
   hide(transactionModalTarget)
@@ -79,7 +75,7 @@ const selectSubCategory = async (event: Event) => {
     </Select>
 
     <div class="mt-4">
-      <Button type="button" color="default" v-modal-show="transactionModalTarget">
+      <Button type="button" color="default" v-show-modal="transactionModalTarget">
         Adicionar
       </Button>
     </div>

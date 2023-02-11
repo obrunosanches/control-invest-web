@@ -83,7 +83,7 @@ const selected = (item: IAccountWithType | null) => {
   </h1>
 
   <div class="flex justify-end">
-    <Button type="button" color="default" @click="selected(null)" v-modal-show="accountModalTarget">
+    <Button type="button" color="default" @click="selected(null)" v-show-modal="accountModalTarget">
       Adicionar
     </Button>
   </div>
@@ -113,7 +113,7 @@ const selected = (item: IAccountWithType | null) => {
             </Select>
           </fieldset>
 
-          <Button type="button" color="default" v-modal-show="accountTypeModalTarget">
+          <Button type="button" color="default" v-show-modal="accountTypeModalTarget">
             Tipo
           </Button>
         </div>
@@ -153,10 +153,10 @@ const selected = (item: IAccountWithType | null) => {
           {{ item.name }}
         </BaseTableCell>
         <BaseTableCell class="flex justify-end items-center gap-2">
-          <Button @click="selected(item)" class="bg-transparent" v-modal-show="accountModalTarget">
+          <Button @click="selected(item)" class="bg-transparent" v-show-modal="accountModalTarget">
             <EditRegisttryIcon class="text-blue-600" />
           </Button>
-          <Button @click="selected(item)" class="bg-transparent" v-modal-show="accountDeleteModalTarget">
+          <Button @click="selected(item)" class="bg-transparent" v-show-modal="accountDeleteModalTarget">
             <RemoveRegisttryIcon class="text-red-500" />
           </Button>
         </BaseTableCell>
