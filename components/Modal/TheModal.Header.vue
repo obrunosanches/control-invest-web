@@ -17,7 +17,7 @@ const props = defineProps({
     <h3 :v-if="props.title" class="text-xl font-medium dark:text-white">
       {{ props.title }}
     </h3>
-    <button type="button" v-modal-hide="props.target"
+    <button type="button" v-hide-modal="props.target"
       class="text-sm ml-auto flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
       <slot>
         <CloseIcon class="h-4 w-4" viewBox="0 0 20 20" />
