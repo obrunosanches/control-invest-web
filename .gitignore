@@ -1,8 +1,18 @@
-node_modules
-*.log*
-.nuxt
+# miscellaneous
 .nitro
 .cache
 .output
 .env
-dist
+.yarnrc.yml
+.DS_Store
+
+# ignore folders
+node_modules/
+.nuxt/
+.yarn/
+.idea/
+.vscode/
+dist/
+
+# ignore ALL .log files
+*.log*
