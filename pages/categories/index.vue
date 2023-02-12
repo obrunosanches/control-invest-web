@@ -44,7 +44,7 @@ const handleSubmit = async (event: Event): Promise<void> => {
   if (form.getAttribute('id')?.includes('type')) {
     const description = formData.get("description")
 
-    const { data: accountType } = await useFetch('/api/account/type', {
+    const { data: categoryType } = await useFetch('/api/category/type', {
       method: 'post',
       body: {
         description
@@ -52,7 +52,7 @@ const handleSubmit = async (event: Event): Promise<void> => {
     })
 
     form.reset()
-    categoryTypes.value?.push(accountType.value as ICategoryType)
+    categoryTypes.value?.push(categoryType.value as ICategoryType)
     hide(categoryTypeModalTarget)
     return void 0
   }
