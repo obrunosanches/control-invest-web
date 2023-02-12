@@ -13,10 +13,10 @@
     "git-commit-msg-linter": "^4.5.0",
     "nuxt": "^3.1.1",
     "postcss": "^8.4.21",
-    "prisma": "^4.9.0",
+    "prisma": "^4.10.1",
     "tailwindcss": "^3.2.4"
   },
   "dependencies": {
-    "@prisma/client": "^4.9.0"
+    "@prisma/client": "^4.10.1"
   }
 }
