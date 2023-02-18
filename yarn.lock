@@ -960,7 +960,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/client@npm:latest":
+"@prisma/client@npm:^4.10.1":
   version: 4.10.1
   resolution: "@prisma/client@npm:4.10.1"
   dependencies:
@@ -1157,6 +1157,13 @@ __metadata:
   version: 1.0.0
   resolution: "@types/estree@npm:1.0.0"
   checksum: 910d97fb7092c6738d30a7430ae4786a38542023c6302b95d46f49420b797f21619cdde11fa92b338366268795884111c2eb10356e4bd2c8ad5b92941e9e6443
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^18.14.0":
+  version: 18.14.0
+  resolution: "@types/node@npm:18.14.0"
+  checksum: d83fcf5e4ed544755dd9028f5cbb6b9d46235043159111bb2ad62223729aee581c0144a9f6df8ba73d74011db9ed4ebd7af2fd5e0996714e3beb508a5da8ac5c
   languageName: node
   linkType: hard
 
@@ -5264,7 +5271,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prisma@npm:latest":
+"prisma@npm:^4.10.1":
   version: 4.10.1
   resolution: "prisma@npm:4.10.1"
   dependencies:
@@ -5550,13 +5557,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
-    "@prisma/client": latest
+    "@prisma/client": ^4.10.1
+    "@types/node": ^18.14.0
     autoprefixer: ^10.4.13
     classnames: ^2.3.2
     git-commit-msg-linter: ^4.5.0
     nuxt: ^3.1.1
     postcss: ^8.4.21
-    prisma: latest
+    prisma: ^4.10.1
     tailwindcss: ^3.2.4
   languageName: unknown
   linkType: soft
