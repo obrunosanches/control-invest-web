@@ -3,7 +3,8 @@ import type {
   Account as IAccount,
   Category as ICategory,
   CategoryType as ICategoryType,
-  SubCategory as ISubCategory
+  SubCategory as ISubCategory,
+	Transaction as ITransaction
 } from "@prisma/client";
 
 import { hide } from '~/plugins/modal';
@@ -15,6 +16,8 @@ import ModalBody from '~/components/Modal/TheModal.Body.vue';
 import ModalFooter from '~/components/Modal/TheModal.Footer.vue';
 import FormInput from '~/components/Form/FormInput.vue';
 import Select from '~/components/Form/FormSelect.vue';
+import EditRegistryIcon from '~/components/Icons/EditRegisttryIcon.vue';
+import RemoveRegistryIcon from '~/components/Icons/RemoveRegisttryIcon.vue';
 
 const transactionModalTarget: string = "accountModal"
 
@@ -24,6 +27,7 @@ const { data: categoryTypes } = await useAsyncData<ICategoryType[]>('categoryTyp
 const categories = ref<ICategory[]>([])
 const categoryType = ref<ICategoryType>()
 const subCategories = ref<ISubCategory[]>([])
+const transactions = ref<ITransaction[]>([])
 
 onMounted(() => {
   if (categoryTypes.value?.length) {
@@ -54,7 +58,7 @@ const handleSubmit = async (event: Event): Promise<void> => {
   hide(transactionModalTarget)
 }
 
-const selectCategoryType = async (event: Event) => {
+const fetchSubCategory = async (event: Event) => {
   const { value } = event.target as HTMLSelectElement
 
   categoryType.value = categoryTypes.value?.find(item => item.id === value)
@@ -68,6 +72,14 @@ const selectSubCategory = async (event: Event) => {
 
   subCategories.value = data.value as ISubCategory[]
 }
+
+watch(categoryType, async (category) => {
+	if (category?.id) {
+		const {data} = await useFetch<ITransaction[]>(`/api/transaction/categoryType/${category.id}`)
+
+		transactions.value = data.value as ITransaction[]
+	}
+})
 </script>
 
 <template>
@@ -76,7 +88,7 @@ const selectSubCategory = async (event: Event) => {
   </h1>
 
   <div class="flex justify-between items-center">
-    <Select name="typeId" @change="selectCategoryType" class="w-auto">
+    <Select name="typeId" @change="fetchSubCategory" class="w-auto">
       <option v-for="{ id, description } in categoryTypes" :key="id" :value="id">
         {{ description }}
       </option>
@@ -142,4 +154,26 @@ const selectSubCategory = async (event: Event) => {
       </ModalFooter>
     </form>
   </Modal>
+
+    <table-base-table v-if="transactions?.length" class="w-full text-sm text-left text-gray-400 mt-8" striped>
+        <table-base-table-head class="text-xs text-gray-400 uppercase bg-gray-700">
+            <table-base-table-head-cell>Name</table-base-table-head-cell>
+            <table-base-table-head-cell><span class="sr-only">actions</span></table-base-table-head-cell>
+        </table-base-table-head>
+        <table-base-table-body>
+            <table-base-table-body-row v-for="item in transactions" :key="item.description">
+                <table-base-table-body-cell>
+                    {{ item.description }}
+                </table-base-table-body-cell>
+                <table-base-table-body-cell class="flex justify-end items-center gap-2">
+                    <Button class="bg-transparent">
+                        <EditRegistryIcon class="text-blue-600"/>
+                    </Button>
+                    <Button class="bg-transparent">
+                        <RemoveRegistryIcon class="text-red-500"/>
+                    </Button>
+                </table-base-table-body-cell>
+            </table-base-table-body-row>
+        </table-base-table-body>
+    </table-base-table>
 </template>
