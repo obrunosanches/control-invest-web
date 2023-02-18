@@ -10,12 +10,6 @@ import ModalBody from '~/components/Modal/TheModal.Body.vue';
 import ModalFooter from '~/components/Modal/TheModal.Footer.vue';
 import FormInput from '~/components/Form/FormInput.vue';
 import Select from '~/components/Form/FormSelect.vue';
-import BaseTable from '~/components/Table/BaseTable.vue';
-import BaseTableHead from '~/components/Table/BaseTable.Head.vue';
-import BaseTableHeadCell from '~/components/Table/BaseTable.HeadCell.vue';
-import BaseTableBody from '~/components/Table/BaseTable.Body.vue';
-import BaseTableRow from '~/components/Table/BaseTable.BodyRow.vue';
-import BaseTableCell from '~/components/Table/BaseTable.BodyCell.vue';
 import EditRegisttryIcon from '~~/components/Icons/EditRegisttryIcon.vue';
 import RemoveRegisttryIcon from '~~/components/Icons/RemoveRegisttryIcon.vue';
 
@@ -142,25 +136,25 @@ const selected = (item: IAccountWithType | null) => {
     </form>
   </Modal>
 
-  <BaseTable v-if="accounts?.length" class="w-full text-sm text-left text-gray-400 mt-8" striped>
-    <BaseTableHead class="text-xs text-gray-400 uppercase bg-gray-700">
-      <BaseTableHeadCell>Name</BaseTableHeadCell>
-      <BaseTableHeadCell><span class="sr-only">actions</span></BaseTableHeadCell>
-    </BaseTableHead>
-    <BaseTableBody>
-      <BaseTableRow v-for="item in accounts" :key="item.name">
-        <BaseTableCell>
+  <base-table v-if="accounts?.length" class="w-full text-sm text-left text-gray-400 mt-8" striped>
+    <base-table-head class="text-xs text-gray-400 uppercase bg-gray-700">
+      <base-table-head-cell>Name</base-table-head-cell>
+      <base-table-head-cell><span class="sr-only">actions</span></base-table-head-cell>
+    </base-table-head>
+    <base-table-body>
+      <base-table-body-row v-for="item in accounts" :key="item.name">
+        <base-table-body-cell>
           {{ item.name }}
-        </BaseTableCell>
-        <BaseTableCell class="flex justify-end items-center gap-2">
+        </base-table-body-cell>
+        <base-table-body-cell class="flex justify-end items-center gap-2">
           <Button @click="selected(item)" class="bg-transparent" v-show-modal="accountModalTarget">
             <EditRegisttryIcon class="text-blue-600" />
           </Button>
           <Button @click="selected(item)" class="bg-transparent" v-show-modal="accountDeleteModalTarget">
             <RemoveRegisttryIcon class="text-red-500" />
           </Button>
-        </BaseTableCell>
-      </BaseTableRow>
-    </BaseTableBody>
-  </BaseTable>
+        </base-table-body-cell>
+      </base-table-body-row>
+    </base-table-body>
+  </base-table>
 </template>

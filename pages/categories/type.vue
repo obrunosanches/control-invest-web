@@ -1,13 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import type { CategoryType as ICategoryType } from "@prisma/client";
-
-import BaseTable from '~/components/Table/BaseTable.vue';
-import BaseTableHead from '~/components/Table/BaseTable.Head.vue';
-import BaseTableHeadCell from '~/components/Table/BaseTable.HeadCell.vue';
-import BaseTableBody from '~/components/Table/BaseTable.Body.vue';
-import BaseTableRow from '~/components/Table/BaseTable.BodyRow.vue';
-import BaseTableCell from '~~/components/Table/BaseTable.BodyCell.vue';
+import BaseTable from "~/components/BaseTable.vue";
 
 const categoryTypes = ref<ICategoryType[]>([])
 
@@ -20,23 +14,23 @@ onMounted(async () => {
 <template>
   <h2 class="text-2xl">Tipo de categoria</h2>
 
-  <BaseTable v-if="categoryTypes.length" class="w-full text-sm text-left text-gray-400 mt-8" striped>
-    <BaseTableHead class="text-xs text-gray-400 uppercase bg-gray-700">
-      <BaseTableHeadCell>Descrição</BaseTableHeadCell>
-      <BaseTableHeadCell><span class="sr-only">actions</span></BaseTableHeadCell>
-    </BaseTableHead>
-    <BaseTableBody>
-      <BaseTableRow v-for="item in categoryTypes" :key="item.description">
-        <BaseTableCell>
+  <base-table v-if="categoryTypes.length" class="w-full text-sm text-left text-gray-400 mt-8" striped>
+    <base-table-head class="text-xs text-gray-400 uppercase bg-gray-700">
+      <base-table-head-cell>Descrição</base-table-head-cell>
+      <base-table-head-cell><span class="sr-only">actions</span></base-table-head-cell>
+    </base-table-head>
+    <base-table-body>
+      <base-table-body-row v-for="item in categoryTypes" :key="item.description">
+        <base-table-body-cell>
           {{ item.description }}
-        </BaseTableCell>
-        <BaseTableCell>
+        </base-table-body-cell>
+        <base-table-body-cell>
           <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
           <span class="px-2 text-gray-300">|</span>
           <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Remove</a>
-        </BaseTableCell>
-      </BaseTableRow>
-    </BaseTableBody>
-  </BaseTable>
+        </base-table-body-cell>
+      </base-table-body-row>
+    </base-table-body>
+  </base-table>
   
 </template>
