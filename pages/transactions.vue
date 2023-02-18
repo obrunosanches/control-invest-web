@@ -42,6 +42,14 @@ const handleSubmit = async (event: Event): Promise<void> => {
   const form = event.target as HTMLFormElement
   const formData = Object.fromEntries(new FormData(form))
 
+  await useFetch('/api/transaction', {
+    method: 'post',
+    body: {
+      ...formData,
+      categoryTypeId: categoryType.value?.id
+    }
+  })
+
   form.reset()
   hide(transactionModalTarget)
 }
