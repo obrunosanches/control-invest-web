@@ -4,10 +4,10 @@ import type {
   Category as ICategory,
   CategoryType as ICategoryType,
   SubCategory as ISubCategory,
-	Transaction as ITransaction
+  Transaction as ITransaction
 } from "@prisma/client";
 
-import { hide } from '~/plugins/modal';
+import {hide} from '~/plugins/modal';
 
 import Button from '~/components/TheButton.vue';
 import Modal from '~/components/Modal/TheModal.vue';
@@ -21,8 +21,8 @@ import RemoveRegistryIcon from '~/components/Icons/RemoveRegisttryIcon.vue';
 
 const transactionModalTarget: string = "accountModal"
 
-const { data: accounts } = await useAsyncData<IAccount[]>('account', () => $fetch('/api/account'))
-const { data: categoryTypes } = await useAsyncData<ICategoryType[]>('categoryTypes', () => $fetch('/api/category/type'))
+const {data: accounts} = await useAsyncData<IAccount[]>('account', () => $fetch('/api/account'))
+const {data: categoryTypes} = await useAsyncData<ICategoryType[]>('categoryTypes', () => $fetch('/api/category/type'))
 
 const categories = ref<ICategory[]>([])
 const categoryType = ref<ICategoryType>()
@@ -36,7 +36,7 @@ onMounted(() => {
 
   window.addEventListener('on-show-modal', async () => {
     const typeId = categoryType.value?.id ?? null
-    const { data } = await useFetch<ICategory[]>(`/api/category/type/${typeId}`)
+    const {data} = await useFetch<ICategory[]>(`/api/category/type/${typeId}`)
 
     categories.value = data.value as ICategory[]
   });
@@ -59,7 +59,7 @@ const handleSubmit = async (event: Event): Promise<void> => {
 }
 
 const fetchSubCategory = async (event: Event) => {
-  const { value } = event.target as HTMLSelectElement
+  const {value} = event.target as HTMLSelectElement
 
   categoryType.value = categoryTypes.value?.find(item => item.id === value)
 }
@@ -68,17 +68,17 @@ const selectSubCategory = async (event: Event) => {
   const category = event.target as HTMLSelectElement
   const categoryId = category.value
 
-  const { data } = await useFetch<ISubCategory[]>(`/api/category/sub-category/${categoryId}`)
+  const {data} = await useFetch<ISubCategory[]>(`/api/category/sub-category/${categoryId}`)
 
   subCategories.value = data.value as ISubCategory[]
 }
 
 watch(categoryType, async (category) => {
-	if (category?.id) {
-		const {data} = await useFetch<ITransaction[]>(`/api/transaction/categoryType/${category.id}`)
+  if (category?.id) {
+    const {data} = await useFetch<ITransaction[]>(`/api/transaction/categoryType/${category.id}`)
 
-		transactions.value = data.value as ITransaction[]
-	}
+    transactions.value = data.value as ITransaction[]
+  }
 })
 </script>
 
@@ -102,16 +102,16 @@ watch(categoryType, async (category) => {
   </div>
 
   <Modal ref="modalElement" :target="transactionModalTarget" position="top-center" class="mt-16">
-    <ModalHeader :target="transactionModalTarget" :title="`Cadastrar transação - ${categoryType?.description}`" />
+    <ModalHeader :target="transactionModalTarget" :title="`Cadastrar transação - ${categoryType?.description}`"/>
     <form id="account" novalidate @submit.prevent="handleSubmit">
       <ModalBody :hasTitle="true">
         <div class="flex gap-4 items-end">
           <fieldset class="flex-1">
-            <FormInput name="value" label="Valor" />
+            <FormInput name="value" label="Valor"/>
           </fieldset>
 
           <fieldset class="flex-1">
-            <FormInput name="date" type="date" label="Data" />
+            <FormInput name="date" type="date" label="Data"/>
           </fieldset>
 
           <fieldset class="basis-2/4">
@@ -124,7 +124,7 @@ watch(categoryType, async (category) => {
         </div>
 
         <fieldset class="flex-auto mt-6">
-          <FormInput name="description" label="Descrição" />
+          <FormInput name="description" label="Descrição"/>
         </fieldset>
 
         <div class="flex mt-6 gap-4 items-end">
@@ -155,25 +155,25 @@ watch(categoryType, async (category) => {
     </form>
   </Modal>
 
-    <table-base-table v-if="transactions?.length" class="w-full text-sm text-left text-gray-400 mt-8" striped>
-        <table-base-table-head class="text-xs text-gray-400 uppercase bg-gray-700">
-            <table-base-table-head-cell>Name</table-base-table-head-cell>
-            <table-base-table-head-cell><span class="sr-only">actions</span></table-base-table-head-cell>
-        </table-base-table-head>
-        <table-base-table-body>
-            <table-base-table-body-row v-for="item in transactions" :key="item.description">
-                <table-base-table-body-cell>
-                    {{ item.description }}
-                </table-base-table-body-cell>
-                <table-base-table-body-cell class="flex justify-end items-center gap-2">
-                    <Button class="bg-transparent">
-                        <EditRegistryIcon class="text-blue-600"/>
-                    </Button>
-                    <Button class="bg-transparent">
-                        <RemoveRegistryIcon class="text-red-500"/>
-                    </Button>
-                </table-base-table-body-cell>
-            </table-base-table-body-row>
-        </table-base-table-body>
-    </table-base-table>
+  <base-table v-if="transactions?.length" class="w-full text-sm text-left text-gray-400 mt-8" striped>
+    <base-table-head class="text-xs text-gray-400 uppercase bg-gray-700">
+      <base-table-head-cell>Name</base-table-head-cell>
+      <base-table-head-cell><span class="sr-only">actions</span></base-table-head-cell>
+    </base-table-head>
+    <base-table-body>
+      <base-table-body-row v-for="item in transactions" :key="item.description">
+        <base-table-body-cell>
+          {{ item.description }}
+        </base-table-body-cell>
+        <base-table-body-cell class="flex justify-end items-center gap-2">
+          <Button class="bg-transparent">
+            <EditRegistryIcon class="text-blue-600"/>
+          </Button>
+          <Button class="bg-transparent">
+            <RemoveRegistryIcon class="text-red-500"/>
+          </Button>
+        </base-table-body-cell>
+      </base-table-body-row>
+    </base-table-body>
+  </base-table>
 </template>
