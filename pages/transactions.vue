@@ -10,10 +10,10 @@ import type {
 import {hide} from '~/plugins/modal';
 
 import Button from '~/components/TheButton.vue';
-import Modal from '~/components/Modal/TheModal.vue';
-import ModalHeader from '~/components/Modal/TheModal.Header.vue';
-import ModalBody from '~/components/Modal/TheModal.Body.vue';
-import ModalFooter from '~/components/Modal/TheModal.Footer.vue';
+import Modal from '~/components/base/Modal.vue';
+import ModalHeader from '~/components/base/modal/Header.vue';
+import ModalBody from '~/components/base/modal/Body.vue';
+import ModalFooter from '~/components/base/modal/Footer.vue';
 import FormInput from '~/components/Form/FormInput.vue';
 import Select from '~/components/Form/FormSelect.vue';
 
@@ -53,7 +53,7 @@ const handleSubmit = async (event: Event): Promise<void> => {
   })
 
   form.reset()
-  transactions.value?.push(transaction as Transaction)
+  transactions.value?.push(transaction.value as Transaction)
   hide(transactionModalTarget)
 }
 

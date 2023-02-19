@@ -2,10 +2,8 @@
 import { PropType } from 'vue';
 import classNames from 'classnames';
 
-import { ModalPosition, ModalSize } from './types'
-import { modalSizeClasses } from './utils'
-
-import ModalContainer from '~/components/Modal/TheModalContainer.vue'
+import { ModalPosition, ModalSize } from '~/components/base/modal/types'
+import { modalSizeClasses } from '~/components/base/modal/utils'
 
 const props = defineProps({
   target: {
@@ -26,11 +24,11 @@ const modalClassName = computed(() => classNames(modalSizeClasses[props.size] ??
 </script>
 
 <template>
-  <ModalContainer :position="props.position" :target="props.target">
+  <base-modal-container :position="props.position" :target="props.target">
     <div class="relative p-4 w-full h-full md:h-auto" :class="modalClassName">
       <div class="relative rounded-lg shadow dark:bg-gray-700">
         <slot />
       </div>
     </div>
-  </ModalContainer>
+  </base-modal-container>
 </template>

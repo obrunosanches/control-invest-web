@@ -5,10 +5,10 @@ import type { Category as ICategory, SubCategory as ISubCategory } from "@prisma
 import { hide } from '~/plugins/modal'
 
 import Button from '~/components/TheButton.vue';
-import Modal from '~/components/Modal/TheModal.vue';
-import ModalHeader from '~/components/Modal/TheModalHeader.vue';
-import ModalBody from '~/components/Modal/TheModalBody.vue';
-import ModalFooter from '~/components/Modal/TheModalFooter.vue';
+import Modal from '~/components/base/Modal.vue';
+import ModalHeader from '~/components/base/modal/Header.vue';
+import ModalBody from '~/components/base/modal/Body.vue';
+import ModalFooter from '~/components/base/modal/Footer.vue';
 import FormInput from '~/components/Form/FormInput.vue';
 
 // TODO: Use pinia to control store
