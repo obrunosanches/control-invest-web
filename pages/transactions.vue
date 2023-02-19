@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type {
-  Account as IAccount,
-  Category as ICategory,
-  CategoryType as ICategoryType,
-  SubCategory as ISubCategory,
-  Transaction as ITransaction
+  Account,
+  Category,
+  CategoryType,
+  SubCategory,
+  Transaction
 } from "@prisma/client";
 
 import {hide} from '~/plugins/modal';
@@ -16,18 +16,16 @@ import ModalBody from '~/components/Modal/TheModal.Body.vue';
 import ModalFooter from '~/components/Modal/TheModal.Footer.vue';
 import FormInput from '~/components/Form/FormInput.vue';
 import Select from '~/components/Form/FormSelect.vue';
-import EditRegistryIcon from '~/components/Icons/EditRegisttryIcon.vue';
-import RemoveRegistryIcon from '~/components/Icons/RemoveRegisttryIcon.vue';
 
 const transactionModalTarget: string = "accountModal"
 
-const {data: accounts} = await useAsyncData<IAccount[]>('account', () => $fetch('/api/account'))
-const {data: categoryTypes} = await useAsyncData<ICategoryType[]>('categoryTypes', () => $fetch('/api/category/type'))
+const {data: accounts} = await useAsyncData<Account[]>('account', () => $fetch('/api/account'))
+const {data: categoryTypes} = await useAsyncData<CategoryType[]>('categoryTypes', () => $fetch('/api/category/type'))
 
-const categories = ref<ICategory[]>([])
-const categoryType = ref<ICategoryType>()
-const subCategories = ref<ISubCategory[]>([])
-const transactions = ref<ITransaction[]>([])
+const categories = ref<Category[]>([])
+const categoryType = ref<CategoryType>()
+const subCategories = ref<SubCategory[]>([])
+const transactions = ref<Transaction[]>([])
 
 onMounted(() => {
   if (categoryTypes.value?.length) {
@@ -36,9 +34,9 @@ onMounted(() => {
 
   window.addEventListener('on-show-modal', async () => {
     const typeId = categoryType.value?.id ?? null
-    const {data} = await useFetch<ICategory[]>(`/api/category/type/${typeId}`)
+    const {data} = await useFetch<Category[]>(`/api/category/type/${typeId}`)
 
-    categories.value = data.value as ICategory[]
+    categories.value = data.value as Category[]
   });
 })
 
@@ -46,7 +44,7 @@ const handleSubmit = async (event: Event): Promise<void> => {
   const form = event.target as HTMLFormElement
   const formData = Object.fromEntries(new FormData(form))
 
-  await useFetch('/api/transaction', {
+  const { data: transaction } = await useFetch('/api/transaction', {
     method: 'post',
     body: {
       ...formData,
@@ -55,6 +53,7 @@ const handleSubmit = async (event: Event): Promise<void> => {
   })
 
   form.reset()
+  transactions.value?.push(transaction as Transaction)
   hide(transactionModalTarget)
 }
 
@@ -68,16 +67,16 @@ const selectSubCategory = async (event: Event) => {
   const category = event.target as HTMLSelectElement
   const categoryId = category.value
 
-  const {data} = await useFetch<ISubCategory[]>(`/api/category/sub-category/${categoryId}`)
+  const {data} = await useFetch<SubCategory[]>(`/api/category/sub-category/${categoryId}`)
 
-  subCategories.value = data.value as ISubCategory[]
+  subCategories.value = data.value as SubCategory[]
 }
 
 watch(categoryType, async (category) => {
   if (category?.id) {
-    const {data} = await useFetch<ITransaction[]>(`/api/transaction/categoryType/${category.id}`)
+    const {data} = await useFetch<Transaction[]>(`/api/transaction/categoryType/${category.id}`)
 
-    transactions.value = data.value as ITransaction[]
+    transactions.value = data.value as Transaction[]
   }
 })
 </script>
@@ -167,10 +166,10 @@ watch(categoryType, async (category) => {
         </base-table-body-cell>
         <base-table-body-cell class="flex justify-end items-center gap-2">
           <Button class="bg-transparent">
-            <EditRegistryIcon class="text-blue-600"/>
+            <icons-edit-registtry-icon class="text-blue-600"/>
           </Button>
           <Button class="bg-transparent">
-            <RemoveRegistryIcon class="text-red-500"/>
+            <icons-remove-registtry-icon class="text-red-500"/>
           </Button>
         </base-table-body-cell>
       </base-table-body-row>

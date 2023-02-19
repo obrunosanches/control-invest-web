@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Account as IAccount, AccountType as IAccountType } from '@prisma/client'
+import { Account, AccountType } from '@prisma/client'
 
 import { hide } from '~/plugins/modal';
 
@@ -10,22 +10,20 @@ import ModalBody from '~/components/Modal/TheModal.Body.vue';
 import ModalFooter from '~/components/Modal/TheModal.Footer.vue';
 import FormInput from '~/components/Form/FormInput.vue';
 import Select from '~/components/Form/FormSelect.vue';
-import EditRegisttryIcon from '~~/components/Icons/EditRegisttryIcon.vue';
-import RemoveRegisttryIcon from '~~/components/Icons/RemoveRegisttryIcon.vue';
 
-interface IAccountWithType extends IAccount {
-  accountType: IAccountType;
+interface AccountWithType extends Account {
+  accountType: AccountType;
 }
 
 type actionFormModalType = 'new' | 'edit'
 
-const { data: accountTypes } = await useAsyncData<IAccountType[]>('accountTypes', () => $fetch('/api/account/type'))
-const { data: accounts } = await useAsyncData<IAccountWithType[]>('account', () => $fetch('/api/account'))
+const { data: accountTypes } = await useAsyncData<AccountType[]>('accountTypes', () => $fetch('/api/account/type'))
+const { data: accounts } = await useAsyncData<AccountWithType[]>('account', () => $fetch('/api/account'))
 
 const accountModalTarget: string = "accountModal"
 const accountDeleteModalTarget: string = "accountDeleteModal"
 const accountTypeModalTarget: string = "accountTypeModal"
-const accountySelected = ref<IAccountWithType | null>(null)
+const accountSelected = ref<AccountWithType | null>(null)
 const actionFormModal = ref<actionFormModalType>('new')
 
 const handleSubmit = async (event: Event): Promise<void> => {
@@ -43,7 +41,7 @@ const handleSubmit = async (event: Event): Promise<void> => {
     })
 
     form.reset()
-    accountTypes.value?.push(accountType.value as IAccountType)
+    accountTypes.value?.push(accountType.value as AccountType)
     hide(accountTypeModalTarget)
     return void 0
   }
@@ -52,7 +50,7 @@ const handleSubmit = async (event: Event): Promise<void> => {
   const accountTypeId = formData.get("accountTypeId")
   const initialBalance = formData.get("initialBalance")
 
-  await useFetch('/api/account', {
+  const { data: account } = await useFetch('/api/account', {
     method: 'post',
     body: {
       name,
@@ -61,13 +59,20 @@ const handleSubmit = async (event: Event): Promise<void> => {
     }
   })
 
+  const accountType = accountTypes.value?.find(type => type.id === accountTypeId) as AccountType
+  const accountWithType = {
+    ...account.value,
+    accountType
+  } as AccountWithType
+
   form.reset()
+  accounts.value?.push(accountWithType)
   hide(accountModalTarget)
 }
 
-const selected = (item: IAccountWithType | null) => {
+const selected = (item: AccountWithType | null) => {
   actionFormModal.value = item === null ? 'new' : 'edit'
-  accountySelected.value = item
+  accountSelected.value = item
 }
 </script>
 
@@ -88,11 +93,11 @@ const selected = (item: IAccountWithType | null) => {
       <ModalBody :hasTitle="true">
         <div class="flex gap-4 items-end">
           <fieldset class="flex-auto">
-            <FormInput name="name" label="Nome" :value="accountySelected?.name" />
+            <FormInput name="name" label="Nome" :value="accountSelected?.name" />
           </fieldset>
 
           <fieldset class="flex-auto">
-            <FormInput name="initialBalance" label="Valor inicial" :value="accountySelected?.initialBalance" />
+            <FormInput name="initialBalance" label="Valor inicial" :value="accountSelected?.initialBalance" />
           </fieldset>
         </div>
 
@@ -101,7 +106,7 @@ const selected = (item: IAccountWithType | null) => {
             <Select name="accountTypeId" label="Tipo">
               <option selected>Selecione o tipo</option>
               <option v-for="{ id, description } in accountTypes" :key="id" :value="id"
-                :selected="accountySelected?.accountTypeId === id">
+                :selected="accountSelected?.accountTypeId === id">
                 {{ description }}
               </option>
             </Select>
@@ -148,10 +153,10 @@ const selected = (item: IAccountWithType | null) => {
         </base-table-body-cell>
         <base-table-body-cell class="flex justify-end items-center gap-2">
           <Button @click="selected(item)" class="bg-transparent" v-show-modal="accountModalTarget">
-            <EditRegisttryIcon class="text-blue-600" />
+            <icons-edit-registtry-icon class="text-blue-600" />
           </Button>
           <Button @click="selected(item)" class="bg-transparent" v-show-modal="accountDeleteModalTarget">
-            <RemoveRegisttryIcon class="text-red-500" />
+            <icons-remove-registtry-icon class="text-red-500" />
           </Button>
         </base-table-body-cell>
       </base-table-body-row>

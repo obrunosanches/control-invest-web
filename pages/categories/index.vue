@@ -10,9 +10,6 @@ import ModalBody from '~/components/Modal/TheModal.Body.vue';
 import ModalFooter from '~/components/Modal/TheModal.Footer.vue';
 import FormInput from '~/components/Form/FormInput.vue';
 import Select from '~/components/Form/FormSelect.vue';
-import AddRegisttryIcon from '~~/components/Icons/AddRegisttryIcon.vue';
-import EditRegisttryIcon from '~~/components/Icons/EditRegisttryIcon.vue';
-import RemoveRegisttryIcon from '~~/components/Icons/RemoveRegisttryIcon.vue';
 
 interface ICategoryWithType extends ICategory {
   type: ICategoryType;
@@ -173,13 +170,13 @@ const titleCategoryModal = computed(() => actionCategoryFormModal.value === 'new
         </base-table-body-cell>
         <base-table-body-cell class="flex justify-end items-center gap-2">
           <router-link :to="`categories/${item.id}`">
-            <AddRegisttryIcon class="text-green-600" />
+            <icons-add-registtry-icon class="text-green-600" />
           </router-link>
           <Button @click="selected(item)" class="bg-transparent" v-show-modal="categoryModalTarget">
-            <EditRegisttryIcon class="text-blue-600" />
+            <icons-edit-registtry-icon class="text-blue-600" />
           </Button>
           <Button @click="selected(item)" class="bg-transparent" v-show-modal="categoryDeleteModalTarget">
-            <RemoveRegisttryIcon class="text-red-500" />
+            <icons-remove-registtry-icon class="text-red-500" />
           </Button>
         </base-table-body-cell>
       </base-table-body-row>

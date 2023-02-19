@@ -10,8 +10,6 @@ import ModalHeader from '~/components/Modal/TheModal.Header.vue';
 import ModalBody from '~/components/Modal/TheModal.Body.vue';
 import ModalFooter from '~/components/Modal/TheModal.Footer.vue';
 import FormInput from '~/components/Form/FormInput.vue';
-import EditRegisttryIcon from '~/components/Icons/EditRegisttryIcon.vue';
-import RemoveRegisttryIcon from '~/components/Icons/RemoveRegisttryIcon.vue';
 
 // TODO: Use pinia to control store
 const route = useRoute()
@@ -76,8 +74,8 @@ const handleSubmit = async (event: Event) => {
           {{ item.name }}
         </base-table-body-cell>
         <base-table-body-cell class="flex justify-end items-center gap-2">
-          <EditRegisttryIcon class="text-blue-600" />
-          <RemoveRegisttryIcon class="text-red-500" />
+          <icons-edit-registtry-icon class="text-blue-600" />
+          <icons-remove-registtry-icon class="text-red-500" />
         </base-table-body-cell>
       </base-table-body-row>
     </base-table-body>
