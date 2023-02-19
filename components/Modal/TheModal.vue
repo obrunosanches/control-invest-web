@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { ModalPosition, ModalSize } from './types'
 import { modalSizeClasses } from './utils'
 
-import ModalContainer from '~/components/Modal/TheModal.Container.vue'
+import ModalContainer from '~/components/Modal/TheModalContainer.vue'
 
 const props = defineProps({
   target: {

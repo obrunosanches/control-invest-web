@@ -6,9 +6,9 @@ import { hide } from '~/plugins/modal'
 
 import Button from '~/components/TheButton.vue';
 import Modal from '~/components/Modal/TheModal.vue';
-import ModalHeader from '~/components/Modal/TheModal.Header.vue';
-import ModalBody from '~/components/Modal/TheModal.Body.vue';
-import ModalFooter from '~/components/Modal/TheModal.Footer.vue';
+import ModalHeader from '~/components/Modal/TheModalHeader.vue';
+import ModalBody from '~/components/Modal/TheModalBody.vue';
+import ModalFooter from '~/components/Modal/TheModalFooter.vue';
 import FormInput from '~/components/Form/FormInput.vue';
 
 // TODO: Use pinia to control store
