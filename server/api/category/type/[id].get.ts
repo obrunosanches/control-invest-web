@@ -1,12 +1,11 @@
-import { prisma } from "~/server/utils/prisma.server";
+import { prisma } from "~/server/database/connect"
 
-export default defineEventHandler(async (event) => {
-  const { params } = event.context;
-  const category = await prisma.category.findMany({
+export default defineEventHandler( (event) => {
+  const { params } = event.context
+  
+  return prisma.category.findMany({
     where: {
       typeId: params.id
     }
-  });
-
-  return category
+  })
 })

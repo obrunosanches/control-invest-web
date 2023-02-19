@@ -1,13 +1,13 @@
-import { AccountType as IAccountType } from '@prisma/client'
+import { AccountType } from '@prisma/client'
 
-import { prisma } from "~/server/utils/prisma.server";
+import { prisma } from "~/server/database/connect"
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<AccountType> => {
   const body = await readBody(event)
 
-  const data: Pick<IAccountType, 'description'> = {
+  const data: Pick<AccountType, 'description'> = {
     description: body.description
-  };
+  }
 
-  return await prisma.accountType.create({ data });
+  return prisma.accountType.create({ data })
 })

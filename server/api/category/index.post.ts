@@ -1,12 +1,14 @@
-import { prisma } from "~/server/utils/prisma.server";
+import { Category } from '@prisma/client'
 
-export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
+import { prisma } from "~/server/database/connect"
 
-  const data = {
+export default defineEventHandler(async (event): Promise<Category> => {
+  const body = await readBody(event)
+
+  const data: Pick<Category, 'name' | 'typeId'> = {
     name: body.name,
     typeId: body.typeId,
-  };
+  }
 
-  return await prisma.category.create({ data });
-});
+  return prisma.category.create({ data })
+})

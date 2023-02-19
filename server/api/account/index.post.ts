@@ -1,14 +1,15 @@
-import { Account as IAccount } from '@prisma/client'
-import { prisma } from "~/server/utils/prisma.server";
+import { Account } from '@prisma/client'
 
-export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
+import { prisma } from "~/server/database/connect"
 
-  const data: Pick<IAccount, 'name' | 'accountTypeId' | 'initialBalance'> = {
+export default defineEventHandler(async (event): Promise<Account> => {
+  const body = await readBody(event)
+
+  const data: Pick<Account, 'name' | 'accountTypeId' | 'initialBalance'> = {
     name: body.name,
     accountTypeId: body.accountTypeId,
     initialBalance: Number(body.initialBalance),
-  };
+  }
 
-  return await prisma.account.create({ data });
-});
+  return prisma.account.create({ data })
+})

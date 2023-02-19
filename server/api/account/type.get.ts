@@ -1,7 +1,5 @@
-import { prisma } from "~/server/utils/prisma.server";
+import { prisma } from "~/server/database/connect"
 
-export default defineEventHandler(async () => {
-  const accountTypes = await prisma.accountType.findMany();
-
-  return accountTypes
+export default defineEventHandler( () => {
+  return prisma.accountType.findMany()
 })

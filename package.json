@@ -5,7 +5,11 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "prisma:push": "prisma db push",
+    "prisma:seed": "prisma db seed",
+    "prisma:generate": "prisma generate",
+    "prisma": "concurrently \"npm:prisma:push\" \"npm:prisma:seed\" \"npm:prisma:generate\""
   },
   "prisma": {
     "seed": "node prisma/seed.js"

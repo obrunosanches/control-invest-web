@@ -1,0 +1,1 @@
+export type excludeFieldsToSave = "id" | 'createdAt' | 'updatedAt'
