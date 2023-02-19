@@ -1,12 +1,14 @@
-import { prisma } from "~/server/utils/prisma.server";
+import type { SubCategory } from '@prisma/client'
 
-export default defineEventHandler(async (event) => {
+import { prisma } from "~/server/database/connect"
+
+export default defineEventHandler(async (event): Promise<SubCategory> => {
   const body = await readBody(event)
-
-  const data = {
+  
+  const data: Pick<SubCategory, 'name' | 'categoryId'> = {
     name: body.name,
     categoryId: body.categoryId
-  };
+  }
 
-  return await prisma.subCategory.create({ data });
+  return prisma.subCategory.create({data})
 })

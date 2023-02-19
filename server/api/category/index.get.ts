@@ -1,11 +1,9 @@
-import { prisma } from "~/server/utils/prisma.server";
+import { prisma } from "~/server/database/connect"
 
-export default defineEventHandler(async () => {
-  const categories = await prisma.category.findMany({
+export default defineEventHandler(() => {
+  return prisma.category.findMany({
     include: {
       type: true,
     },
-  });
-  
-  return categories
+  })
 })
