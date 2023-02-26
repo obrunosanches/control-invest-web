@@ -53,7 +53,7 @@ import AccountIcon from '~/components/Icons/AccountIcon.vue';
       </SidebarItemGroup>
     </Sidebar>
 
-    <main class="w-full p-5 text-white bg-gray-900">
+    <main class="w-full p-5 text-white bg-gray-900 overflow-y-auto">
       <router-view></router-view>
     </main>
 

@@ -5,7 +5,7 @@ export default defineEventHandler( (event) => {
   
   return prisma.subCategory.findMany({
     where: {
-      categoryId: params.id
+      categoryId: params?.id
     }
   })
 })

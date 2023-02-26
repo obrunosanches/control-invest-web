@@ -1,69 +1,90 @@
 <script setup lang="ts">
-import type {
-  Account,
-  Category,
-  CategoryType,
-  SubCategory,
-  Transaction
-} from "@prisma/client";
+import {storeToRefs} from "pinia";
+import type {Account, CategoryType, SubCategory} from "@prisma/client";
 
 import {hide} from '~/plugins/modal';
+import {useTransactionStore} from "~/store/transaction";
+import {useCategoryStore} from "~/store/category";
+import {useCategoryTypeStore} from "~/store/categoryType";
+import {DateSelected} from "~/types/transactions";
 
 import Button from '~/components/TheButton.vue';
 import Modal from '~/components/base/Modal.vue';
 import ModalHeader from '~/components/base/modal/Header.vue';
 import ModalBody from '~/components/base/modal/Body.vue';
 import ModalFooter from '~/components/base/modal/Footer.vue';
-import FormInput from '~/components/Form/FormInput.vue';
-import Select from '~/components/Form/FormSelect.vue';
 
 const transactionModalTarget: string = "accountModal"
+const transactionStore = useTransactionStore()
+const categoryStore = useCategoryStore()
+const categoryTypeStore = useCategoryTypeStore()
+
+const {fetch: fetchTransaction, create: createTransaction} = transactionStore
+const {fetchByType: fetchCategoryByType} = categoryStore
+const {fetch: fetchCategoryTypes} = categoryTypeStore
+
+const {transactions} = storeToRefs(transactionStore)
+const {categories} = storeToRefs(categoryStore)
+const {categoryTypes} = storeToRefs(categoryTypeStore)
 
 const {data: accounts} = await useAsyncData<Account[]>('account', () => $fetch('/api/account'))
-const {data: categoryTypes} = await useAsyncData<CategoryType[]>('categoryTypes', () => $fetch('/api/category/type'))
 
-const categories = ref<Category[]>([])
-const categoryType = ref<CategoryType>()
+const categoryType = ref<CategoryType | null>(null)
 const subCategories = ref<SubCategory[]>([])
-const transactions = ref<Transaction[]>([])
+const dateSelected = reactive<DateSelected>({
+  month: String(new Date().getMonth() + 1),
+  year: new Date().getFullYear().toString()
+})
 
-onMounted(() => {
-  if (categoryTypes.value?.length) {
-    categoryType.value = categoryTypes.value[0]
-  }
+onBeforeMount(async () => {
+  await fetchCategoryTypes()
+  await handleFetchTransaction(null)
 
   window.addEventListener('on-show-modal', async () => {
-    const typeId = categoryType.value?.id ?? null
-    const {data} = await useFetch<Category[]>(`/api/category/type/${typeId}`)
-
-    categories.value = data.value as Category[]
-  });
+    const typeId = categoryType.value?.id ?? ''
+    await fetchCategoryByType(typeId)
+  })
 })
 
 const handleSubmit = async (event: Event): Promise<void> => {
   const form = event.target as HTMLFormElement
-  const formData = Object.fromEntries(new FormData(form))
+  const formData = new FormData(form)
 
-  const { data: transaction } = await useFetch('/api/transaction', {
-    method: 'post',
-    body: {
-      ...formData,
-      categoryTypeId: categoryType.value?.id
-    }
-  })
+  formData.append('categoryTypeId', categoryType.value?.id ?? '')
+
+  await createTransaction(formData)
 
   form.reset()
-  transactions.value?.push(transaction.value as Transaction)
   hide(transactionModalTarget)
 }
 
-const fetchSubCategory = async (event: Event) => {
-  const {value} = event.target as HTMLSelectElement
+const handleFetchTransaction = async (itemSelected: CategoryType | null) => {
+  const {month, year} = dateSelected
+  const type = itemSelected?.id ?? ''
 
-  categoryType.value = categoryTypes.value?.find(item => item.id === value)
+  await fetchTransaction({month, year, type})
 }
 
-const selectSubCategory = async (event: Event) => {
+const handleDateSelected = (event: DateSelected): void => {
+  dateSelected.month = event.month
+  dateSelected.year = event.year
+
+  handleFetchTransaction(categoryType.value)
+}
+
+const selectCategoryType = async (event: Event) => {
+  const {value} = event.target as HTMLSelectElement
+
+  let optionSelected = null
+
+  if (Boolean(value)) {
+    optionSelected = categoryTypes.value?.find(item => item.id === value)
+  }
+
+  categoryType.value = optionSelected as CategoryType
+}
+
+const fetchSubCategory = async (event: Event) => {
   const category = event.target as HTMLSelectElement
   const categoryId = category.value
 
@@ -72,32 +93,21 @@ const selectSubCategory = async (event: Event) => {
   subCategories.value = data.value as SubCategory[]
 }
 
-watch(categoryType, async (category) => {
-  if (category?.id) {
-    const {data} = await useFetch<Transaction[]>(`/api/transaction/categoryType/${category.id}`)
-
-    transactions.value = data.value as Transaction[]
-  }
-})
+watch(categoryType, async (itemSelected) => handleFetchTransaction(itemSelected))
 </script>
 
 <template>
-  <h1 class="text-gray-300 text-3xl font-bold">
-    Transações
-  </h1>
-
   <div class="flex justify-between items-center">
-    <Select name="typeId" @change="fetchSubCategory" class="w-auto">
+    <form-select name="typeId" @change="selectCategoryType" class="w-1/2">
+      <option :value="''">Transações</option>
       <option v-for="{ id, description } in categoryTypes" :key="id" :value="id">
         {{ description }}
       </option>
-    </Select>
+    </form-select>
 
-    <div class="mt-4">
-      <Button type="button" color="default" v-show-modal="transactionModalTarget">
-        Adicionar
-      </Button>
-    </div>
+    <Button v-if="categoryType?.id" type="button" color="default" v-show-modal="transactionModalTarget">
+      Adicionar
+    </Button>
   </div>
 
   <Modal ref="modalElement" :target="transactionModalTarget" position="top-center" class="mt-16">
@@ -106,43 +116,43 @@ watch(categoryType, async (category) => {
       <ModalBody :hasTitle="true">
         <div class="flex gap-4 items-end">
           <fieldset class="flex-1">
-            <FormInput name="value" label="Valor"/>
+            <form-input name="value" label="Valor"/>
           </fieldset>
 
           <fieldset class="flex-1">
-            <FormInput name="date" type="date" label="Data"/>
+            <form-input name="date" type="date" label="Data"/>
           </fieldset>
 
           <fieldset class="basis-2/4">
-            <Select name="accountId" label="Conta">
+            <form-select name="accountId" label="Conta">
               <option v-for="{ id, name } in accounts" :key="id" :value="id">
                 {{ name }}
               </option>
-            </Select>
+            </form-select>
           </fieldset>
         </div>
 
         <fieldset class="flex-auto mt-6">
-          <FormInput name="description" label="Descrição"/>
+          <form-input name="description" label="Descrição"/>
         </fieldset>
 
         <div class="flex mt-6 gap-4 items-end">
           <fieldset class="flex-1">
-            <Select name="categoryId" label="Categoria" @change="selectSubCategory">
+            <form-select name="categoryId" label="Categoria" @change="fetchSubCategory">
               <option selected>Selecione a categoria</option>
               <option v-for="{ id, name } in categories" :key="id" :value="id">
                 {{ name }}
               </option>
-            </Select>
+            </form-select>
           </fieldset>
 
           <fieldset class="flex-1">
-            <Select name="subCategoryId" label="Sub Categoria">
+            <form-select name="subCategoryId" label="Sub Categoria">
               <option selected>Selecione a sub categoria</option>
               <option v-for="{ id, name } in subCategories" :key="id" :value="id">
                 {{ name }}
               </option>
-            </Select>
+            </form-select>
           </fieldset>
         </div>
       </ModalBody>
@@ -154,7 +164,11 @@ watch(categoryType, async (category) => {
     </form>
   </Modal>
 
-  <base-table v-if="transactions?.length" class="w-full text-sm text-left text-gray-400 mt-8" striped>
+  <div class="mt-8">
+    <month-year-selected @date-selected="handleDateSelected"/>
+  </div>
+
+  <base-table v-if="transactions?.length" class="w-full text-sm text-left text-gray-400 mt-4" striped>
     <base-table-head class="text-xs text-gray-400 uppercase bg-gray-700">
       <base-table-head-cell>Name</base-table-head-cell>
       <base-table-head-cell><span class="sr-only">actions</span></base-table-head-cell>
