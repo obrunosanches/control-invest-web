@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import type { CategoryType as ICategoryType } from "@prisma/client";
-import BaseTable from "~/components/BaseTable.vue";
+import BaseTable from "~/components/base/Table.vue";
+import {useCategoryTypeStore} from "~/store/categoryType";
+import {storeToRefs} from "pinia";
 
-const categoryTypes = ref<ICategoryType[]>([])
+const filtersStore = useCategoryTypeStore()
+const { fetch } = filtersStore
+const { categoryTypes } = storeToRefs(filtersStore)
 
-onMounted(async () => {
-  const { data } = await useFetch<ICategoryType[]>('/api/category/type')
-  categoryTypes.value = data.value ?? []
-})
+onBeforeMount(async () => await fetch())
 </script>
 
 <template>
@@ -32,5 +31,4 @@ onMounted(async () => {
       </base-table-body-row>
     </base-table-body>
   </base-table>
-  
 </template>
