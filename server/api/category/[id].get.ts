@@ -5,7 +5,7 @@ export default defineEventHandler((event) => {
   
   return prisma.category.findFirstOrThrow({
     where: {
-      id: params.id
+      id: params?.id
     }
   })
 })
