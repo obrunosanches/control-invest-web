@@ -11,42 +11,44 @@ import AccountIcon from '~/components/Icons/AccountIcon.vue';
 
 <template>
   <div
-    class="h-screen bg-gray-900 grid grid-cols-1 md:grid-cols-[16rem,auto] grid-rows-[auto,auto,1fr,auto] md:grid-rows-[auto,1fr,auto]">
+    class="h-screen bg-gray-900 grid grid-cols-1 md:grid-cols-[16rem,auto] grid-rows-[auto,auto,1fr,auto] md:grid-rows-[auto,1fr,auto]"
+  >
     <div class="md:col-span-2">
       <Navbar class="border-b border-gray-700">
         <div class="flex">
-          <img src="~/assets/images/logo.svg" class="h-6 mr-3 sm:h-9" alt="Control Money Logo" />
+          <img src="~/assets/images/logo.svg" class="h-6 mr-3 sm:h-9" alt="Control Money Logo"/>
           <span class="self-center text-white text-xl font-semibold whitespace-nowrap">Control Money</span>
         </div>
       </Navbar>
     </div>
 
     <Sidebar class="border-r-0 md:border-r border-b md:border-b-0 bg-gray-800 border-gray-700" aria-label="Sidebar">
+      <transaction-options />
       <SidebarItemGroup class="flex justify-around md:block space-y-0 md:space-y-2">
         <SidebarItem to="/">
           <template v-slot:before>
-            <DashboardIcon class="hidden md:block mr-3" />
+            <DashboardIcon class="hidden md:block mr-3"/>
           </template>
           Dashboard
         </SidebarItem>
 
         <SidebarItem to="/transactions">
           <template v-slot:before>
-            <TransactionIcon class="hidden md:block mr-3" />
+            <TransactionIcon class="hidden md:block mr-3"/>
           </template>
           Transações
         </SidebarItem>
 
         <SidebarItem to="/accounts">
           <template v-slot:before>
-            <AccountIcon class="hidden md:block mr-3" />
+            <AccountIcon class="hidden md:block mr-3"/>
           </template>
           Contas
         </SidebarItem>
 
         <SidebarItem to="/categories">
           <template v-slot:before>
-            <CategoryIcon class="hidden md:block mr-3" />
+            <CategoryIcon class="hidden md:block mr-3"/>
           </template>
           Categorias
         </SidebarItem>
