@@ -2,8 +2,12 @@ import { DirectiveBinding } from "vue"
 
 const getModalElementByTarget = (target: string) => document.getElementById(target) as HTMLDivElement
 
-export const show = (element: HTMLDivElement) => {
+export const show = (element: HTMLDivElement): void => {
   if (element.classList.contains('hidden')) {
+    // const form = element.getElementsByTagName('form')[0]
+    // console.log('on-show-modal:form', form.elements.item(0))
+    // form.elements.item(0)
+
     const onShowModal = new CustomEvent('on-show-modal', {
       detail: {
         target: element.getAttribute('id')
@@ -15,7 +19,7 @@ export const show = (element: HTMLDivElement) => {
   }
 }
 
-export const hide = (target: string) => {
+export const hide = (target: string): void => {
   const $modalContainerElement = getModalElementByTarget(target)
   
   if (!$modalContainerElement.classList.contains('hidden')) {
