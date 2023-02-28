@@ -59,7 +59,7 @@ const toggleOptions = (event: Event) => {
   showOptions.value = true
 }
 
-const handleShowOptions = (event: Event) => {
+const handleShowOptions = () => {
   document.addEventListener('click', toggleOptions)
   document.addEventListener('keydown', {
     handleEvent: function (event: KeyboardEvent) {

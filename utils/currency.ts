@@ -7,5 +7,5 @@ export const formatCurrency = ({
   locale?: string,
   formatOptions?: Intl.NumberFormatOptions
 }) => {
-  return new Intl.NumberFormat(locale, {style: 'currency', currency: 'BRL'}).format(value)
+  return new Intl.NumberFormat(locale, formatOptions).format(value)
 }
