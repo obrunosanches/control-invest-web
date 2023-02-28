@@ -1,11 +1,14 @@
 <template>
   <base-modal ref="modalElement" :target="transactionModalTarget" position="top-center" class="mt-16">
-    <base-modal-header :target="transactionModalTarget" :title="`Cadastrar transação`"/>
+    <base-modal-header
+      :target="transactionModalTarget"
+      :title="`Nova transação - ${categoryTypeSelected?.description}`"
+    />
     <form novalidate @submit.prevent="handleSubmit">
       <base-modal-body :hasTitle="true">
         <div class="flex gap-4 items-end">
           <fieldset class="flex-1">
-            <form-input name="value" label="Valor" />
+            <form-input name="value" label="Valor"/>
           </fieldset>
 
           <fieldset class="flex-1">
@@ -56,31 +59,36 @@
 </template>
 
 <script setup lang="ts">
-import {Account, CategoryType, SubCategory} from "@prisma/client";
+import {storeToRefs} from "pinia";
+import {SubCategory} from "@prisma/client";
+
 import {useTransactionStore} from "~/store/transaction";
 import {useCategoryStore} from "~/store/category";
 import {useCategoryTypeStore} from "~/store/categoryType";
-import {storeToRefs} from "pinia";
+import {useAccountsStore} from "~/store/account";
 import {hide} from "~/plugins/modal";
 
 const transactionModalTarget: string = "transactionModal"
 const transactionStore = useTransactionStore()
 const categoryStore = useCategoryStore()
 const categoryTypeStore = useCategoryTypeStore()
+const accountsStore = useAccountsStore()
 
+const {accounts} = storeToRefs(accountsStore)
 const {categories} = storeToRefs(categoryStore)
-const {itemSelected} = storeToRefs(categoryTypeStore)
+const {categoryTypeSelected} = storeToRefs(categoryTypeStore)
 
-const {create: createTransaction} = transactionStore
-const {fetchByType: fetchCategoryByType} = categoryStore
-const {fetch: fetchCategoryTypes, selectedItem} = categoryTypeStore
-const {data: accounts} = await useAsyncData<Account[]>('account', () => $fetch('/api/account'))
+const {fetchAccounts} = accountsStore
+const {createTransaction} = transactionStore
+const {fetchCategoryByType} = categoryStore
+const {fetchCategoryTypes} = categoryTypeStore
 
 onBeforeMount(async () => {
+  await fetchAccounts()
   await fetchCategoryTypes()
 
   window.addEventListener('on-show-modal', async () => {
-    const typeId = itemSelected.value?.id ?? ''
+    const typeId = categoryTypeSelected.value?.id ?? ''
     await fetchCategoryByType(typeId)
   })
 })
@@ -91,7 +99,7 @@ const handleSubmit = async (event: Event): Promise<void> => {
   const form = event.target as HTMLFormElement
   const formData = new FormData(form)
 
-  formData.append('categoryTypeId', itemSelected.value?.id ?? '')
+  formData.append('categoryTypeId', categoryTypeSelected.value?.id ?? '')
 
   await createTransaction(formData)
 

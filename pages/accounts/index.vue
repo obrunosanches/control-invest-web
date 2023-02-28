@@ -1,24 +1,16 @@
 <script setup lang="ts">
-import { Account, AccountType } from '@prisma/client'
+import {storeToRefs} from "pinia";
 
-import { hide } from '~/plugins/modal';
-
-import Button from '~/components/TheButton.vue';
-import Modal from '~/components/base/Modal.vue';
-import ModalHeader from '~/components/base/modal/Header.vue';
-import ModalBody from '~/components/base/modal/Body.vue';
-import ModalFooter from '~/components/base/modal/Footer.vue';
-import FormInput from '~/components/Form/FormInput.vue';
-import Select from '~/components/Form/FormSelect.vue';
-
-interface AccountWithType extends Account {
-  accountType: AccountType;
-}
+import {AccountWithType, useAccountsStore} from "~/store/account";
+import {useAccountTypesStore} from "~/store/accountType";
+import {hide} from '~/plugins/modal';
 
 type actionFormModalType = 'new' | 'edit'
 
-const { data: accountTypes } = await useAsyncData<AccountType[]>('accountTypes', () => $fetch('/api/account/type'))
-const { data: accounts } = await useAsyncData<AccountWithType[]>('account', () => $fetch('/api/account'))
+const {fetchAccounts, createAccounts} = useAccountsStore()
+const {fetchAccountTypes, createAccountType} = useAccountTypesStore()
+const {accounts} = storeToRefs(useAccountsStore())
+const {accountTypes} = storeToRefs(useAccountTypesStore())
 
 const accountModalTarget: string = "accountModal"
 const accountDeleteModalTarget: string = "accountDeleteModal"
@@ -26,47 +18,28 @@ const accountTypeModalTarget: string = "accountTypeModal"
 const accountSelected = ref<AccountWithType | null>(null)
 const actionFormModal = ref<actionFormModalType>('new')
 
+onBeforeMount(async () => {
+  await fetchAccounts()
+
+  window.addEventListener('on-show-modal', async () => {
+    await fetchAccountTypes()
+  })
+})
+
 const handleSubmit = async (event: Event): Promise<void> => {
   const form = event.target as HTMLFormElement
   const formData = new FormData(form)
 
   if (form.getAttribute('id')?.includes('type')) {
-    const description = formData.get("description")
+    await createAccountType(formData)
 
-    const { data: accountType } = await useFetch('/api/account/type', {
-      method: 'post',
-      body: {
-        description
-      }
-    })
-
-    form.reset()
-    accountTypes.value?.push(accountType.value as AccountType)
     hide(accountTypeModalTarget)
     return void 0
   }
 
-  const name = formData.get("name")
-  const accountTypeId = formData.get("accountTypeId")
-  const initialBalance = formData.get("initialBalance")
-
-  const { data: account } = await useFetch('/api/account', {
-    method: 'post',
-    body: {
-      name,
-      accountTypeId,
-      initialBalance
-    }
-  })
-
-  const accountType = accountTypes.value?.find(type => type.id === accountTypeId) as AccountType
-  const accountWithType = {
-    ...account.value,
-    accountType
-  } as AccountWithType
+  await createAccounts(formData)
 
   form.reset()
-  accounts.value?.push(accountWithType)
   hide(accountModalTarget)
 }
 
@@ -82,64 +55,64 @@ const selected = (item: AccountWithType | null) => {
   </h1>
 
   <div class="flex justify-end">
-    <Button type="button" color="default" @click="selected(null)" v-show-modal="accountModalTarget">
+    <base-button type="button" @click="selected(null)" v-show-modal="accountModalTarget">
       Adicionar
-    </Button>
+    </base-button>
   </div>
 
-  <Modal ref="modalElement" :target="accountModalTarget" position="top-center" class="mt-16">
-    <ModalHeader :target="accountModalTarget" title="Cadastrar tipo de conta" />
+  <base-modal ref="modalElement" :target="accountModalTarget" position="top-center" class="mt-16">
+    <base-modal-header :target="accountModalTarget" title="Cadastrar tipo de conta"/>
     <form id="account" novalidate @submit.prevent="handleSubmit">
-      <ModalBody :hasTitle="true">
+      <base-modal-body :hasTitle="true">
         <div class="flex gap-4 items-end">
           <fieldset class="flex-auto">
-            <FormInput name="name" label="Nome" :value="accountSelected?.name" />
+            <form-input name="name" label="Nome" :value="accountSelected?.name"/>
           </fieldset>
 
           <fieldset class="flex-auto">
-            <FormInput name="initialBalance" label="Valor inicial" :value="accountSelected?.initialBalance" />
+            <form-input name="initialBalance" label="Valor inicial" :value="accountSelected?.initialBalance"/>
           </fieldset>
         </div>
 
         <div class="flex mt-6 gap-4 items-end">
           <fieldset class="flex-auto">
-            <Select name="accountTypeId" label="Tipo">
+            <form-select name="accountTypeId" label="Tipo">
               <option selected>Selecione o tipo</option>
               <option v-for="{ id, description } in accountTypes" :key="id" :value="id"
-                :selected="accountSelected?.accountTypeId === id">
+                      :selected="accountSelected?.accountTypeId === id">
                 {{ description }}
               </option>
-            </Select>
+            </form-select>
           </fieldset>
 
-          <Button type="button" color="default" v-show-modal="accountTypeModalTarget">
+          <base-button type="button" color="default" v-show-modal="accountTypeModalTarget">
             Tipo
-          </Button>
+          </base-button>
         </div>
-      </ModalBody>
-      <ModalFooter class="text-right">
-        <Button type="submit" color="default">
+      </base-modal-body>
+      <base-modal-footer class="text-right">
+        <base-button type="submit" color="default">
           Confirmar
-        </Button>
-      </ModalFooter>
+        </base-button>
+      </base-modal-footer>
     </form>
-  </Modal>
+  </base-modal>
 
-  <Modal ref="modalElement" :target="accountTypeModalTarget" size="md" position="top-center" class="mt-16">
-    <ModalHeader :target="accountTypeModalTarget" title="Cadastrar tipo de conta" />
+  <base-modal ref="modalElement" :target="accountTypeModalTarget" size="md" position="top-center" class="mt-16">
+    <base-modal-header :target="accountTypeModalTarget" title="Cadastrar tipo de conta"/>
     <form id="account-type" novalidate @submit.prevent="handleSubmit">
-      <ModalBody :hasTitle="true">
+      <base-modal-body :hasTitle="true">
         <fieldset>
-          <FormInput name="description" label="Descrição" />
+          <form-input name="description" label="Descrição"/>
         </fieldset>
-      </ModalBody>
-      <ModalFooter class="text-right">
-        <Button type="submit" color="default">
+      </base-modal-body>
+      <base-modal-footer class="text-right">
+        <base-button type="submit" color="default">
           Confirmar
-        </Button>
-      </ModalFooter>
+        </base-button>
+      </base-modal-footer>
     </form>
-  </Modal>
+  </base-modal>
 
   <base-table v-if="accounts?.length" class="w-full text-sm text-left text-gray-400 mt-8" striped>
     <base-table-head class="text-xs text-gray-400 uppercase bg-gray-700">
@@ -152,12 +125,12 @@ const selected = (item: AccountWithType | null) => {
           {{ item.name }}
         </base-table-body-cell>
         <base-table-body-cell class="flex justify-end items-center gap-2">
-          <Button @click="selected(item)" class="bg-transparent" v-show-modal="accountModalTarget">
-            <icons-edit-registtry-icon class="text-blue-600" />
-          </Button>
-          <Button @click="selected(item)" class="bg-transparent" v-show-modal="accountDeleteModalTarget">
-            <icons-remove-registtry-icon class="text-red-500" />
-          </Button>
+          <span role="button" @click="selected(item)" class="bg-transparent" v-show-modal="accountModalTarget">
+            <icons-edit-registtry-icon class="text-blue-600"/>
+          </span>
+          <span role="button" @click="selected(item)" class="bg-transparent" v-show-modal="accountDeleteModalTarget">
+            <icons-remove-registtry-icon class="text-red-500"/>
+          </span>
         </base-table-body-cell>
       </base-table-body-row>
     </base-table-body>

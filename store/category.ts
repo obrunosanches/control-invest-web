@@ -11,7 +11,7 @@ export const useCategoryStore = defineStore('category', {
   }),
   getters: {},
   actions: {
-    async fetchByType(typeId: string): Promise<void> {
+    async fetchCategoryByType(typeId: string): Promise<void> {
       try {
         this.categories = await $fetch<Category[]>(`/api/category/type/${typeId}`)
       } catch (error) {
