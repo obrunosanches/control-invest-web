@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {AccountType, Transaction} from "@prisma/client";
+import {AccountType} from "@prisma/client";
 
 interface State {
   accountTypes: AccountType[]
