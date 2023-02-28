@@ -3,11 +3,11 @@ import BaseTable from "~/components/base/Table.vue";
 import {useCategoryTypeStore} from "~/store/categoryType";
 import {storeToRefs} from "pinia";
 
-const filtersStore = useCategoryTypeStore()
-const { fetch } = filtersStore
-const { categoryTypes } = storeToRefs(filtersStore)
+const categoryTypeStore = useCategoryTypeStore()
+const { fetchCategoryTypes } = categoryTypeStore
+const { categoryTypes } = storeToRefs(categoryTypeStore)
 
-onBeforeMount(async () => await fetch())
+onBeforeMount(async () => await fetchCategoryTypes())
 </script>
 
 <template>

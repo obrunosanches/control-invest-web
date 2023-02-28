@@ -13,25 +13,18 @@
       class="flex flex-col gap-3 bg-gray-200 rounded-md absolute left-0 top-0 min-w-full p-5 -mt-2.5"
     >
       <base-button
-        color="red"
-        @click="handleActionOptions('63f24db4925a70b803a70ecf')"
+        v-for="{ id, description } in categoryTypes"
+        :key="id"
+        :color="description.toLowerCase() === 'despesas' ? 'red' : 'green'"
         v-show-modal="transactionModalTarget"
+        @click="handleActionOptions(id)"
       >
         <template #prefix>
-          <icons-arrow-trending-down/>
+          <icons-arrow-trending-down v-if="description.toLowerCase() === 'despesas'" />
+          <icons-arrow-trending-up v-if="description.toLowerCase() === 'receitas'" />
         </template>
-        Despesas
-      </base-button>
 
-      <base-button
-        color="green"
-        @click="handleActionOptions('63f24db4925a70b803a70ece')"
-        v-show-modal="transactionModalTarget"
-      >
-        <template #prefix>
-          <icons-arrow-trending-up/>
-        </template>
-        Receitas
+        {{ description }}
       </base-button>
     </div>
   </div>
@@ -40,15 +33,19 @@
 </template>
 
 <script setup lang="ts">
+import {storeToRefs} from "pinia";
 import {useCategoryTypeStore} from "~/store/categoryType";
 
-const {selectedItem} = useCategoryTypeStore()
+const {getCategoryTypeById} = useCategoryTypeStore()
+const categoryTypeStore = useCategoryTypeStore()
+
+const {categoryTypes} = storeToRefs(categoryTypeStore)
 
 const transactionModalTarget: string = "transactionModal"
 const showOptions = ref<boolean>(false)
 const optionsContainer = ref<HTMLDivElement>()
 
-const handleActionOptions = (id: string) => selectedItem(id)
+const handleActionOptions = (id: string) => getCategoryTypeById(id)
 
 const toggleOptions = (event: Event) => {
   const target = event.target as HTMLElement

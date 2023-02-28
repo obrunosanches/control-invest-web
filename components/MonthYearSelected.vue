@@ -28,7 +28,6 @@
 </template>
 
 <script setup lang="ts">
-const locale = "pt-BR"
 const optionsDefault: Intl.DateTimeFormatOptions = { month: 'long', year: 'numeric' }
 const formatOptions = ref<Intl.DateTimeFormatOptions>(optionsDefault)
 const dateSelected = ref<Date>(new Date())
@@ -41,11 +40,11 @@ interface DateSelected {
 }
 
 onMounted(() => {
-  const monthList = [...Array(12).keys()]
-  const formatter = new Intl.DateTimeFormat(locale, {month: "short"})
-
-  monthList.forEach(monthIndex => {
-    const month = formatter.format(new Date(1990, monthIndex))
+    [...Array(12).keys()].forEach(monthIndex => {
+    const month = formatDate({
+      date: new Date(1990, monthIndex),
+      formatOptions: {month: "short"}
+    })
 
     months.value.push(
       month
@@ -104,6 +103,9 @@ const toggleMonths = () => {
 }
 
 const monthYearSelected = computed(() => {
-  return new Date(dateSelected.value).toLocaleDateString(locale, formatOptions.value)
+  return formatDate({
+    date: dateSelected.value,
+    formatOptions: formatOptions.value
+  })
 })
 </script>

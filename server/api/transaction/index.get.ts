@@ -23,6 +23,9 @@ export default defineEventHandler( async (event) => {
   }
 
   return prisma.transaction.findMany({
-    where: filters
+    where: filters,
+    include: {
+      account: true
+    },
   })
 })
