@@ -13,6 +13,7 @@ node_modules/
 .idea/
 .vscode/
 dist/
+prisma/database
 
 # ignore ALL .log files
 *.log*
