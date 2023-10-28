@@ -25,17 +25,14 @@ export const useAccountStore = defineStore('accounts', {
         console.error(error)
       }
     },
-    async createAccount(formData: FormData): Promise<void> {
+    async createAccount(account: Account): Promise<void> {
       const { accountTypes } = useAccountTypesStore()
-      const accountData: Account = Object.fromEntries(formData)
+      const accountData: Pick<Account, 'name' | 'accountTypeId' | 'initialBalance'> = account
       
       try {
         const response = await $fetch<Account>('/api/accounts', {
           method: 'POST',
-          body: {
-            ...accountData,
-            initialBalance: Number(accountData.initialBalance)
-          }
+          body: accountData
         })
 
         const accountType = accountTypes.find(
