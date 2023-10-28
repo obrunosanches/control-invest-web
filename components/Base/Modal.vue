@@ -73,10 +73,6 @@ const containerModalClasseName = computed(() => modalPositionClasses[props.posit
           <section>
             <slot name="body" />
           </section>
-
-          <section class="p-6 rounded-b border-t border-gray-600 text-right">
-            <slot name="footer" />
-          </section>
         </div>
       </div>
     </div>
