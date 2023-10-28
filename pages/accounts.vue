@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia"
+import type { Account } from "@prisma/client"
+import { reset } from "@formkit/core"
 
 import { hide } from '~/plugins/modal'
 import { useAccountTypesStore } from "~/store/accountType"
@@ -25,13 +27,19 @@ onBeforeMount(async () => {
   })
 })
 
-const handleSubmit = async (event: Event): Promise<void> => {
-  const form = event.target as HTMLFormElement
-  const formData = new FormData(form)
+const accountTypesOptions = computed(() => accountTypes.value.map(item => ({
+    value: item.id,
+    label: item.description
+})))
 
-  await createAccount(formData)
+const handleSubmit = async (payload): Promise<void> => {
+  await createAccount({
+    name: payload.name,
+    initialBalance: Number(payload.initialBalance || 0),
+    accountTypeId: payload.accountTypeId
+  } as Account)
 
-  form.reset()
+  reset('accountForm')
   hide(modalTarget)
 }
 </script>
@@ -43,12 +51,12 @@ const handleSubmit = async (event: Event): Promise<void> => {
     </h1>
 
     <div class="flex justify-end">
-      <button
-          class="bg-purple-700 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded"
-          v-show-modal="modalTarget"
-      >
-        Nova conta
-      </button>
+      <form-kit
+        type="button"
+        label="Nova conta"
+        v-show-modal="modalTarget"
+        input-class="bg-purple-700 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded"
+      />
     </div>
 
     <div v-for="{ name } in accounts">
@@ -61,50 +69,61 @@ const handleSubmit = async (event: Event): Promise<void> => {
       <h3 class="text-xl font-medium text-white">
         Nova conta
       </h3>
-      <button
-          type="button"
-          v-hide-modal="modalTarget"
-          class="text-sm ml-auto flex items-center hover:text-gray-300 text-gray-50"
+      <form-kit
+        type="button"
+        v-hide-modal="modalTarget"
+        input-class="text-sm ml-auto flex items-center hover:text-gray-300 text-gray-50"
       >
         <icons-close class="h-4 w-4" viewBox="0 0 20 20" />
-      </button>
+      </form-kit>
     </template>
 
     <template #body>
-      <form id="account-type" novalidate @submit.prevent="handleSubmit">
+      <FormKit
+        id="accountForm"
+        type="form"
+        :actions="false"
+        @submit="handleSubmit"
+        :incomplete-message="false"
+      >
         <div class="p-6">
           <div class="flex gap-4 items-end">
-            <fieldset class="flex-auto">
-              <form-input name="name" label="Nome" />
-            </fieldset>
-            <fieldset class="flex-auto">
-              <form-input name="initialBalance" label="Valor inicial" />
-            </fieldset>
+            <form-input
+              type="text"
+              name="name"
+              label="Nome"
+              validation="required:trim"
+            />
+            <form-input
+              type="text"
+              name="initialBalance"
+              label="Valor inicial"
+            />
           </div>
           <div class="mt-6">
-            <form-select name="accountTypeId" label="Tipo de conta">
-              <option selected>Selecione o tipo</option>
-              <option
-                v-for="{ id, description } in accountTypes"
-                :key="id"
-                :value="id"
-                :selected="accountSelected?.accountTypeId === id"
-              >
-                {{ description }}
-              </option>
-            </form-select>
+            <form-select
+              name="accountTypeId"
+              label="Tipo de conta"
+              :options="[
+                { label: 'Selecione o tipo', value: ''},
+                ...accountTypesOptions,
+              ]"
+              validation="required:trim"
+            />
+            <div class="error-message">
+              <FormKitMessages :node="input?.name" />
+            </div>
           </div>
         </div>
 
         <section class="p-6 rounded-b border-t border-gray-600 text-right">
-          <button
-              class="bg-purple-700 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded"
-              type="submit"
-          >
-            Confirmar
-          </button>
+          <form-kit
+            type="submit"
+            input-class="bg-purple-700 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded"
+            label="Confirmar"
+          />
         </section>
-      </form>
+      </FormKit>
     </template>
   </base-modal>
 </template>
