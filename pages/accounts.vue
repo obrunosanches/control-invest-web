@@ -1,5 +1,39 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia"
+
+import { hide } from '~/plugins/modal'
+import { useAccountTypesStore } from "~/store/accountType"
+import { type AccountWithType, useAccountStore } from "~/store/account"
+
+const accountTypesStore = useAccountTypesStore()
+const accountStore = useAccountStore()
+
+const { fetchAccountTypes } = accountTypesStore
+const { fetchAccounts, createAccount } = accountStore
+
+const { accountTypes } = storeToRefs(accountTypesStore)
+const { accounts } = storeToRefs(accountStore)
+
 const modalTarget = 'main-modal'
+const accountSelected = ref<AccountWithType | null>(null)
+
+onBeforeMount(async () => {
+  await fetchAccounts()
+
+  window.addEventListener('on-show-modal', async () => {
+    await fetchAccountTypes()
+  })
+})
+
+const handleSubmit = async (event: Event): Promise<void> => {
+  const form = event.target as HTMLFormElement
+  const formData = new FormData(form)
+
+  await createAccount(formData)
+
+  form.reset()
+  hide(modalTarget)
+}
 </script>
 
 <template>
@@ -15,6 +49,10 @@ const modalTarget = 'main-modal'
       >
         Nova conta
       </button>
+    </div>
+
+    <div v-for="{ name } in accounts">
+      <span class="text-white">{{ name }}</span>
     </div>
   </main>
 
@@ -33,50 +71,40 @@ const modalTarget = 'main-modal'
     </template>
 
     <template #body>
-      <form id="account-type" novalidate>
+      <form id="account-type" novalidate @submit.prevent="handleSubmit">
         <div class="p-6">
-
           <div class="flex gap-4 items-end">
             <fieldset class="flex-auto">
-              <label for="name" class="block mb-2 text-sm font-medium text-gray-300">
-                Nome
-              </label>
-              <input
-                  id="name"
-                  class="border rounded w-full p-2.5 text-sm bg-gray-600 border-gray-500 placeholder-gray-400 text-white"
-                  autocomplete="off"
-              />
+              <form-input name="name" label="Nome" />
             </fieldset>
             <fieldset class="flex-auto">
-              <label for="initialBalance" class="block mb-2 text-sm font-medium text-gray-300">
-                Valor inicial
-              </label>
-              <input
-                  id="initialBalance"
-                  class="border rounded w-full p-2.5 text-sm bg-gray-600 border-gray-500 placeholder-gray-400 text-white"
-                  autocomplete="off"
-              />
+              <form-input name="initialBalance" label="Valor inicial" />
             </fieldset>
           </div>
           <div class="mt-6">
-            <label for="accountTypeId" class="block mb-2 text-sm font-medium text-gray-300">
-              Tipo de conta
-            </label>
-            <select id="accountTypeId" class="border rounded w-full p-2.5 text-sm bg-gray-600 border-gray-500 placeholder-gray-400 text-white">
+            <form-select name="accountTypeId" label="Tipo de conta">
               <option selected>Selecione o tipo</option>
-            </select>
+              <option
+                v-for="{ id, description } in accountTypes"
+                :key="id"
+                :value="id"
+                :selected="accountSelected?.accountTypeId === id"
+              >
+                {{ description }}
+              </option>
+            </form-select>
           </div>
         </div>
-      </form>
-    </template>
 
-    <template #footer>
-      <button
-          class="bg-purple-700 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded"
-          v-hide-modal="modalTarget"
-      >
-        Confirmar
-      </button>
+        <section class="p-6 rounded-b border-t border-gray-600 text-right">
+          <button
+              class="bg-purple-700 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded"
+              type="submit"
+          >
+            Confirmar
+          </button>
+        </section>
+      </form>
     </template>
   </base-modal>
 </template>
