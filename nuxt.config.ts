@@ -8,6 +8,11 @@ export default defineNuxtConfig({
     },
   },
   modules: [
+    '@formkit/nuxt',
     '@pinia/nuxt',
-  ]
+  ],
+  formkit: {
+    autoImport: true,
+    configFile: './formkit.config.ts'
+  }
 });
