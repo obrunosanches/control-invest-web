@@ -9,7 +9,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <FormKit
+  <form-kit
     type="select"
     :options="props.options"
     label-class="block mb-2 text-sm font-medium dark:text-gray-300"
