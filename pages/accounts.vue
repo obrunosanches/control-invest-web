@@ -3,7 +3,7 @@ import { storeToRefs } from "pinia"
 import type { Account } from "@prisma/client"
 import { reset } from "@formkit/core"
 
-import { hide } from '~/plugins/modal'
+import { closeModal } from '~/plugins/modal'
 import { useAccountTypesStore } from "~/store/accountType"
 import { type AccountWithType, useAccountStore } from "~/store/account"
 
@@ -17,6 +17,7 @@ const { accountTypes } = storeToRefs(accountTypesStore)
 const { accounts } = storeToRefs(accountStore)
 
 const modalTarget = 'main-modal'
+const accountFormId = 'account-form'
 const accountSelected = ref<AccountWithType | null>(null)
 
 onBeforeMount(async () => {
@@ -25,22 +26,39 @@ onBeforeMount(async () => {
   window.addEventListener('on-show-modal', async () => {
     await fetchAccountTypes()
   })
+
+  window.addEventListener('on-close-modal', () => {
+    handleSelectAccount(null)
+    reset(accountFormId)
+  })
 })
 
 const accountTypesOptions = computed(() => accountTypes.value.map(item => ({
-    value: item.id,
-    label: item.description
+  value: item.id,
+  label: item.description
 })))
 
-const handleSubmit = async (payload): Promise<void> => {
-  await createAccount({
-    name: payload.name,
-    initialBalance: Number(payload.initialBalance || 0),
-    accountTypeId: payload.accountTypeId
-  } as Account)
+const handleSelectAccount = (account: AccountWithType) => {
+  accountSelected.value = Object.assign({}, account)
+}
 
-  reset('accountForm')
-  hide(modalTarget)
+const handleSubmit = async (payload): Promise<void> => {
+  try {
+    if (payload?.id) {
+      return void 0
+    }
+
+    await createAccount({
+      name: payload.name,
+      initialBalance: Number(payload.initialBalance || 0),
+      accountTypeId: payload.accountTypeId
+    } as Account)
+  } catch (error) {
+    console.log(error)
+  } finally {
+    reset(accountFormId)
+    closeModal(modalTarget)
+  }
 }
 </script>
 
@@ -71,7 +89,7 @@ const handleSubmit = async (payload): Promise<void> => {
       </h3>
       <form-kit
         type="button"
-        v-hide-modal="modalTarget"
+        v-close-modal="modalTarget"
         input-class="text-sm ml-auto flex items-center hover:text-gray-300 text-gray-50"
       >
         <icons-close class="h-4 w-4" viewBox="0 0 20 20" />
@@ -79,8 +97,8 @@ const handleSubmit = async (payload): Promise<void> => {
     </template>
 
     <template #body>
-      <FormKit
-        id="accountForm"
+      <form-kit
+        :id="accountFormId"
         type="form"
         :actions="false"
         @submit="handleSubmit"
@@ -123,7 +141,7 @@ const handleSubmit = async (payload): Promise<void> => {
             label="Confirmar"
           />
         </section>
-      </FormKit>
+      </form-kit>
     </template>
   </base-modal>
 </template>
