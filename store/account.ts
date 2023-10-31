@@ -25,20 +25,28 @@ export const useAccountStore = defineStore('accounts', {
         console.error(error)
       }
     },
-    async createAccount(account: Account): Promise<void> {
+    async createOrUpdateAccount(account: Account): Promise<void> {
       const { accountTypes } = useAccountTypesStore()
-      const accountData: Pick<Account, 'name' | 'accountTypeId' | 'initialBalance'> = account
+      const apiUrl = `/api/accounts${account.id ? `/${account.id}` : ''}`
       
       try {
-        const response = await $fetch<Account>('/api/accounts', {
-          method: 'POST',
-          body: accountData
+        const response = await $fetch<Account>(apiUrl, {
+          method: account.id ? 'PUT' : 'POST',
+          body: {
+            name: account.name,
+            initialBalance: Number(account.initialBalance || 0),
+            accountTypeId: account.accountTypeId
+          }
         })
-
+        
+        if (account.id) {
+          return await this.fetchAccounts()
+        }
+        
         const accountType = accountTypes.find(
           type => type.id === response.accountTypeId
         ) as AccountType
-
+        
         this.accounts.push({ ...response, accountType })
       } catch (error) {
         console.error(error)

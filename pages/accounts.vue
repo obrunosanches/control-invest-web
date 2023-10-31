@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia"
-import type { Account } from "@prisma/client"
 import { reset } from "@formkit/core"
 
 import { closeModal } from '~/plugins/modal'
@@ -11,7 +10,7 @@ const accountTypesStore = useAccountTypesStore()
 const accountStore = useAccountStore()
 
 const { fetchAccountTypes } = accountTypesStore
-const { fetchAccounts, createAccount } = accountStore
+const { fetchAccounts, createOrUpdateAccount } = accountStore
 
 const { accountTypes } = storeToRefs(accountTypesStore)
 const { accounts } = storeToRefs(accountStore)
@@ -44,15 +43,10 @@ const handleSelectAccount = (account: AccountWithType) => {
 
 const handleSubmit = async (payload): Promise<void> => {
   try {
-    if (payload?.id) {
-      return void 0
-    }
-
-    await createAccount({
-      name: payload.name,
-      initialBalance: Number(payload.initialBalance || 0),
-      accountTypeId: payload.accountTypeId
-    } as Account)
+    await createOrUpdateAccount({
+      ...accountSelected.value,
+      ...payload
+    })
   } catch (error) {
     console.log(error)
   } finally {
