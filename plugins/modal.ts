@@ -2,21 +2,23 @@ import { DirectiveBinding } from "vue"
 
 const getModalElementByTarget = (target: string) => document.getElementById(target) as HTMLDivElement
 
-export const show = (element: HTMLDivElement): void => {
-  if (element.classList.contains('hidden')) {
+export const showModal = (target: string): void => {
+  const $modalContainerElement = getModalElementByTarget(target)
+  
+  if ($modalContainerElement.classList.contains('hidden')) {
     const onShowModal = new CustomEvent('on-show-modal', {
       detail: {
-        target: element.getAttribute('id')
+        target: $modalContainerElement.getAttribute('id')
       }
     })
 
     window.dispatchEvent(onShowModal)
-    element.classList.toggle("hidden")
-    element.querySelector('input').focus()
+    $modalContainerElement.classList.toggle("hidden")
+    $modalContainerElement.querySelector('input').focus()
   }
 }
 
-export const hide = (target: string): void => {
+export const closeModal = (target: string): void => {
   const $modalContainerElement = getModalElementByTarget(target)
   
   if (!$modalContainerElement.classList.contains('hidden')) {
@@ -34,21 +36,20 @@ export const hide = (target: string): void => {
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.directive("show-modal", (element: HTMLButtonElement, binding: DirectiveBinding) => {
     element.addEventListener("click", () => {
-      const $modalContainerElement = getModalElementByTarget(binding.value)
-      show($modalContainerElement)
+      showModal(binding.value)
     })
   })
 
-  nuxtApp.vueApp.directive("hide-modal", (element: HTMLButtonElement, binding: DirectiveBinding) => {
+  nuxtApp.vueApp.directive("close-modal", (element: HTMLButtonElement, binding: DirectiveBinding) => {
     const target = binding.value
     const $modalContainerElement = getModalElementByTarget(target)
     
     $modalContainerElement.addEventListener("keydown", (event: KeyboardEvent) => {
-      (event.key === "Escape") && hide(target)
+      (event.key === "Escape") && closeModal(target)
     })
     
     element.addEventListener("click", () => {
-      hide(target)
+      closeModal(target)
     })
   })
 })
