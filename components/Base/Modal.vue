@@ -19,6 +19,11 @@ const props = defineProps({
     type: String as PropType<ModalSize>,
     default: '2xl',
   },
+  title: {
+    type: String,
+    required: false,
+    default: ''
+  },
 })
 
 const modalSizeClasses = {
@@ -53,26 +58,38 @@ const containerModalClasseName = computed(() => modalPositionClasses[props.posit
 
 <template>
   <div
-      :id="props.target"
-      class="fixed top-0 left-0 right-0 z-50 hidden"
-      aria-modal="true"
+    :id="props.target"
+    class="fixed top-0 left-0 right-0 z-50 hidden"
+    aria-modal="true"
   >
     <div class="bg-gray-900 dark:bg-opacity-80 fixed inset-0 z-40" />
     <div
-        tabindex="-1"
-        role="dialog"
-        class="overflow-y-auto overflow-x-hidden fixed z-50 w-full md:inset-0 md:h-full flex"
-        :class="containerModalClasseName"
+      tabindex="-1"
+      role="dialog"
+      class="overflow-y-auto overflow-x-hidden fixed z-50 w-full md:inset-0 md:h-full flex"
+      :class="containerModalClasseName"
     >
       <div class="relative p-4 w-full h-full md:h-auto" :class="modalClassName">
         <div class="relative rounded-lg shadow dark:bg-gray-700">
-          <header class="flex items-center justify-between rounded-t p-5 border-b border-gray-600" aria-labelledby="modal-title">
-            <slot name="header" />
+          <header
+            class="flex items-center justify-between border-b dark:border-gray-600 rounded-t p-5"
+            aria-labelledby="modal-title"
+            v-if="props.title"
+          >
+            <h3 class="text-xl font-medium text-white">
+              {{ props.title }}
+            </h3>
+
+            <form-kit
+              type="button"
+              v-close-modal="props.target"
+              input-class="text-sm ml-auto flex items-center hover:text-gray-300 text-gray-50"
+            >
+              <icons-close class="h-4 w-4" viewBox="0 0 20 20" />
+            </form-kit>
           </header>
 
-          <section>
-            <slot name="body" />
-          </section>
+          <slot name="body" />
         </div>
       </div>
     </div>

@@ -14,7 +14,11 @@ export const showModal = (target: string): void => {
 
     window.dispatchEvent(onShowModal)
     $modalContainerElement.classList.toggle("hidden")
-    $modalContainerElement.querySelector('input').focus()
+    $modalContainerElement.querySelector('button').focus()
+    
+    if ($modalContainerElement.querySelector('input')) {
+      $modalContainerElement.querySelector('input').focus()
+    }
   }
 }
 
