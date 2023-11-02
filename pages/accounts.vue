@@ -8,7 +8,8 @@ import { useAccountTypesStore } from "~/store/accountType"
 import { type AccountWithType, useAccountStore } from "~/store/account"
 import type { AccountActionType } from "~/types/accounts"
 
-import CardList from "~/pages/components/Accounts/CardList.vue"
+import AccountList from "~/pages/components/Accounts/AccountList.vue"
+import ConfirmDelete from "~/components/ConfirmDelete.vue"
 
 const accountTypesStore = useAccountTypesStore()
 const accountStore = useAccountStore()
@@ -83,7 +84,7 @@ const handleDeleteAccount = async (): Promise<void> => {
       />
     </div>
 
-    <card-list
+    <account-list
       :accounts="accounts"
       @handle-click="handleSelectAccount"
     />
@@ -146,31 +147,10 @@ const handleDeleteAccount = async (): Promise<void> => {
         </section>
 
         <section class="p-6 text-center" v-if="accountAction === 'delete'">
-          <svg aria-hidden="true" class="mx-auto mb-4 text-gray-400 w-14 h-14 dark:text-gray-200" fill="none"
-            stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-
-          <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-            Tem certeza que deseja excluir: "{{ accountSelected?.name }}"?
-          </h3>
-
-          <div class="flex justify-center gap-4">
-            <form-kit
-              type="button"
-              label="Confirmar"
-              input-class="bg-red-600 hover:bg-red-800 text-white py-2.5 px-5 font-medium rounded-lg text-sm"
-              @click="handleDeleteAccount()"
-            />
-
-            <form-kit
-              type="button"
-              label="Cancelar"
-              v-close-modal="modalTarget"
-              input-class="bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white py-2.5 px-5 font-medium rounded-lg text-sm border border-gray-500"
-            />
-          </div>
+          <confirm-delete
+            :name="accountSelected?.name"
+            @handle-click="action => action === 'confirm' ? handleDeleteAccount() : closeModal(modalTarget)"
+          />
         </section>
       </template>
     </base-modal>
