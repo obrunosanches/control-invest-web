@@ -2,11 +2,13 @@
 import { storeToRefs } from "pinia"
 import { reset } from "@formkit/core"
 
-import { closeModal } from '~/plugins/modal'
+import { closeModal, showModal } from '~/plugins/modal'
 import { useAccountTypesStore } from "~/store/accountType"
-import { type AccountWithType, useAccountStore } from "~/store/account"
 
-type AccountActionType = 'create' | 'update' | 'delete'
+import { type AccountWithType, useAccountStore } from "~/store/account"
+import type { AccountActionType } from "~/types/accounts"
+
+import CardList from "~/pages/components/Accounts/CardList.vue"
 
 const accountTypesStore = useAccountTypesStore()
 const accountStore = useAccountStore()
@@ -43,6 +45,8 @@ const accountTypesOptions = computed(() => accountTypes.value.map(item => ({
 const handleSelectAccount = (account: AccountWithType, action: AccountActionType) => {
   accountSelected.value = Object.assign({}, account)
   accountAction.value = action
+
+  showModal(modalTarget)
 }
 
 const handleSubmit = async (payload): Promise<void> => {
@@ -75,64 +79,14 @@ const handleDeleteAccount = async (): Promise<void> => {
         type="button"
         label="Nova conta"
         @click="handleSelectAccount(null, 'create')"
-        v-show-modal="modalTarget"
         input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm"
       />
     </div>
 
-    <div class="grid grid-cols-2 grid-rows-1 gap-4 mt-6">
-      <div
-        v-for="account in accounts"
-        class="rounded-2xl bg-white p-8"
-      >
-        <header class="flex">
-          <span class="flex-auto">{{ account.name }}</span>
-          <div class="flex gap-4">
-            <form-kit
-              type="button"
-              label="Editar"
-              input-class="text-green-600"
-              @click="handleSelectAccount(account, 'update')"
-              v-show-modal="modalTarget"
-            >
-              Editar
-            </form-kit>
-
-            <form-kit
-              type="button"
-              label="Remover"
-              input-class="text-red-600"
-              @click="handleSelectAccount(account, 'delete')"
-              v-show-modal="modalTarget"
-            />
-          </div>
-        </header>
-
-        <div class="flex gap-4 mt-6">
-          <div class="basis-1/3">
-            <form-kit
-              type="button"
-              label="Adicionar receita"
-              input-class="w-full bg-transparent border rounded p-3"
-            />
-          </div>
-          <div class="basis-1/3">
-            <form-kit
-              type="button"
-              label="Adicionar depesa"
-              input-class="w-full bg-transparent border rounded p-3"
-            />
-          </div>
-          <div class="basis-1/3">
-            <form-kit
-              type="button"
-              label="Ver transações"
-              input-class="w-full bg-transparent border rounded p-3"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+    <card-list
+      :accounts="accounts"
+      @handle-click="handleSelectAccount"
+    />
   </main>
 
   <client-only>
