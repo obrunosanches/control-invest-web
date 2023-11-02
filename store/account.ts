@@ -17,7 +17,7 @@ export const useAccountStore = defineStore('accounts', {
     accounts: []
   }),
   actions: {
-    async fetchAccounts(): Promise<void> {
+    async fetchAccounts() {
       try {
         this.accounts = await $fetch<AccountWithType>('/api/accounts')
         
@@ -25,7 +25,7 @@ export const useAccountStore = defineStore('accounts', {
         console.error(error)
       }
     },
-    async createOrUpdateAccount(account: Account): Promise<void> {
+    async createOrUpdateAccount(account: Account) {
       const { accountTypes } = useAccountTypesStore()
       const apiUrl = `/api/accounts${account.id ? `/${account.id}` : ''}`
       
