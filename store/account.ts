@@ -51,6 +51,17 @@ export const useAccountStore = defineStore('accounts', {
       } catch (error) {
         console.error(error)
       }
+    },
+    async deleteAccount(accountId: string){
+      try {
+        await $fetch(`/api/accounts/${accountId}`, {
+          method: 'DELETE'
+        })
+      } catch (error) {
+        console.log(error)
+      } finally {
+        await this.fetchAccounts()
+      }
     }
   }
 })
