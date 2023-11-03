@@ -45,7 +45,7 @@ export const useAccountStore = defineStore('accounts', {
         
         const accountType = accountTypes.find(
           type => type.id === response.accountTypeId
-        ) as AccountType
+        )
         
         this.accounts.push({ ...response, accountType })
       } catch (error) {
