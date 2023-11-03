@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Account } from "@prisma/client"
-import type { AccountActionType } from "~/types/accounts"
+import type { AccountActionType } from "~/types"
 
 const props = defineProps<{
   accounts: AccountWithType[]}

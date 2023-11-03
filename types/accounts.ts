@@ -1,1 +1,0 @@
-export type AccountActionType = 'create' | 'update' | 'delete'
