@@ -4,14 +4,14 @@ import { useCategoryTypeStore } from "~/store/categoryType"
 import type { Category, CategoryType } from "@prisma/client"
 import type { ItemActionType } from "~/types"
 import { type AccountWithType } from "~/store/account"
-import { showModal } from "~/plugins/modal"
+import { closeModal, showModal } from "~/plugins/modal"
 import { useCategoryStore } from "~/store/category"
 
 const categoryTypeStore = useCategoryTypeStore()
 const categoryStore = useCategoryStore()
 
 const { fetchCategoryTypes } = categoryTypeStore
-const { fetchCategoriesByType } = categoryStore
+const { fetchCategoriesByType, createOrUpdateCategory } = categoryStore
 const { categoryTypes } = storeToRefs(categoryTypeStore)
 const { categories } = storeToRefs(categoryStore)
 
@@ -55,6 +55,20 @@ const handleSelectCategory = (account: AccountWithType, action: ItemActionType) 
   categoryAction.value = action
 
   showModal(modalTarget)
+}
+
+const handleSubmit = async (payload): Promise<void> => {
+  try {
+    await createOrUpdateCategory({
+      ...categorySelected,
+      ...payload,
+      typeId: categoryTypeSelected.value.id
+    })
+  } catch (error) {
+    console.log(error)
+  } finally {
+    closeModal(modalTarget)
+  }
 }
 </script>
 
@@ -101,6 +115,7 @@ const handleSelectCategory = (account: AccountWithType, action: ItemActionType) 
             type="form"
             :actions="false"
             :incomplete-message="false"
+            @submit="handleSubmit"
             v-model="categorySelected"
           >
             <div class="p-6">
