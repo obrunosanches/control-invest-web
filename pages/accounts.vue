@@ -6,7 +6,7 @@ import { closeModal, showModal } from '~/plugins/modal'
 import { useAccountTypesStore } from "~/store/accountType"
 
 import { type AccountWithType, useAccountStore } from "~/store/account"
-import type { AccountActionType } from "~/types/accounts"
+import type { AccountActionType } from "~/types"
 
 import ConfirmDelete from "~/components/ConfirmDelete.vue"
 
@@ -49,6 +49,11 @@ const handleSelectAccount = (account: AccountWithType, action: AccountActionType
   showModal(modalTarget)
 }
 
+const handleDeleteAccount = async (): Promise<void> => {
+  await deleteAccount(accountSelected.value.id)
+  closeModal(modalTarget)
+}
+
 const handleSubmit = async (payload): Promise<void> => {
   try {
     await createOrUpdateAccount({
@@ -60,11 +65,6 @@ const handleSubmit = async (payload): Promise<void> => {
   } finally {
     closeModal(modalTarget)
   }
-}
-
-const handleDeleteAccount = async (): Promise<void> => {
-  await deleteAccount(accountSelected.value.id)
-  closeModal(modalTarget)
 }
 </script>
 
