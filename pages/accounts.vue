@@ -8,7 +8,6 @@ import { useAccountTypesStore } from "~/store/accountType"
 import { type AccountWithType, useAccountStore } from "~/store/account"
 import type { AccountActionType } from "~/types/accounts"
 
-import AccountList from "~/pages/components/Accounts/AccountList.vue"
 import ConfirmDelete from "~/components/ConfirmDelete.vue"
 
 const accountTypesStore = useAccountTypesStore()
