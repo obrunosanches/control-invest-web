@@ -70,32 +70,31 @@ const handleDeleteAccount = async (): Promise<void> => {
 </script>
 
 <template>
-  <main class="p-5 w-full">
-    <h1 class="text-gray-300 text-3xl font-bold">
-      Contas
-    </h1>
-
-    <div class="flex justify-end">
-      <form-kit
-        type="button"
-        label="Nova conta"
-        @click="handleSelectAccount(null, 'create')"
-        input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm"
-      />
-    </div>
-
-    <account-list
-      :accounts="accounts"
-      @handle-click="handleSelectAccount"
-    />
-  </main>
-
   <client-only>
+    <main class="p-5 w-full">
+      <h1 class="text-gray-300 text-3xl font-bold">
+        Contas
+      </h1>
+
+      <div class="flex justify-end">
+        <form-kit
+          type="button"
+          label="Nova conta"
+          @click="handleSelectAccount(null, 'create')"
+          input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm"
+        />
+      </div>
+
+      <account-list
+        :accounts="accounts"
+        @handle-click="(account, action) => handleSelectAccount(account, action)"
+      />
+    </main>
+
     <base-modal
       ref="modalElement"
       :target="modalTarget"
       :title="accountAction !== 'delete' ? 'Nova conta': null"
-      class="mt-16"
     >
       <template #body>
         <section v-if="accountAction !== 'delete'">
@@ -109,7 +108,7 @@ const handleDeleteAccount = async (): Promise<void> => {
             #default="{ value }"
           >
             <div class="p-6">
-              <div class="flex gap-4 items-end">
+              <div class="flex gap-4">
                 <form-input
                   name="name"
                   label="Nome"
@@ -125,14 +124,11 @@ const handleDeleteAccount = async (): Promise<void> => {
                   name="accountTypeId"
                   label="Tipo de conta"
                   :options="[
-                      { label: 'Selecione o tipo', value: ''},
-                      ...accountTypesOptions,
-                    ]"
+                    { label: 'Selecione o tipo', value: '' },
+                    ...accountTypesOptions,
+                  ]"
                   validation="required:trim"
                 />
-                <div class="error-message">
-                  <FormKitMessages :node="input?.name" />
-                </div>
               </div>
             </div>
 
