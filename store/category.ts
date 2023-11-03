@@ -1,7 +1,7 @@
 import { defineStore } from "pinia"
 import type { Category, CategoryType } from "@prisma/client"
 
-interface CategoryWithType extends Category {
+export interface CategoryWithType extends Category {
   categoryType: CategoryType
 }
 

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { Account } from "@prisma/client"
-import type { AccountActionType } from "~/types"
+import type { ItemActionType } from "~/types"
 
 const props = defineProps<{
   accounts: AccountWithType[]}
 >()
 
 const emit = defineEmits<{
-  (e: 'handleClick', account: Account, action: AccountActionType): void
+  (e: 'handleClick', account: Account, action: ItemActionType): void
 }>()
 </script>
 
