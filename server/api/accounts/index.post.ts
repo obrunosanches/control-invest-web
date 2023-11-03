@@ -1,5 +1,3 @@
-import type { Account } from '@prisma/client'
-
 import { prisma } from '~/server/database/connect'
 
 export default defineEventHandler(async (event) => {
