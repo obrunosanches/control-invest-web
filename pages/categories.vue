@@ -34,7 +34,11 @@ const categoryTypesOptions = computed(() => categoryTypes.value.map(item => ({
   label: item.description
 })))
 
-const categoryTypeColor = computed(() => categoryTypeSelected.value?.id === '653c32b20e8ce3e27fc746bf' ? 'green' : 'red')
+const backgroundColor = (opacity) => {
+  const color = categoryTypeSelected.value?.id === '654696a89036021391cea8d2' ? 'green' : 'red'
+
+  return `bg-${color}-${opacity}`
+}
 
 const fetchCategories = async () => {
   if (categoryTypeSelected.value) {
@@ -83,7 +87,7 @@ const handleSubmit = async (payload): Promise<void> => {
         <form-select
           name="accountTypeId"
           class="border-0"
-          :input-class="`w-full border rounded-lg p-2.5 text-sm bg-${categoryTypeColor}-600 border-0 placeholder-gray-400 text-white`"
+          :input-class="`w-full rounded-lg p-2.5 text-sm ${backgroundColor('600')} border-0 placeholder-gray-400 text-white`"
           :options="categoryTypesOptions"
           @change="handleSelectCategoryType"
         />
@@ -93,7 +97,7 @@ const handleSubmit = async (payload): Promise<void> => {
         <form-kit
           type="button"
           label="Adicionar Categoria"
-          :input-class="`bg-${categoryTypeColor}-700 hover:bg-${categoryTypeColor}-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm`"
+          :input-class="`${backgroundColor('600')} text-white py-2.5 px-5 font-medium rounded-lg text-sm`"
           @click="handleSelectCategory(null, 'create')"
         />
       </div>
@@ -129,7 +133,7 @@ const handleSubmit = async (payload): Promise<void> => {
             <section class="p-6 rounded-b border-t border-gray-600 text-right">
               <form-kit
                 type="submit"
-                :input-class="`bg-${categoryTypeColor}-700 hover:bg-${categoryTypeColor}-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm`"
+                :input-class="`${backgroundColor('600')} text-white py-2.5 px-5 font-medium rounded-lg text-sm`"
                 label="Confirmar"
               />
             </section>
