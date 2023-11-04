@@ -74,34 +74,32 @@ const handleSubmit = async (payload): Promise<void> => {
 
 <template>
   <client-only>
-    <main class="p-5 w-full">
-      <h1 class="text-gray-300 text-3xl font-bold">
-        Categorias
-      </h1>
+    <h1 class="text-gray-300 text-3xl font-bold">
+      Categorias
+    </h1>
 
-      <div class="flex justify-between gap-4 mt-6">
-        <div class="w-1/3">
-          <form-select
-            name="accountTypeId"
-            class="border-0"
-            :input-class="`w-full border rounded-lg p-2.5 text-sm bg-${categoryTypeColor}-600 border-0 placeholder-gray-400 text-white`"
-            :options="categoryTypesOptions"
-            @change="handleSelectCategoryType"
-          />
-        </div>
-
-        <div class="w-full flex-auto items-end text-right">
-          <form-kit
-            type="button"
-            label="Adicionar Categoria"
-            :input-class="`bg-${categoryTypeColor}-700 hover:bg-${categoryTypeColor}-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm`"
-            @click="handleSelectCategory(null, 'create')"
-          />
-        </div>
+    <div class="flex justify-between gap-4 mt-6">
+      <div class="w-1/3">
+        <form-select
+          name="accountTypeId"
+          class="border-0"
+          :input-class="`w-full border rounded-lg p-2.5 text-sm bg-${categoryTypeColor}-600 border-0 placeholder-gray-400 text-white`"
+          :options="categoryTypesOptions"
+          @change="handleSelectCategoryType"
+        />
       </div>
 
-      <category-list :categories="categories" />
-    </main>
+      <div class="w-full flex-auto items-end text-right">
+        <form-kit
+          type="button"
+          label="Adicionar Categoria"
+          :input-class="`bg-${categoryTypeColor}-700 hover:bg-${categoryTypeColor}-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm`"
+          @click="handleSelectCategory(null, 'create')"
+        />
+      </div>
+    </div>
+
+    <category-list :categories="categories" />
 
     <base-modal
       ref="modalElement"

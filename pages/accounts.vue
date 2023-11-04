@@ -70,25 +70,23 @@ const handleSubmit = async (payload): Promise<void> => {
 
 <template>
   <client-only>
-    <main class="p-5 w-full">
-      <h1 class="text-gray-300 text-3xl font-bold">
-        Contas
-      </h1>
+    <h1 class="text-gray-300 text-3xl font-bold">
+      Contas
+    </h1>
 
-      <div class="flex justify-end">
-        <form-kit
-          type="button"
-          label="Nova conta"
-          @click="handleSelectAccount(null, 'create')"
-          input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm"
-        />
-      </div>
-
-      <account-list
-        :accounts="accounts"
-        @handle-click="(account, action) => handleSelectAccount(account, action)"
+    <div class="flex justify-end">
+      <form-kit
+        type="button"
+        label="Nova conta"
+        @click="handleSelectAccount(null, 'create')"
+        input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm"
       />
-    </main>
+    </div>
+
+    <account-list
+      :accounts="accounts"
+      @handle-click="(account, action) => handleSelectAccount(account, action)"
+    />
 
     <base-modal
       ref="modalElement"
