@@ -8,7 +8,7 @@ useHead({
 </script>
 
 <template>
-  <div class="h-screen flex">
+  <div class="flex">
     <div class="shrink-0 w-48">
       <aside
           class="h-full w-48 fixed border-r border-b-0 bg-gray-800 border-gray-700"
@@ -31,7 +31,7 @@ useHead({
       </aside>
     </div>
 
-    <main class="p-5 w-full">
+    <main class="p-8 w-full max-w-screen-2xl mx-auto">
       <router-view></router-view>
     </main>
   </div>
