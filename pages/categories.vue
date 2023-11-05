@@ -97,7 +97,12 @@ const handleSubmit = async (payload): Promise<void> => {
       </div>
     </div>
 
-    <category-list :categories="categories" />
+    <category-list
+      :categories="categories"
+      @add="categoryId => console.log('action:add', categoryId)"
+      @update="category => console.log('action:update', category)"
+      @delete="categoryId => console.log('action:delete', categoryId)"
+    />
 
     <base-modal
       ref="modalElement"
