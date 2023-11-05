@@ -9,7 +9,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'add', categoryId: string)
   (e: 'update', category: Category)
-  (e: 'delete', categoryId: string)
+  (e: 'delete', category: Category)
 }>()
 </script>
 
@@ -46,7 +46,7 @@ const emit = defineEmits<{
               </form-kit>
               <form-kit
                 type="button"
-                @click="emit('delete', category.id)"
+                @click="emit('delete', category)"
               >
                 <icons-delete />
               </form-kit>

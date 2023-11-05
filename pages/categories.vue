@@ -1,16 +1,20 @@
 <script setup lang="ts">
+import { reset } from "@formkit/core"
+
 import { useCategoryTypeStore } from "~/store/categoryType"
+import { closeModal, showModal } from "~/plugins/modal"
 
 import type { Category, CategoryType } from "@prisma/client"
 import type { ItemActionType } from "~/types"
-import { closeModal, showModal } from "~/plugins/modal"
 import { type CategoryWithType, useCategoryStore } from "~/store/category"
+
+import ConfirmDelete from "~/components/ConfirmDelete.vue"
 
 const categoryTypeStore = useCategoryTypeStore()
 const categoryStore = useCategoryStore()
 
 const { fetchCategoryTypes } = categoryTypeStore
-const { fetchCategoriesByType, createOrUpdateCategory } = categoryStore
+const { fetchCategoriesByType, createOrUpdateCategory, deleteCategory } = categoryStore
 const { categoryTypes } = storeToRefs(categoryTypeStore)
 const { categories } = storeToRefs(categoryStore)
 
@@ -26,6 +30,11 @@ onBeforeMount(async () => {
   categoryTypeSelected.value = categoryTypes.value.find(() => true)
 
   await fetchCategories()
+
+  window.addEventListener('on-close-modal', () => {
+    handleSelectCategory(null, 'create')
+    reset(categoryFormId)
+  })
 })
 
 const categoryTypesOptions = computed(() => categoryTypes.value.map(item => ({
@@ -52,6 +61,11 @@ const handleSelectCategory = (category: CategoryWithType, action: ItemActionType
   categoryAction.value = action
 
   showModal(modalTarget)
+}
+
+const handleDeleteCategory = async () => {
+  await deleteCategory(categorySelected.value)
+  closeModal(modalTarget)
 }
 
 const handleSubmit = async (payload): Promise<void> => {
@@ -100,7 +114,7 @@ const handleSubmit = async (payload): Promise<void> => {
       :categories="categories"
       @add="categoryId => console.log('action:add', categoryId)"
       @update="category => handleSelectCategory(category, 'update')"
-      @delete="categoryId => console.log('action:delete', categoryId)"
+      @delete="category => handleSelectCategory(category, 'delete')"
     />
 
     <base-modal
@@ -136,6 +150,13 @@ const handleSubmit = async (payload): Promise<void> => {
               />
             </section>
           </form-kit>
+        </section>
+
+        <section class="p-6 text-center" v-if="categoryAction === 'delete'">
+          <confirm-delete
+            :name="categorySelected?.name"
+            @handle-click="action => action === 'confirm' ? handleDeleteCategory() : closeModal(modalTarget)"
+          />
         </section>
       </template>
     </base-modal>
