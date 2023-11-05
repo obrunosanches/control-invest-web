@@ -7,11 +7,30 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="mt-6 text-white">
-    <h1>Listagem de Categoria</h1>
-
-    <div v-for="category in props.categories">
-      {{ category.name }}
-    </div>
+  <div class="bg-gray-700 rounded-3xl">
+    <base-table>
+      <template #head>
+        <tr>
+          <base-table-head-cell>Nome</base-table-head-cell>
+          <base-table-head-cell>Ações</base-table-head-cell>
+        </tr>
+      </template>
+      <template #body>
+        <tr
+          class="bg-gray-800"
+          v-for="category in props.categories"
+        >
+          <base-table-body-cell>{{ category.name }}</base-table-body-cell>
+          <base-table-body-cell>Edit | Delete | Adicionar</base-table-body-cell>
+        </tr>
+      </template>
+      <template #foot>
+        <tr>
+          <base-table-foot-cell colspan="2">
+            <span>&nbsp;</span>
+          </base-table-foot-cell>
+        </tr>
+      </template>
+    </base-table>
   </div>
 </template>
