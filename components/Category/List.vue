@@ -39,18 +39,24 @@ const emit = defineEmits<{
                     <div class="flex gap-2">
                       <form-kit
                         type="button"
+                        wrapper-class="flex"
+                        :ignore="false"
                         @click="emit('handleClickSubCategory', category, null, 'create')"
                       >
-                        <icons-add />
+                        <icons-plus-circle />
                       </form-kit>
                       <form-kit
                         type="button"
+                        wrapper-class="flex"
+                        :ignore="false"
                         @click="emit('handleClickCategory', category, 'update')"
                       >
                         <icons-edit />
                       </form-kit>
                       <form-kit
                         type="button"
+                        wrapper-class="flex"
+                        :ignore="false"
                         @click="emit('handleClickCategory', category, 'delete')"
                       >
                         <icons-delete />
