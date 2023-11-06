@@ -31,12 +31,16 @@ const emit = defineEmits<{
           <div class="flex gap-2">
             <form-kit
               type="button"
+              wrapper-class="flex"
+              :ignore="false"
               @click="emit('handleClick', subCategory, 'update')"
             >
               <icons-edit />
             </form-kit>
             <form-kit
               type="button"
+              wrapper-class="flex"
+              :ignore="false"
               @click="emit('handleClick', subCategory, 'delete')"
             >
               <icons-delete />
