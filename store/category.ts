@@ -1,14 +1,14 @@
 import { defineStore } from "pinia"
 
-import type { Category, CategoryType } from "@prisma/client"
-import { useCategoryTypeStore } from "~/store/categoryType"
+import type { Category, CategoryType, SubCategory } from "@prisma/client"
 
-export interface CategoryWithType extends Category {
-  categoryType: CategoryType
+export interface CategoryWithIncludes extends Category {
+  type: CategoryType
+  subCategory: SubCategory[]
 }
 
 interface State {
-  categories: CategoryWithType[]
+  categories: CategoryWithIncludes[]
 }
 
 export const useCategoryStore = defineStore('categoryStore', {
@@ -19,13 +19,11 @@ export const useCategoryStore = defineStore('categoryStore', {
     async fetchCategoriesByType(categoryTypeId) {
       try {
         this.categories = await $fetch<CategoryType[]>(`/api/category/${categoryTypeId}`)
-        
       } catch (error) {
         console.error(error)
       }
     },
     async createOrUpdateCategory(category: Category) {
-      const { categoryTypes } = useCategoryTypeStore()
       const apiUrl = `/api/category${category.id ? `/${category.id}` : ''}`
       
       try {
@@ -36,21 +34,13 @@ export const useCategoryStore = defineStore('categoryStore', {
             typeId: category.typeId
           }
         })
-        
-        if (category.id) {
-          return await this.fetchCategoriesByType(category.typeId)
-        }
-        
-        const categoryType = categoryTypes.find(
-          type => type.id === response.typeId
-        )
-        
-        this.categories.push({ ...response, categoryType })
       } catch (error) {
         console.error(error)
+      } finally {
+        await this.fetchCategoriesByType(category.typeId)
       }
     },
-     async deleteCategory(category: Category) {
+    async deleteCategory(category: Category) {
         try {
           await $fetch(`/api/category/${category.id}`, {
             method: 'DELETE'
