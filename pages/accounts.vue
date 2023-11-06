@@ -5,7 +5,7 @@ import { reset } from "@formkit/core"
 import { closeModal, showModal } from '~/plugins/modal'
 import { useAccountTypesStore } from "~/store/accountType"
 
-import { type AccountWithType, useAccountStore } from "~/store/account"
+import { type AccountWithIncludes, useAccountStore } from "~/store/account"
 import type { ItemActionType } from "~/types"
 
 import ConfirmDelete from "~/components/ConfirmDelete.vue"
@@ -21,7 +21,7 @@ const { accounts } = storeToRefs(accountStore)
 
 const modalTarget = 'main-modal'
 const accountFormId = 'account-form'
-const accountSelected = ref<AccountWithType>(null)
+const accountSelected = ref<AccountWithIncludes>(null)
 const accountAction = ref<ItemActionType>('create')
 
 onBeforeMount(async () => {
@@ -42,7 +42,7 @@ const accountTypesOptions = computed(() => accountTypes.value.map(item => ({
   label: item.description
 })))
 
-const handleSelectAccount = (account: AccountWithType, action: ItemActionType) => {
+const handleSelectAccount = (account: AccountWithIncludes, action: ItemActionType) => {
   accountSelected.value = Object.assign({}, account)
   accountAction.value = action
 
