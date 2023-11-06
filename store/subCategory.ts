@@ -28,7 +28,26 @@ export const useSubCategoryStore = defineStore('subCategoryStore', {
       } catch (error) {
         console.error(error)
       } finally {
-        const category = categories.find(item => item.id === subCategory.categoryId)
+        const { getCategory, fetchCategoriesByType } = useCategoryStore()
+        
+        const category = getCategory(subCategory.categoryId)
+        
+        if (category) {
+          await fetchCategoriesByType(category.typeId)
+        }
+      }
+    },
+    async deleteSubCategory(subCategory: SubCategory) {
+      try {
+        await $fetch(`/api/category/${subCategory.categoryId}/sub-category/${subCategory.id}`, {
+          method: 'DELETE'
+        })
+      } catch (error) {
+        console.log(error)
+      } finally {
+        const { getCategory, fetchCategoriesByType } = useCategoryStore()
+        
+        const category = getCategory(subCategory.categoryId)
         
         if (category) {
           await fetchCategoriesByType(category.typeId)
