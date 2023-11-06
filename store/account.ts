@@ -4,12 +4,12 @@ import { useAccountTypesStore } from "~/store/accountType"
 
 import type { Account, AccountType } from "@prisma/client"
 
-export interface AccountWithType extends Account {
+export interface AccountWithIncludes extends Account {
   accountType: AccountType
 }
 
 interface State {
-  accounts: AccountWithType[]
+  accounts: AccountWithIncludes[]
 }
 
 export const useAccountStore = defineStore('accounts', {
@@ -19,7 +19,7 @@ export const useAccountStore = defineStore('accounts', {
   actions: {
     async fetchAccounts() {
       try {
-        this.accounts = await $fetch<AccountWithType>('/api/accounts')
+        this.accounts = await $fetch<AccountWithIncludes>('/api/accounts')
         
       } catch (error) {
         console.error(error)
@@ -38,18 +38,10 @@ export const useAccountStore = defineStore('accounts', {
             accountTypeId: account.accountTypeId
           }
         })
-        
-        if (account.id) {
-          return await this.fetchAccounts()
-        }
-        
-        const accountType = accountTypes.find(
-          type => type.id === response.accountTypeId
-        )
-        
-        this.accounts.push({ ...response, accountType })
       } catch (error) {
         console.error(error)
+      } finally {
+        await this.fetchAccounts()
       }
     },
     async deleteAccount(accountId: string){
