@@ -2,7 +2,7 @@
 import classNames from 'classnames'
 
 const attrs = useAttrs()
-const baseClasses = 'flex-shrink-0 w-6 h-6 transition duration-75'
+const baseClasses = 'flex-shrink-0 w-[24px] h-[24px] transition duration-75'
 
 const className = computed(() => {
   return classNames(baseClasses, {
