@@ -4,6 +4,10 @@ export default defineEventHandler((event) => {
   return prisma.category.findMany({
     where: {
       typeId: event.context.params.id
+    },
+    include: {
+      type: true,
+      subCategory: true
     }
   })
 })
