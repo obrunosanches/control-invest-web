@@ -22,7 +22,7 @@ const { accounts } = storeToRefs(accountStore)
 const modalTarget = 'main-modal'
 const accountFormId = 'account-form'
 const accountSelected = ref<AccountWithIncludes>(null)
-const accountAction = ref<ItemActionType>('create')
+const formModelActionType = ref<ItemActionType>('create')
 
 onBeforeMount(async () => {
   await fetchAccounts()
@@ -32,8 +32,8 @@ onBeforeMount(async () => {
   })
 
   window.addEventListener('on-close-modal', () => {
-    handleSelectAccount(null, 'create')
-    reset(accountFormId)
+    accountSelected.value = Object.assign({}, null)
+    formModelActionType.value = 'create'
   })
 })
 
@@ -44,7 +44,7 @@ const accountTypesOptions = computed(() => accountTypes.value.map(item => ({
 
 const handleSelectAccount = (account: AccountWithIncludes, action: ItemActionType) => {
   accountSelected.value = Object.assign({}, account)
-  accountAction.value = action
+  formModelActionType.value = action
 
   showModal(modalTarget)
 }
@@ -64,6 +64,7 @@ const handleSubmit = async (payload): Promise<void> => {
     console.log(error)
   } finally {
     closeModal(modalTarget)
+    reset(accountFormId)
   }
 }
 </script>
@@ -91,10 +92,10 @@ const handleSubmit = async (payload): Promise<void> => {
     <base-modal
       ref="modalElement"
       :target="modalTarget"
-      :title="accountAction !== 'delete' ? 'Nova conta': null"
+      :title="formModelActionType !== 'delete' ? 'Nova conta': null"
     >
       <template #body>
-        <section v-if="accountAction !== 'delete'">
+        <section v-if="formModelActionType !== 'delete'">
           <form-kit
             :id="accountFormId"
             type="form"
@@ -139,7 +140,7 @@ const handleSubmit = async (payload): Promise<void> => {
           </form-kit>
         </section>
 
-        <section class="p-6 text-center" v-if="accountAction === 'delete'">
+        <section class="p-6 text-center" v-if="formModelActionType === 'delete'">
           <confirm-delete
             :name="accountSelected?.name"
             @handle-click="action => action === 'confirm' ? handleDeleteAccount() : closeModal(modalTarget)"
