@@ -1,39 +1,45 @@
 <script setup lang="ts">
 import { reset } from "@formkit/core"
 
+import { useCategoryStore } from "~/store/category"
 import { useCategoryTypeStore } from "~/store/categoryType"
+import { useSubCategoryStore } from "~/store/subCategory"
 import { closeModal, showModal } from "~/plugins/modal"
 
-import type { Category, CategoryType } from "@prisma/client"
+import type { Category, CategoryType, SubCategory } from "@prisma/client"
 import type { ItemActionType } from "~/types"
-import { type CategoryWithType, useCategoryStore } from "~/store/category"
 
 import ConfirmDelete from "~/components/ConfirmDelete.vue"
 
 const categoryTypeStore = useCategoryTypeStore()
 const categoryStore = useCategoryStore()
+const subCategoryStore = useSubCategoryStore()
 
 const { fetchCategoryTypes } = categoryTypeStore
 const { fetchCategoriesByType, createOrUpdateCategory, deleteCategory } = categoryStore
+const { createOrUpdateSubCategory, deleteSubCategory } = subCategoryStore
 const { categoryTypes } = storeToRefs(categoryTypeStore)
 const { categories } = storeToRefs(categoryStore)
 
 const modalTarget = 'main-modal'
 const categoryFormId = 'category-form'
+const subCategoryFormId = 'sub-category-form'
+
 const categoryTypeSelected = ref<CategoryType>(null)
 const categorySelected = ref<Category>(null)
-const categoryAction = ref<ItemActionType>('create')
+const subCategorySelected = ref<SubCategory>(null)
+const formModelActionType = ref<ItemActionType>('create')
+const formModel = ref<'category' | 'sub-category'>('category')
 
 onBeforeMount(async () => {
   await fetchCategoryTypes()
-
-  categoryTypeSelected.value = categoryTypes.value.find(() => true)
-
   await fetchCategories()
 
   window.addEventListener('on-close-modal', () => {
-    handleSelectCategory(null, 'create')
-    reset(categoryFormId)
+    formModel.value = 'category'
+    formModelActionType.value = 'create'
+    categorySelected.value = Object.assign({}, null)
+    subCategorySelected.value = Object.assign({}, null)
   })
 })
 
@@ -43,9 +49,11 @@ const categoryTypesOptions = computed(() => categoryTypes.value.map(item => ({
 })))
 
 const fetchCategories = async () => {
-  if (categoryTypeSelected.value) {
-    await fetchCategoriesByType(categoryTypeSelected.value.id)
+  if (!categoryTypeSelected.value) {
+    categoryTypeSelected.value = categoryTypes.value.find(() => true)
   }
+
+  await fetchCategoriesByType(categoryTypeSelected.value.id)
 }
 
 const handleSelectCategoryType = async (event: Event) => {
@@ -56,19 +64,36 @@ const handleSelectCategoryType = async (event: Event) => {
   await fetchCategories()
 }
 
-const handleSelectCategory = (category: CategoryWithType, action: ItemActionType) => {
+const handleSelectCategory = async (category: Category, action: ItemActionType) => {
+  formModel.value = 'category'
+  formModelActionType.value = action
   categorySelected.value = Object.assign({}, category)
-  categoryAction.value = action
 
   showModal(modalTarget)
 }
 
-const handleDeleteCategory = async () => {
-  await deleteCategory(categorySelected.value)
+const handleSelectSubCategory = (category: Category, subCategory: SubCategory, action: ItemActionType) => {
+  formModel.value = 'sub-category'
+  formModelActionType.value = action
+  categorySelected.value = Object.assign({}, category)
+  subCategorySelected.value = Object.assign({}, subCategory)
+
+  showModal(modalTarget)
+}
+
+const handleDelete = async () => {
+  if (formModel.value === 'category') {
+    await deleteCategory(categorySelected.value)
+  }
+
+  if (formModel.value === 'sub-category') {
+    await deleteSubCategory(subCategorySelected.value)
+  }
+
   closeModal(modalTarget)
 }
 
-const handleSubmit = async (payload): Promise<void> => {
+const handleFormCategorySubmit = async (payload): Promise<void> => {
   try {
     await createOrUpdateCategory({
       ...categorySelected,
@@ -79,6 +104,21 @@ const handleSubmit = async (payload): Promise<void> => {
     console.log(error)
   } finally {
     closeModal(modalTarget)
+    reset(categoryFormId)
+  }
+}
+
+const handleFormSubCategorySubmit = async (payload): Promise<void> => {
+  try {
+    await createOrUpdateSubCategory({
+      ...payload,
+      categoryId: categorySelected.value.id
+    })
+  } catch (error) {
+    console.log(error)
+  } finally {
+    closeModal(modalTarget)
+    reset(subCategoryFormId)
   }
 }
 </script>
@@ -112,52 +152,91 @@ const handleSubmit = async (payload): Promise<void> => {
 
     <category-list
       :categories="categories"
-      @add="categoryId => console.log('action:add', categoryId)"
-      @update="category => handleSelectCategory(category, 'update')"
-      @delete="category => handleSelectCategory(category, 'delete')"
+      @handle-click-category="(category, action) => handleSelectCategory(category, action)"
+      @handle-click-sub-category="(category, subCategory, action) => handleSelectSubCategory(category, subCategory, action)"
     />
 
     <base-modal
       ref="modalElement"
       :target="modalTarget"
-      :title="categoryAction !== 'delete' ? 'Nova categoria': null"
+      :title="formModelActionType !== 'delete' ? formModel === 'category' ? 'Categoria' : 'Sub categoria' : null"
     >
       <template #body>
-        <section v-if="categoryAction !== 'delete'">
-          <form-kit
-            :id="categoryFormId"
-            type="form"
-            :actions="false"
-            :incomplete-message="false"
-            @submit="handleSubmit"
-            v-model="categorySelected"
-          >
-            <div class="p-6">
-              <div class="flex gap-4">
-                <form-input
-                  name="name"
-                  label="Nome"
-                  validation="required:trim"
-                />
+        <template v-if="formModel === 'category'">
+          <section v-if="formModelActionType !== 'delete'">
+            <form-kit
+              :id="categoryFormId"
+              :actions="false"
+              :incomplete-message="false"
+              type="form"
+              @submit="handleFormCategorySubmit"
+              v-model="categorySelected"
+            >
+              <div class="p-6">
+                <div class="flex gap-4">
+                  <form-input
+                    name="name"
+                    label="Nome"
+                    validation="required:trim"
+                  />
+                </div>
               </div>
-            </div>
 
-            <section class="p-6 rounded-b border-t border-gray-600 text-right">
-              <form-kit
-                type="submit"
-                input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm"
-                label="Confirmar"
-              />
-            </section>
-          </form-kit>
-        </section>
+              <section class="p-6 rounded-b border-t border-gray-600 text-right">
+                <form-kit
+                  type="submit"
+                  input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm"
+                  label="Confirmar"
+                />
+              </section>
+            </form-kit>
+          </section>
 
-        <section class="p-6 text-center" v-if="categoryAction === 'delete'">
-          <confirm-delete
-            :name="categorySelected?.name"
-            @handle-click="action => action === 'confirm' ? handleDeleteCategory() : closeModal(modalTarget)"
-          />
-        </section>
+          <section class="p-6 text-center" v-if="formModelActionType === 'delete'">
+            <confirm-delete
+              :name="categorySelected?.name"
+              @handle-click="action => action === 'confirm' ? handleDelete() : closeModal(modalTarget)"
+            />
+          </section>
+        </template>
+
+        <template v-if="formModel === 'sub-category'">
+          <section v-if="formModelActionType !== 'delete'">
+            <form-kit
+              :id="subCategoryFormId"
+              :actions="false"
+              :incomplete-message="false"
+              type="form"
+              @submit="handleFormSubCategorySubmit"
+              v-model="subCategorySelected"
+            >
+              <div class="p-6">
+                <div class="flex gap-4">
+                  <form-input
+                    name="name"
+                    label="Nome"
+                    validation="required:trim"
+                  />
+                </div>
+              </div>
+
+              <section class="p-6 rounded-b border-t border-gray-600 text-right">
+                <form-kit
+                  type="submit"
+                  input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm"
+                  label="Confirmar"
+                />
+              </section>
+            </form-kit>
+          </section>
+
+          <section class="p-6 text-center" v-if="formModelActionType === 'delete'">
+            <confirm-delete
+              :name="subCategorySelected?.name"
+              @handle-click="action => action === 'confirm' ? handleDelete() : closeModal(modalTarget)"
+            />
+          </section>
+        </template>
       </template>
     </base-modal>
   </client-only>
