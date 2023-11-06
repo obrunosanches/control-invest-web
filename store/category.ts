@@ -15,6 +15,11 @@ export const useCategoryStore = defineStore('categoryStore', {
   state: (): State => ({
     categories: []
   }),
+  getters: {
+    getCategory(id: string) {
+      return this.categories.find(item => item.id === id)
+    }
+  },
   actions: {
     async fetchCategoriesByType(categoryTypeId) {
       try {
