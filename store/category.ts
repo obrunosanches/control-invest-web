@@ -16,14 +16,14 @@ export const useCategoryStore = defineStore('categoryStore', {
     categories: []
   }),
   getters: {
-    getCategory(id: string) {
-      return this.categories.find(item => item.id === id)
+    getCategory(state) {
+      return (id: string) => state.categories.find((category) => category.id === id)
     }
   },
   actions: {
     async fetchCategoriesByType(categoryTypeId) {
       try {
-        this.categories = await $fetch<CategoryType[]>(`/api/category/${categoryTypeId}`)
+        this.categories = await $fetch<CategoryWithIncludes[]>(`/api/category/${categoryTypeId}`)
       } catch (error) {
         console.error(error)
       }
