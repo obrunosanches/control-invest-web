@@ -85,7 +85,7 @@ const containerModalClasseName = computed(() => modalPositionClasses[props.posit
               v-close-modal="props.target"
               input-class="text-sm ml-auto flex items-center hover:text-gray-300 text-gray-50"
             >
-              <icons-close class="h-4 w-4" viewBox="0 0 20 20" />
+              <icons-close class="w-[16px] h-[16px]" />
             </form-kit>
           </header>
 

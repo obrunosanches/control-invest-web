@@ -16,7 +16,7 @@ const emit = defineEmits<{
   <base-table>
     <template #head>
       <tr>
-        <td colspan="2" class="py-6">
+        <td colspan="2" class="py-2">
           <span>Sub Categorias</span>
         </td>
       </tr>
@@ -28,14 +28,14 @@ const emit = defineEmits<{
           {{ subCategory.name }}
         </td>
         <td class="py-2 w-1/12">
-          <div class="flex gap-2">
+          <div class="flex justify-center items-center gap-2">
             <form-kit
               type="button"
               wrapper-class="flex"
               :ignore="false"
               @click="emit('handleClick', subCategory, 'update')"
             >
-              <icons-edit />
+              <icons-edit class="text-indigo-500 hover:text-indigo-400" />
             </form-kit>
             <form-kit
               type="button"
@@ -43,7 +43,7 @@ const emit = defineEmits<{
               :ignore="false"
               @click="emit('handleClick', subCategory, 'delete')"
             >
-              <icons-delete />
+              <icons-delete class="text-rose-600 hover:text-rose-500" />
             </form-kit>
           </div>
         </td>

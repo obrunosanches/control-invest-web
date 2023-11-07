@@ -133,7 +133,7 @@ const handleFormSubCategorySubmit = async (payload): Promise<void> => {
       <div class="w-1/3">
         <form-select
           name="accountTypeId"
-          input-class="w-full bg-gray-500 rounded-lg p-2.5 text-smborder-0 placeholder-gray-400 text-white"
+          input-class="w-full bg-gray-500 text-white py-3.5 px-5 font-medium rounded-full text-sm"
           :options="categoryTypesOptions"
           @change="handleSelectCategoryType"
         />
