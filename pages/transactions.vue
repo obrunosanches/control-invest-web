@@ -1,5 +1,3 @@
 <template>
-  <h1 class="text-gray-300 text-3xl font-bold">
-    Transações
-  </h1>
+  <month-year-selected @handle-click-date-select="dateSelected => console.log('dateSelected', dateSelected)" />
 </template>
