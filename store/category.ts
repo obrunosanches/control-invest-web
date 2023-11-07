@@ -23,7 +23,7 @@ export const useCategoryStore = defineStore('categoryStore', {
   actions: {
     async fetchCategoriesByType(categoryTypeId) {
       try {
-        this.categories = await $fetch<CategoryWithIncludes[]>(`/api/category/${categoryTypeId}`)
+        this.categories = await $fetch<CategoryWithIncludes[]>(`/api/category?type=${categoryTypeId}`)
       } catch (error) {
         console.error(error)
       }
@@ -32,7 +32,7 @@ export const useCategoryStore = defineStore('categoryStore', {
       const apiUrl = `/api/category${category.id ? `/${category.id}` : ''}`
       
       try {
-        const response = await $fetch<Category>(apiUrl, {
+        await $fetch<Category>(apiUrl, {
           method: category.id ? 'PUT' : 'POST',
           body: {
             name: category.name,
