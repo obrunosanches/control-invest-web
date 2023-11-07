@@ -79,6 +79,7 @@ const handleSelectDate = (value) => {
   const newDate = currentDate.setFullYear(currentDate.getFullYear(), value)
 
   setDateSelected(new Date(newDate))
+  toggleShowSelectByMonth()
 }
 
 watchEffect(() => {
