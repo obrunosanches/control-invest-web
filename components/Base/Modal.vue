@@ -85,7 +85,7 @@ const containerModalClasseName = computed(() => modalPositionClasses[props.posit
               v-close-modal="props.target"
               input-class="text-sm ml-auto flex items-center hover:text-gray-300 text-gray-50"
             >
-              <icons-close class="w-[16px] h-[16px]" />
+              <icons-close class="w-[20px] h-[20px] hover:text-gray-400" stroke-width="2.5" />
             </form-kit>
           </header>
 
@@ -95,3 +95,12 @@ const containerModalClasseName = computed(() => modalPositionClasses[props.posit
     </div>
   </div>
 </template>
+
+<style>
+[data-invalid] .formkit-messages {
+  color: rgb(220 38 38);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.25rem;
+}
+</style>
