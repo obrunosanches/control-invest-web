@@ -26,7 +26,7 @@ onMounted(() => {
   })
 })
 
-const yearMonthLabel = computed(() => {
+const monthYearLabel = computed(() => {
   const finalDate = formatDate({
     date: dateSelected.value,
     formatOptions: formatOptions.value
@@ -103,7 +103,7 @@ watchEffect(() => {
     </form-kit>
 
     <form-kit
-      :label="yearMonthLabel"
+      :label="monthYearLabel"
       type="button"
       wrapper-class="w-48"
       input-class="w-full border border-2 border-purple-700 hover:border-purple-500 text-white py-2.5 px-5 font-medium rounded-full text-sm"
