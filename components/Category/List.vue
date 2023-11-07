@@ -36,14 +36,14 @@ const emit = defineEmits<{
                     {{ category.name }}
                   </td>
                   <td class="w-36 px-6 py-6">
-                    <div class="flex gap-2">
+                    <div class="flex justify-center items-center gap-2">
                       <form-kit
                         type="button"
                         wrapper-class="flex"
                         :ignore="false"
                         @click="emit('handleClickSubCategory', category, null, 'create')"
                       >
-                        <icons-plus-circle />
+                        <icons-plus-circle class="text-lime-500 hover:text-lime-300" />
                       </form-kit>
                       <form-kit
                         type="button"
@@ -51,7 +51,7 @@ const emit = defineEmits<{
                         :ignore="false"
                         @click="emit('handleClickCategory', category, 'update')"
                       >
-                        <icons-edit />
+                        <icons-edit class="text-indigo-500 hover:text-indigo-400" />
                       </form-kit>
                       <form-kit
                         type="button"
@@ -59,7 +59,7 @@ const emit = defineEmits<{
                         :ignore="false"
                         @click="emit('handleClickCategory', category, 'delete')"
                       >
-                        <icons-delete />
+                        <icons-delete class="text-rose-600 hover:text-rose-500" />
                       </form-kit>
                     </div>
                   </td>

@@ -1,5 +1,5 @@
 <template>
   <icons-base>
-    <path d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
   </icons-base>
 </template>
