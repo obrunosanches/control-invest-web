@@ -26,7 +26,7 @@ onMounted(() => {
   })
 })
 
-const monthYearSelected = computed(() => {
+const yearMonthLabel = computed(() => {
   const finalDate = formatDate({
     date: dateSelected.value,
     formatOptions: formatOptions.value
@@ -39,6 +39,11 @@ const toggleShowSelectByMonth = () => {
   shouldShowSelectDateByMonth.value = !shouldShowSelectDateByMonth.value
 }
 
+const setDateSelected = (date: Date = new Date(), options: Intl.DateTimeFormatOptions = optionsDefault) => {
+  dateSelected.value = date
+  formatOptions.value = options
+}
+
 const handleShowMonths = () => {
   if (!shouldShowSelectDateByMonth.value) {
     formatOptions.value = { year: 'numeric' }
@@ -47,6 +52,12 @@ const handleShowMonths = () => {
 }
 
 const handleNavigateDate = (value): void => {
+  if (!value) {
+    setDateSelected()
+    toggleShowSelectByMonth()
+    return void 0
+  }
+
   const currentDate = dateSelected.value
   let newDate: Date
 
@@ -67,9 +78,7 @@ const handleSelectDate = (value) => {
   const currentDate = dateSelected.value
   const newDate = currentDate.setFullYear(currentDate.getFullYear(), value)
 
-  dateSelected.value = new Date(newDate)
-  formatOptions.value = optionsDefault
-  toggleShowSelectByMonth()
+  setDateSelected(new Date(newDate))
 }
 
 watchEffect(() => {
@@ -94,12 +103,21 @@ watchEffect(() => {
     </form-kit>
 
     <form-kit
-      :label="monthYearSelected"
+      :label="yearMonthLabel"
       type="button"
       wrapper-class="w-48"
       input-class="w-full border border-2 border-purple-700 hover:border-purple-500 text-white py-2.5 px-5 font-medium rounded-full text-sm"
       label-class="text-purple-700 hover:text-purple-500 font-bold"
       @click="handleShowMonths"
+    />
+
+    <form-kit
+      v-if="shouldShowSelectDateByMonth"
+      label="Hoje"
+      type="button"
+      input-class="border border-2 border-purple-700 hover:border-purple-500 text-white py-2.5 px-5 font-medium rounded-full text-sm"
+      label-class="text-purple-700 hover:text-purple-500 font-bold"
+      @click="handleNavigateDate(null)"
     />
 
     <form-kit
