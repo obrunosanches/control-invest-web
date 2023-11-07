@@ -2,6 +2,8 @@
 import { formatDate } from "~/utils/date"
 import { firstLetterUppercase } from "~/utils/string"
 
+import type { DateSelected } from "~/types"
+
 const optionsDefault: Intl.DateTimeFormatOptions = { month: 'long', year: 'numeric' }
 
 const months = ref<string[]>([])
@@ -10,11 +12,7 @@ const formatOptions = ref<Intl.DateTimeFormatOptions>(optionsDefault)
 const shouldShowSelectDateByMonth = ref<boolean>(false)
 
 const emit = defineEmits<{
-  (e: 'handleClickDateSelect', dateSelected: {
-    date: Date
-    month: string
-    year: string
-  })
+  (e: 'handleClickDateSelect', dateSelected: DateSelected)
 }>()
 
 onMounted(() => {
@@ -77,8 +75,7 @@ const handleSelectDate = (value) => {
 watchEffect(() => {
   if (!shouldShowSelectDateByMonth.value) {
     emit('handleClickDateSelect', {
-      date: dateSelected.value,
-      month: String(dateSelected.value.getMonth() + 1),
+      month: dateSelected.value.getMonth().toString(),
       year: dateSelected.value.getFullYear().toString()
     })
   }
