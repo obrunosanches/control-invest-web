@@ -34,29 +34,14 @@ onBeforeMount(async () => {
   await fetchAccounts()
 })
 
-const categoryTypesOptions = computed(() => categoryTypes.value.map(item => ({
-  value: item.id,
-  label: item.description
-})))
-
-const accountsOptions = computed(() => accounts.value.map(item => ({
-  value: item.id,
-  label: item.name
-})))
-
-const categoriesOptions = computed(() => categories.value.map(item => ({
-  value: item.id,
-  label: item.name
-})))
-
 const subCategoriesOptions = computed(() => {
   if (!categorySelected.value) {
     return []
   }
 
-  return categorySelected.value.subCategory.map(item => ({
-    value: item.id,
-    label: item.name
+  return categorySelected.value.subCategory.map(subCategory => ({
+    value: subCategory.id,
+    label: subCategory.name
   }))
 })
 
@@ -86,7 +71,7 @@ const handleSelectCategory = async (event: Event) => {
           input-class="w-full bg-purple-700 hover:bg-purple-600 text-white py-3.5 px-5 font-medium rounded-full text-sm"
           :options="[
             { label: 'Transações', value: 'transacoes' },
-            ...categoryTypesOptions
+            ...categoryTypes.map(type => ({ value: type.id, label: type.description }))
           ]"
           @change="handleSelectCategoryType"
         />
@@ -152,7 +137,7 @@ const handleSelectCategory = async (event: Event) => {
                   label="Conta"
                   :options="[
                     { label: 'Selecione uma conta', value: '' },
-                    ...accountsOptions
+                    ...accounts.map(account => ({ value: account.id, label: account.name }))
                   ]"
                   validation="required:trim"
                 />
@@ -173,7 +158,7 @@ const handleSelectCategory = async (event: Event) => {
                 label="Categoria"
                 :options="[
                   { label: 'Selecione uma categoria', value: '' },
-                  ...categoriesOptions
+                  ...categories.map(category => ({ value: category.id, label: category.name }))
                 ]"
                 validation="required:trim"
                 @change="handleSelectCategory"
