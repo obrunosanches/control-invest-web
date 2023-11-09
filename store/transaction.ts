@@ -11,15 +11,19 @@ export const useTransactionStore = defineStore('transactionStore', {
     transactions: []
   }),
   actions: {
-    async fetchTransaction(month: string, year: string) {
+    async fetchTransaction(month: string, year: string, typeId: string = null) {
       const currentDate = new Date()
-      const query = {
-        month: month ?? currentDate.getMonth().toString(),
-        year: year ?? currentDate.getFullYear().toString()
+      const queryParams = new URLSearchParams()
+      
+      queryParams.append('month', month ?? currentDate.getMonth().toString())
+      queryParams.append('year', year ?? currentDate.getFullYear().toString())
+      
+      if (typeId) {
+        typeId && queryParams.append('type', typeId)
       }
       
       try {
-        this.transactions = await $fetch<Transaction[]>(`/api/transaction?month=${query.month}&year=${query.year}`)
+        this.transactions = await $fetch<Transaction[]>(`/api/transaction?${queryParams.toString()}`)
       } catch (error) {
         console.error(error)
       }
