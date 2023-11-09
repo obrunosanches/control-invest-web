@@ -206,7 +206,7 @@ const handleSubmit = async (payload) => {
             </div>
           </div>
 
-          <section class="p-6 rounded-b border-t border-gray-600 text-right">
+          <section class="p-6 rounded-b border-t border-black[0.9] text-right">
             <form-kit
               type="submit"
               input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm"
