@@ -1,15 +1,80 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia"
+
 import { useTransactionStore } from "~/store/transaction"
+import { useCategoryTypeStore } from "~/store/categoryType"
+import { useCategoryStore } from "~/store/category"
+import { useAccountStore } from "~/store/account"
 
+import type { CategoryType } from "@prisma/client"
 import type { DateSelected } from "~/types"
+import type { CategoryWithIncludes } from "~/store/category"
 
-const { fetchTransaction } = useTransactionStore()
+const transactionStore = useTransactionStore()
+const categoryTypeStore = useCategoryTypeStore()
+const categoryStore = useCategoryStore()
+const accountStore = useAccountStore()
+
+const { fetchCategoryTypes } = categoryTypeStore
+const { fetchTransaction } = transactionStore
+const { fetchAccounts } = accountStore
+const { fetchCategoriesByType } = categoryStore
+
+const { categoryTypes } = storeToRefs(categoryTypeStore)
+const { accounts } = storeToRefs(accountStore)
+const { categories } = storeToRefs(categoryStore)
 
 const modalTarget = 'main-modal'
 const transactionFormId = 'transaction-form'
+const categoryTypeSelected = ref<CategoryType>(null)
+const categorySelected = ref<CategoryWithIncludes>(null)
+
+onBeforeMount(async () => {
+  await fetchCategoryTypes()
+  await fetchAccounts()
+})
+
+const categoryTypesOptions = computed(() => categoryTypes.value.map(item => ({
+  value: item.id,
+  label: item.description
+})))
+
+const accountsOptions = computed(() => accounts.value.map(item => ({
+  value: item.id,
+  label: item.name
+})))
+
+const categoriesOptions = computed(() => categories.value.map(item => ({
+  value: item.id,
+  label: item.name
+})))
+
+const subCategoriesOptions = computed(() => {
+  if (!categorySelected.value) {
+    return []
+  }
+
+  return categorySelected.value.subCategory.map(item => ({
+    value: item.id,
+    label: item.name
+  }))
+})
 
 const handleDateSelected = async (event: DateSelected) => {
-  await fetchTransaction(event.month, event.year)
+  await fetchTransaction(event.month, event.year, categoryTypeSelected.value?.id)
+  await fetchCategoriesByType(categoryTypeSelected.value?.id)
+}
+
+const handleSelectCategoryType = async (event: Event) => {
+  const select = event.target as HTMLSelectElement
+
+  categoryTypeSelected.value = categoryTypes.value.find(type => type.id === select.value)
+}
+
+const handleSelectCategory = async (event: Event) => {
+  const select = event.target as HTMLSelectElement
+
+  categorySelected.value = categories.value.find(category => category.id === select.value)
 }
 </script>
 
@@ -18,26 +83,18 @@ const handleDateSelected = async (event: DateSelected) => {
     <div class="flex justify-between gap-4 mt-6">
       <div class="w-1/3">
         <form-select
-          name="accountTypeId"
           input-class="w-full bg-purple-700 hover:bg-purple-600 text-white py-3.5 px-5 font-medium rounded-full text-sm"
-          :options="[{
-            label: 'Transações',
-            value: 'transacos'
-          }, {
-            label: 'Despesas',
-            value: 'despesas'
-          }, {
-            label: 'Receitas',
-            value: 'receitas'
-          }, {
-            label: 'Transferências',
-            value: 'transferencias'
-          }]"
+          :options="[
+            { label: 'Transações', value: 'transacoes' },
+            ...categoryTypesOptions
+          ]"
+          @change="handleSelectCategoryType"
         />
       </div>
 
       <div class="items-end">
         <form-kit
+          v-if="categoryTypeSelected"
           type="button"
           label="Nova Receita"
           class="w-fit"
@@ -56,7 +113,6 @@ const handleDateSelected = async (event: DateSelected) => {
     </div>
 
     <base-modal
-      ref="modalTarget"
       :target="modalTarget"
       :title="'Transação'"
       size="3xl"
@@ -94,10 +150,11 @@ const handleDateSelected = async (event: DateSelected) => {
                 <form-select
                   name="accountId"
                   label="Conta"
-                  :options="[{
-                      label: 'Itaú',
-                      value: 'cb23c245234j5j2345'
-                    }]"
+                  :options="[
+                    { label: 'Selecione uma conta', value: '' },
+                    ...accountsOptions
+                  ]"
+                  validation="required:trim"
                 />
               </div>
             </div>
@@ -114,19 +171,22 @@ const handleDateSelected = async (event: DateSelected) => {
               <form-select
                 name="categoryId"
                 label="Categoria"
-                :options="[{
-                  label: 'Benefícios',
-                  value: 'bwe4jb23452j34b5jb23j'
-                }]"
+                :options="[
+                  { label: 'Selecione uma categoria', value: '' },
+                  ...categoriesOptions
+                ]"
+                validation="required:trim"
+                @change="handleSelectCategory"
               />
 
               <form-select
                 name="categoryId"
-                label="Categoria"
-                :options="[{
-                  label: 'Salário',
-                  value: 'cw34uc534c5i34c5ic234'
-                }]"
+                label="Sub Categoria"
+                :options="[
+                  { label: 'Selecione uma Sub Categoria', value: '' },
+                  ...subCategoriesOptions
+                ]"
+                validation="required:trim"
               />
             </div>
           </div>
