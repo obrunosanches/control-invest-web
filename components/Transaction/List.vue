@@ -58,15 +58,13 @@ const props = defineProps<{
               type="button"
               wrapper-class="flex"
               :ignore="false"
-              @click="emit('handleClickCategory', category, 'update')"
             >
-              <icons-edit class="text-indigo-500 hover:text-indigo-400" />
+              <icons-edit class="text-blue-500 hover:text-blue-400" />
             </form-kit>
             <form-kit
               type="button"
               wrapper-class="flex"
               :ignore="false"
-              @click="emit('handleClickCategory', category, 'delete')"
             >
               <icons-delete class="text-rose-600 hover:text-rose-500" />
             </form-kit>
