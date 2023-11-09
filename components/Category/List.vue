@@ -4,8 +4,8 @@ import type { ItemActionType } from "~/types"
 import type { CategoryWithIncludes } from "~/store/category"
 
 const props = defineProps<{
-  categories: CategoryWithIncludes[]}
->()
+  categories: CategoryWithIncludes[]
+}>()
 
 const emit = defineEmits<{
   (e: 'handleClickCategory', category: Category, action: ItemActionType): void
@@ -20,10 +20,10 @@ const emit = defineEmits<{
     </div>
     <base-table v-else>
       <template #head>
-        <tr>
+        <th>
           <td class="px-6 py-6">Nome</td>
           <td class="w-36 px-6 py-6">Ações</td>
-        </tr>
+        </th>
       </template>
 
       <template #body>
@@ -36,7 +36,7 @@ const emit = defineEmits<{
                     {{ category.name }}
                   </td>
                   <td class="w-36 px-6 py-6">
-                    <div class="flex justify-center items-center gap-2">
+                    <div class="flex gap-2">
                       <form-kit
                         type="button"
                         wrapper-class="flex"
