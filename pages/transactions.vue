@@ -118,8 +118,12 @@ const handleSubmit = async (payload) => {
       </div>
     </div>
 
-    <div class="mt-8 p-5 bg-white rounded-lg border border-black[0.07]">
-      <month-year-selected @handle-click-date-select="handleDateSelected" />
+    <div class="bg-slate-50 border border-black[0.07] rounded-3xl mt-8">
+      <div class="px-6 py-6">
+        <month-year-selected @handle-click-date-select="handleDateSelected" />
+      </div>
+
+      <transaction-list :transactions="transactions" />
     </div>
 
     <base-modal
@@ -202,7 +206,7 @@ const handleSubmit = async (payload) => {
             </div>
           </div>
 
-          <section class="p-6 rounded-b border-t border-black[0.9] text-right">
+          <section class="p-6 rounded-b border-t border-gray-600 text-right">
             <form-kit
               type="submit"
               input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm"
