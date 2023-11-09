@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia"
+import { reset } from "@formkit/core"
 
 import { useTransactionStore } from "~/store/transaction"
 import { useCategoryTypeStore } from "~/store/categoryType"
 import { useCategoryStore } from "~/store/category"
 import { useAccountStore } from "~/store/account"
+import { closeModal } from "~/plugins/modal"
 
 import type { CategoryType } from "@prisma/client"
 import type { DateSelected } from "~/types"
 import type { CategoryWithIncludes } from "~/store/category"
+import type { FetchTransactionFilter } from "~/store/transaction"
 
 const transactionStore = useTransactionStore()
 const categoryTypeStore = useCategoryTypeStore()
@@ -16,16 +19,18 @@ const categoryStore = useCategoryStore()
 const accountStore = useAccountStore()
 
 const { fetchCategoryTypes } = categoryTypeStore
-const { fetchTransaction } = transactionStore
+const { fetchTransaction, createTransaction } = transactionStore
 const { fetchAccounts } = accountStore
 const { fetchCategoriesByType } = categoryStore
 
 const { categoryTypes } = storeToRefs(categoryTypeStore)
 const { accounts } = storeToRefs(accountStore)
 const { categories } = storeToRefs(categoryStore)
+const { transactions } = storeToRefs(transactionStore)
 
 const modalTarget = 'main-modal'
 const transactionFormId = 'transaction-form'
+const transactionFilters = ref<FetchTransactionFilter>(null)
 const categoryTypeSelected = ref<CategoryType>(null)
 const categorySelected = ref<CategoryWithIncludes>(null)
 
@@ -46,7 +51,13 @@ const subCategoriesOptions = computed(() => {
 })
 
 const handleDateSelected = async (event: DateSelected) => {
-  await fetchTransaction(event.month, event.year, categoryTypeSelected.value?.id)
+  transactionFilters.value = {
+    month: event.month,
+    year: event.year,
+    typeId: categoryTypeSelected.value?.id
+  }
+
+  await fetchTransaction(transactionFilters.value)
   await fetchCategoriesByType(categoryTypeSelected.value?.id)
 }
 
@@ -60,6 +71,20 @@ const handleSelectCategory = async (event: Event) => {
   const select = event.target as HTMLSelectElement
 
   categorySelected.value = categories.value.find(category => category.id === select.value)
+}
+
+const handleSubmit = async (payload) => {
+  try {
+    await createTransaction({
+      ...payload,
+      categoryTypeId: categoryTypeSelected.value.id
+    }, transactionFilters.value)
+  } catch (error) {
+    console.error(error)
+  } finally {
+    closeModal(modalTarget)
+    reset(transactionFormId)
+  }
 }
 </script>
 
@@ -105,9 +130,10 @@ const handleSelectCategory = async (event: Event) => {
       <template #body>
         <form-kit
           :id="transactionFormId"
-          type="form"
           :actions="false"
           :incomplete-message="false"
+          type="form"
+          @submit="handleSubmit"
         >
           <div class="p-6">
             <div class="flex gap-4">
@@ -165,7 +191,7 @@ const handleSelectCategory = async (event: Event) => {
               />
 
               <form-select
-                name="categoryId"
+                name="subCategoryId"
                 label="Sub Categoria"
                 :options="[
                   { label: 'Selecione uma Sub Categoria', value: '' },
