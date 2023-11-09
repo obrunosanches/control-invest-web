@@ -62,7 +62,7 @@ const containerModalClasseName = computed(() => modalPositionClasses[props.posit
     class="fixed top-0 left-0 right-0 z-50 hidden"
     aria-modal="true"
   >
-    <div class="bg-gray-900 dark:bg-opacity-80 fixed inset-0 z-40" />
+    <div class="bg-gray-900/30 fixed inset-0 z-40" />
     <div
       tabindex="-1"
       role="dialog"
@@ -70,13 +70,13 @@ const containerModalClasseName = computed(() => modalPositionClasses[props.posit
       :class="containerModalClasseName"
     >
       <div class="relative p-4 w-full h-full md:h-auto" :class="modalClassName">
-        <div class="relative rounded-lg shadow dark:bg-gray-700">
+        <div class="relative rounded-lg shadow bg-white border-black[0.07]">
           <header
-            class="flex items-center justify-between border-b dark:border-gray-600 rounded-t p-5"
+            class="flex items-center justify-between border-b border-black[0.07] p-5"
             aria-labelledby="modal-title"
             v-if="props.title"
           >
-            <h3 class="text-xl font-medium text-white">
+            <h3 class="text-xl font-medium">
               {{ props.title }}
             </h3>
 
@@ -85,7 +85,7 @@ const containerModalClasseName = computed(() => modalPositionClasses[props.posit
               v-close-modal="props.target"
               input-class="text-sm ml-auto flex items-center hover:text-gray-300 text-gray-50"
             >
-              <icons-close class="w-[20px] h-[20px] hover:text-gray-400" stroke-width="2.5" />
+              <icons-close class="w-[20px] h-[20px] text-gray-700 hover:text-gray-500" stroke-width="2.5" />
             </form-kit>
           </header>
 

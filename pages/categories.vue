@@ -125,7 +125,7 @@ const handleFormSubCategorySubmit = async (payload): Promise<void> => {
 
 <template>
   <client-only>
-    <h1 class="text-gray-300 text-3xl font-bold">
+    <h1 class="text-3xl font-bold">
       Categorias
     </h1>
 
@@ -182,7 +182,7 @@ const handleFormSubCategorySubmit = async (payload): Promise<void> => {
                 </div>
               </div>
 
-              <section class="p-6 rounded-b border-t border-gray-600 text-right">
+              <section class="p-6 rounded-b border-t border-black[0.9] text-right">
                 <form-kit
                   type="submit"
                   input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm"
@@ -220,7 +220,7 @@ const handleFormSubCategorySubmit = async (payload): Promise<void> => {
                 </div>
               </div>
 
-              <section class="p-6 rounded-b border-t border-gray-600 text-right">
+              <section class="p-6 rounded-b border-t border-black[0.9] text-right">
                 <form-kit
                   type="submit"
                   input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm"

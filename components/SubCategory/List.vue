@@ -15,19 +15,19 @@ const emit = defineEmits<{
 <template>
   <base-table>
     <template #head>
-      <tr>
-        <td colspan="2" class="py-2">
+      <th>
+        <td colspan="2" class="py-4">
           <span>Sub Categorias</span>
         </td>
-      </tr>
+      </th>
     </template>
 
     <template #body>
       <base-table-body-row v-for="subCategory in props.category.subCategory">
-        <td class="py-2">
+        <td class="py-4">
           {{ subCategory.name }}
         </td>
-        <td class="py-2 w-1/12">
+        <td class="py-4 w-1/12">
           <div class="flex justify-center items-center gap-2">
             <form-kit
               type="button"
@@ -35,7 +35,7 @@ const emit = defineEmits<{
               :ignore="false"
               @click="emit('handleClick', subCategory, 'update')"
             >
-              <icons-edit class="text-indigo-500 hover:text-indigo-400" />
+              <icons-edit class="text-blue-500 hover:text-blue-400" />
             </form-kit>
             <form-kit
               type="button"

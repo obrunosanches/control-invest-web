@@ -3,10 +3,10 @@ const slots = useSlots()
 </script>
 
 <template>
-  <table class="w-full text-sm text-gray-400" v-bind="useAttrs()">
+  <table class="w-full text-sm" v-bind="useAttrs()">
     <thead
       v-if="slots.head"
-      class="uppercase text-gray-300 text-xs font-bold"
+      class="uppercase text-xs font-bold border-b border-black/10"
     >
       <slot name="head" />
     </thead>
@@ -15,10 +15,7 @@ const slots = useSlots()
       <slot name="body" />
     </tbody>
 
-    <tfoot
-      v-if="slots.foot"
-      class="text-gray-400 uppercase"
-    >
+    <tfoot v-if="slots.foot" class="uppercase border-t border-black/10">
       <slot name="foot" />
     </tfoot>
   </table>

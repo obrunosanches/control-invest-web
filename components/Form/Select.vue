@@ -12,10 +12,9 @@ const props = defineProps({
   <form-kit
     type="select"
     :options="props.options"
-    label-class="block mb-2 text-sm font-medium dark:text-gray-300"
+    label-class="block mb-2 text-sm font-medium"
     outer-class="w-full"
-    input-class="w-full border rounded p-2.5 text-sm bg-gray-600 border-gray-500 placeholder-gray-400 text-white"
-    help-class="text-xs text-gray-500"
+    input-class="w-full rounded p-2.5 text-sm bg-white border border-black/30"
     v-bind="useAttrs()"
   />
 </template>

@@ -11,7 +11,7 @@ const props = defineProps({
   <li>
     <router-link
       :to="props.route"
-      class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700"
+      class="flex items-center p-3 rounded-lg text-gray-500 hover:bg-slate-100"
     >
       <slot name="before"></slot>
       <slot></slot>

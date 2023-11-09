@@ -2,7 +2,7 @@
 useHead({
   title: 'Control Invest',
   bodyAttrs: {
-    class: 'bg-gray-900'
+    class: 'bg-slate-100 text-gray-600'
   }
 })
 </script>
@@ -11,7 +11,7 @@ useHead({
   <div class="flex">
     <div class="shrink-0 w-48">
       <aside
-          class="h-full w-48 fixed border-r border-b-0 bg-gray-800 border-gray-700"
+          class="h-full w-48 fixed border-r bg-white border-black[0.07]"
           aria-label="Sidebar"
       >
         <ul class="px-3 py-4 space-y-2">

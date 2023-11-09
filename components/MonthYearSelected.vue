@@ -107,7 +107,7 @@ watchEffect(() => {
       :label="monthYearLabel"
       type="button"
       wrapper-class="w-48"
-      input-class="w-full border border-2 border-purple-700 hover:border-purple-500 text-white py-2.5 px-5 font-medium rounded-full text-sm"
+      input-class="w-full border border-2 border-purple-700 hover:border-purple-500 text-purple-700 font-medium py-2.5 px-5 rounded-full text-sm"
       label-class="text-purple-700 hover:text-purple-500 font-bold"
       @click="handleShowMonths"
     />
@@ -116,7 +116,7 @@ watchEffect(() => {
       v-if="shouldShowSelectDateByMonth"
       label="Hoje"
       type="button"
-      input-class="border border-2 border-purple-700 hover:border-purple-500 text-white py-2.5 px-5 font-medium rounded-full text-sm"
+      input-class="border border-2 border-purple-700 hover:border-purple-500 text-purple-700 font-medium py-2.5 px-5 rounded-full text-sm"
       label-class="text-purple-700 hover:text-purple-500 font-bold"
       @click="handleNavigateDate(null)"
     />
@@ -136,7 +136,7 @@ watchEffect(() => {
       v-for="index of Object.keys(months)"
       :label="months[index]"
       type="button"
-      input-class="border border-2 border-purple-700 hover:border-purple-500 text-white py-2.5 px-5 font-medium rounded-full text-sm"
+      input-class="border border-2 border-purple-700 hover:border-purple-500 text-purple-700 font-medium py-2.5 px-5 rounded-full text-sm"
       label-class="text-purple-700 hover:text-purple-500 font-bold"
       @click="handleSelectDate(index)"
     />

@@ -14,8 +14,8 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="bg-gray-700 rounded-3xl mt-8">
-    <div v-if="!categories.length" class="px-6 py-8 text-gray-400 font-medium">
+  <div class="bg-slate-50 border border-black[0.07] rounded-3xl mt-8">
+    <div v-if="!categories.length" class="px-6 py-8 font-medium">
       Nenhum registro encontrado
     </div>
     <base-table v-else>
@@ -43,7 +43,7 @@ const emit = defineEmits<{
                         :ignore="false"
                         @click="emit('handleClickSubCategory', category, null, 'create')"
                       >
-                        <icons-plus-circle class="text-lime-500 hover:text-lime-300" />
+                        <icons-plus-circle class="text-lime-600 hover:text-lime-500" />
                       </form-kit>
                       <form-kit
                         type="button"
@@ -51,7 +51,7 @@ const emit = defineEmits<{
                         :ignore="false"
                         @click="emit('handleClickCategory', category, 'update')"
                       >
-                        <icons-edit class="text-indigo-500 hover:text-indigo-400" />
+                        <icons-edit class="text-blue-500 hover:text-blue-400" />
                       </form-kit>
                       <form-kit
                         type="button"
@@ -66,7 +66,7 @@ const emit = defineEmits<{
                 </tr>
 
                 <tr v-if="category.subCategory.length">
-                  <td colspan="2" class="px-10 pb-6">
+                  <td colspan="2" class="px-6">
                     <sub-category-list
                       :category="category"
                       @handle-click="(subCategory, action) => emit('handleClickSubCategory', category, subCategory, action)"
