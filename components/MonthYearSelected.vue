@@ -106,7 +106,7 @@ watchEffect(() => {
     <form-kit
       :label="monthYearLabel"
       type="button"
-      wrapper-class="w-48"
+      :wrapper-class="shouldShowSelectDateByMonth ? 'w-32' : 'w-52'"
       input-class="w-full border border-2 border-purple-700 hover:border-purple-500 text-purple-700 font-medium py-2.5 px-5 rounded-full text-sm"
       label-class="text-purple-700 hover:text-purple-500 font-bold"
       @click="handleShowMonths"
