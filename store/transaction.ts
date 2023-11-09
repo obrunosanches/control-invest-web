@@ -1,9 +1,16 @@
 import { defineStore } from "pinia"
 
-import type { Transaction } from ".prisma/client"
+import type { Account, Category, CategoryType, SubCategory, Transaction } from "@prisma/client"
+
+export interface TransactionWithIncludes extends Transaction {
+  type: CategoryType
+  category: Category
+  subCategory: SubCategory
+  account: Account
+}
 
 interface State {
-  transactions: Transaction[]
+  transactions: TransactionWithIncludes[]
 }
 
 export interface FetchTransactionFilter {
