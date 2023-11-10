@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type { Account } from "@prisma/client"
 import type { ItemActionType } from "~/types"
+import type { AccountWithIncludes } from "~/store/account"
+import { formatCurrency } from "~/utils/currency"
 
 const props = defineProps<{
-  accounts: AccountWithType[]}
+  accounts: AccountWithIncludes[]}
 >()
 
 const emit = defineEmits<{
@@ -18,7 +20,10 @@ const emit = defineEmits<{
       class="rounded-2xl bg-white p-8"
     >
       <header class="flex">
-        <span class="flex-auto">{{ account.name }}</span>
+        <div class="flex-auto">
+          <span class="block font-bold">{{ account.name }}</span>
+          <span class="block font-bold">{{ formatCurrency({ value: account.initialBalance }) }}</span>
+        </div>
         <div class="flex gap-4">
           <form-kit
             type="button"

@@ -66,7 +66,7 @@ const emit = defineEmits<{
                 </tr>
 
                 <tr v-if="category.subCategory.length">
-                  <td colspan="2" class="px-6">
+                  <td colspan="2" class="px-14">
                     <sub-category-list
                       :category="category"
                       @handle-click="(subCategory, action) => emit('handleClickSubCategory', category, subCategory, action)"
