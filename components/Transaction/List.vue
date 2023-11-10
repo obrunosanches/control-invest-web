@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { TransactionWithIncludes } from "~/store/transaction"
+import { formatCurrency } from "~/utils/currency"
 
 const props = defineProps<{
   transactions: TransactionWithIncludes[]
@@ -30,7 +31,7 @@ const props = defineProps<{
             </g>
             <g v-else transform="translate(-960 -977.271)">
               <g transform="translate(960 977.271)">
-                <circle data-name="Elipse 298" cx="12" cy="12" r="12" fill="#f74444" />
+                <circle cx="12" cy="12" r="12" fill="#f74444" />
               </g>
               <g transform="translate(972 983.811)">
                 <line y2="5.558" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
@@ -51,7 +52,7 @@ const props = defineProps<{
         </td>
         <td class="px-3 py-4">{{ transaction.category.name }}</td>
         <td class="px-3 py-4">{{ transaction.account.name }}</td>
-        <td class="px-3 py-4">{{ transaction.value }}</td>
+        <td class="px-3 py-4">{{ formatCurrency({ value: transaction.value }) }}</td>
         <td class="w-30 px-3 py-4">
           <div class="flex gap-2">
             <form-kit
