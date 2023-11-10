@@ -22,19 +22,20 @@ const emit = defineEmits<{
         <div class="flex gap-4">
           <form-kit
             type="button"
-            label="Editar"
-            input-class="text-green-600"
+            wrapper-class="flex"
+            :ignore="false"
             @click="emit('handleClick', account, 'update')"
           >
-            Editar
+            <icons-edit class="text-blue-500 hover:text-blue-400" />
           </form-kit>
-
           <form-kit
             type="button"
-            label="Remover"
-            input-class="text-red-600"
+            wrapper-class="flex"
+            :ignore="false"
             @click="$emit('handleClick', account, 'delete')"
-          />
+          >
+            <icons-delete class="text-rose-600 hover:text-rose-500" />
+          </form-kit>
         </div>
       </header>
 
