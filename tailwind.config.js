@@ -9,7 +9,11 @@ module.exports = {
     "./app.vue",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'sans': ['Manrope', 'sans-serif']
+      }
+    }
   },
   plugins: [],
 }
