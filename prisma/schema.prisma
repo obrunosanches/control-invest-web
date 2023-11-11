@@ -54,7 +54,7 @@ model Account {
   accountTypeId  String        @db.ObjectId
   name           String
   initialBalance Float
-  balance        Float
+  balance        Float?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   accountType    AccountType   @relation("fk_account_account_type", fields: [accountTypeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
