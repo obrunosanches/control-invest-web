@@ -46,13 +46,22 @@ const props = defineProps<{
               date: transaction.date,
               formatOptions: { day: '2-digit', month: '2-digit', year: 'numeric' }
             })
-          }}</td>
+          }}
+        </td>
+        <td
+          :class="[
+            transaction.type.slug === 'earnings' && 'text-green-500',
+            transaction.type.slug === 'expenses' && 'text-red-500'
+          ].join(' ')"
+          class="px-3 py-4"
+        >
+          {{ formatCurrency({ value: transaction.value }) }}
+        </td>
         <td class="px-3 py-4">
           {{ transaction.description }}
         </td>
         <td class="px-3 py-4">{{ transaction.category.name }}</td>
         <td class="px-3 py-4">{{ transaction.account.name }}</td>
-        <td class="px-3 py-4">{{ formatCurrency({ value: transaction.value }) }}</td>
         <td class="w-30 px-3 py-4">
           <div class="flex gap-2">
             <form-kit
