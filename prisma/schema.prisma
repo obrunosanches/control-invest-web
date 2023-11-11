@@ -20,6 +20,7 @@ model AccountType {
 
 model CategoryType {
   id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  slug        String
   description String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
@@ -33,7 +34,7 @@ model Category {
   name        String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  type        CategoryType  @relation("fk_category_type", fields: [typeId], references: [id], onDelete: Cascade)
+  type        CategoryType  @relation("fk_category_type", fields: [typeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   subCategory SubCategory[] @relation("fk_sub_category_category")
   transaction Transaction[] @relation("fk_transaction_category")
 }
@@ -44,7 +45,7 @@ model SubCategory {
   name        String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  category    Category      @relation("fk_sub_category_category", fields: [categoryId], references: [id])
+  category    Category      @relation("fk_sub_category_category", fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   transaction Transaction[] @relation("fk_transaction_sub_category")
 }
 
@@ -53,9 +54,10 @@ model Account {
   accountTypeId  String        @db.ObjectId
   name           String
   initialBalance Float
+  balance        Float
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
-  accountType    AccountType   @relation("fk_account_account_type", fields: [accountTypeId], references: [id], onDelete: Cascade)
+  accountType    AccountType   @relation("fk_account_account_type", fields: [accountTypeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   transaction    Transaction[] @relation("fk_transaction_account")
 }
 
@@ -72,8 +74,8 @@ model Transaction {
   mustIgnore     Boolean
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
-  type           CategoryType @relation("fk_transaction_type", fields: [categoryTypeId], references: [id], onDelete: Cascade)
-  category       Category     @relation("fk_transaction_category", fields: [categoryId], references: [id])
-  subCategory    SubCategory  @relation("fk_transaction_sub_category", fields: [subCategoryId], references: [id])
-  account        Account      @relation("fk_transaction_account", fields: [accountId], references: [id])
+  type           CategoryType @relation("fk_transaction_type", fields: [categoryTypeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  category       Category     @relation("fk_transaction_category", fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  subCategory    SubCategory  @relation("fk_transaction_sub_category", fields: [subCategoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  account        Account      @relation("fk_transaction_account", fields: [accountId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
