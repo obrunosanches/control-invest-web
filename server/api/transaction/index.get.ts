@@ -19,6 +19,9 @@ export default defineEventHandler((event) => {
   
   return prisma.transaction.findMany({
     where: filters,
+    orderBy: {
+      createdAt: 'asc'
+    },
     include: {
       type: true,
       category: true,
