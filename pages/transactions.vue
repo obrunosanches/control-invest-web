@@ -11,7 +11,7 @@ import { closeModal } from "~/plugins/modal"
 import type { CategoryType } from "@prisma/client"
 import type { DateSelected } from "~/types"
 import type { CategoryWithIncludes } from "~/store/category"
-import type { FetchTransactionFilter } from "~/store/transaction"
+import type { FetchTransactionFilter, TransactionWithIncludes } from "~/store/transaction"
 
 const transactionStore = useTransactionStore()
 const categoryTypeStore = useCategoryTypeStore()
@@ -19,7 +19,7 @@ const categoryStore = useCategoryStore()
 const accountStore = useAccountStore()
 
 const { fetchCategoryTypes } = categoryTypeStore
-const { fetchTransaction, createTransaction } = transactionStore
+const { fetchTransaction, getTransactionsByCategoryType, createTransaction } = transactionStore
 const { fetchAccounts } = accountStore
 const { fetchCategoriesByType } = categoryStore
 
@@ -30,6 +30,7 @@ const { transactions } = storeToRefs(transactionStore)
 
 const modalTarget = 'main-modal'
 const transactionFormId = 'transaction-form'
+const transactionsByCategoryType = ref<TransactionWithIncludes>(transactions.value)
 const transactionFilters = ref<FetchTransactionFilter>(null)
 const categoryTypeSelected = ref<CategoryType>(null)
 const categorySelected = ref<CategoryWithIncludes>(null)
@@ -86,6 +87,9 @@ const handleSubmit = async (payload) => {
     reset(transactionFormId)
   }
 }
+
+watch(transactions, () => (transactionsByCategoryType.value = getTransactionsByCategoryType(categoryTypeSelected.value?.id)))
+watch(categoryTypeSelected, () => transactionsByCategoryType.value = getTransactionsByCategoryType(categoryTypeSelected.value?.id))
 </script>
 
 <template>
@@ -118,12 +122,16 @@ const handleSubmit = async (payload) => {
       </div>
     </div>
 
-    <div class="bg-slate-50 border border-black[0.07] rounded-3xl mt-8">
+    <div class="flex gap-4 mt-8">
+      <transaction-result-by-month />
+    </div>
+
+    <div class="bg-slate-50 border border-black[0.07] rounded-2xl mt-4">
       <div class="px-6 py-6">
         <month-year-selected @handle-click-date-select="handleDateSelected" />
       </div>
 
-      <transaction-list :transactions="transactions" />
+      <transaction-list :transactions="transactionsByCategoryType" />
     </div>
 
     <base-modal
