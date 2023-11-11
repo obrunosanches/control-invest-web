@@ -1,7 +1,5 @@
 import { defineStore } from 'pinia'
 
-import { useAccountTypesStore } from "~/store/accountType"
-
 import type { Account, AccountType } from "@prisma/client"
 
 export interface AccountWithIncludes extends Account {
@@ -26,17 +24,21 @@ export const useAccountStore = defineStore('accounts', {
       }
     },
     async createOrUpdateAccount(account: Account) {
-      const { accountTypes } = useAccountTypesStore()
       const apiUrl = `/api/accounts${account.id ? `/${account.id}` : ''}`
+      const accountData: Account = {
+        name: account.name,
+        accountTypeId: account.accountTypeId
+      }
+      
+      if (!account.id) {
+        accountData.initialBalance = Number(account.initialBalance || 0)
+        accountData.balance = Number(account.initialBalance || 0)
+      }
       
       try {
-        const response = await $fetch<Account>(apiUrl, {
+        await $fetch<Account>(apiUrl, {
           method: account.id ? 'PUT' : 'POST',
-          body: {
-            name: account.name,
-            initialBalance: Number(account.initialBalance || 0),
-            accountTypeId: account.accountTypeId
-          }
+          body: accountData
         })
       } catch (error) {
         console.error(error)
