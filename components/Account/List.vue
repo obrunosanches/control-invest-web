@@ -17,12 +17,17 @@ const emit = defineEmits<{
   <div class="grid grid-cols-2 grid-rows-1 gap-4 mt-6">
     <div
       v-for="account in props.accounts"
-      class="rounded-2xl bg-white p-8"
+      class="bg-white border border-black[0.07] rounded-2xl p-8"
     >
       <header class="flex">
         <div class="flex-auto">
           <span class="block font-bold">{{ account.name }}</span>
-          <span class="block font-bold">{{ formatCurrency({ value: account.initialBalance }) }}</span>
+          <span class="block font-bold mt-4">
+            Saldo atual:
+            <span class="text-green-500">
+              {{ formatCurrency({ value: account.balance }) }}
+            </span>
+          </span>
         </div>
         <div class="flex gap-4">
           <form-kit
@@ -48,23 +53,35 @@ const emit = defineEmits<{
         <div class="basis-1/3">
           <form-kit
             type="button"
-            label="Adicionar receita"
-            input-class="w-full bg-transparent border rounded p-3"
-          />
+            wrapper-class="flex"
+            input-class="flex gap-2"
+            :ignore="false"
+          >
+            <icons-plus-circle class="text-lime-600 hover:text-lime-500" />
+            Receita
+          </form-kit>
         </div>
         <div class="basis-1/3">
           <form-kit
             type="button"
-            label="Adicionar depesa"
-            input-class="w-full bg-transparent border rounded p-3"
-          />
+            wrapper-class="flex"
+            input-class="flex gap-2"
+            :ignore="false"
+          >
+            <icons-plus-circle class="text-red-600 hover:text-red-500" />
+            Despesa
+          </form-kit>
         </div>
         <div class="basis-1/3">
           <form-kit
             type="button"
-            label="Ver transações"
-            input-class="w-full bg-transparent border rounded p-3"
-          />
+            wrapper-class="flex"
+            input-class="flex gap-2"
+            :ignore="false"
+          >
+            <icons-transaction />
+            Transações
+          </form-kit>
         </div>
       </div>
     </div>

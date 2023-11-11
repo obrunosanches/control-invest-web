@@ -113,6 +113,7 @@ const handleSubmit = async (payload): Promise<void> => {
                   validation="required:trim"
                 />
                 <form-input
+                  v-if="!accountSelected.id"
                   name="initialBalance"
                   label="Valor inicial"
                 />
