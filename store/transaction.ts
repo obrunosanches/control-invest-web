@@ -1,6 +1,7 @@
 import { defineStore } from "pinia"
 
 import type { Account, Category, CategoryType, SubCategory, Transaction } from "@prisma/client"
+import type { CategoryTypeSlug } from "~/types"
 
 export interface TransactionWithIncludes extends Transaction {
   type: CategoryType
@@ -16,13 +17,35 @@ interface State {
 export interface FetchTransactionFilter {
   month: string
   year: string
-  typeId: string
+  typeId?: string
 }
 
 export const useTransactionStore = defineStore('transactionStore', {
   state: (): State => ({
     transactions: []
   }),
+  getters: {
+    getBalance(state: State) {
+      return (slug?: CategoryTypeSlug) => {
+        if (!slug) {
+          return state.transactions.find(() => true)?.account?.balance ?? 0
+        }
+        
+        return state.transactions
+        .map(transaction => transaction.type.slug === slug ? transaction.value : 0)
+        .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
+      }
+    },
+    getTransactionsByCategoryType(state: State) {
+      return (categoryTypeId: string) => {
+        if (!categoryTypeId) {
+          return state.transactions
+        }
+        
+        return state.transactions.filter((transaction) => transaction.categoryTypeId === categoryTypeId)
+      }
+    }
+  },
   actions: {
     async fetchTransaction(filters: FetchTransactionFilter) {
       const currentDate = new Date()
@@ -30,10 +53,6 @@ export const useTransactionStore = defineStore('transactionStore', {
       
       queryParams.append('month', filters.month ?? currentDate.getMonth().toString())
       queryParams.append('year', filters.year ?? currentDate.getFullYear().toString())
-      
-      if (filters.typeId) {
-        queryParams.append('type', filters.typeId)
-      }
       
       try {
         this.transactions = await $fetch<Transaction[]>(`/api/transaction?${queryParams.toString()}`)
