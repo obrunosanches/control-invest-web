@@ -97,13 +97,12 @@ const handleSubmit = async (payload): Promise<void> => {
       <template #body>
         <section v-if="formModelActionType !== 'delete'">
           <form-kit
-            :id="accountFormId"
             type="form"
+            :id="accountFormId"
             :actions="false"
-            @submit="handleSubmit"
             :incomplete-message="false"
+            @submit="handleSubmit"
             v-model="accountSelected"
-            #default="{ value }"
           >
             <div class="p-6">
               <div class="flex gap-4">
