@@ -19,10 +19,11 @@ const emit = defineEmits<{
       <tr class="bg-slate-200/60">
         <td class="w-24 px-3 py-4">Situação</td>
         <td class="w-28 px-3 py-4">Data</td>
+        <td class="px-3 py-4">Valor</td>
         <td class="px-3 py-4">Descrição</td>
         <td class="px-3 py-4">Catecoria</td>
+        <td class="px-3 py-4">Sub Catecoria</td>
         <td class="px-3 py-4">Conta</td>
-        <td class="px-3 py-4">Valor</td>
         <td class="w-24 px-3 py-4">Ações</td>
       </tr>
     </template>
@@ -67,6 +68,7 @@ const emit = defineEmits<{
           {{ transaction.description }}
         </td>
         <td class="px-3 py-4">{{ transaction.category.name }}</td>
+        <td class="px-3 py-4">{{ transaction.subCategory.name }}</td>
         <td class="px-3 py-4">{{ transaction.account.name }}</td>
         <td class="w-30 px-3 py-4">
           <div class="flex gap-2">
