@@ -6,10 +6,10 @@ import { useTransactionStore } from "~/store/transaction"
 import { useCategoryTypeStore } from "~/store/categoryType"
 import { useCategoryStore } from "~/store/category"
 import { useAccountStore } from "~/store/account"
-import { closeModal } from "~/plugins/modal"
+import { closeModal, showModal } from "~/plugins/modal"
 
 import type { CategoryType } from "@prisma/client"
-import type { DateSelected } from "~/types"
+import type { DateSelected, ItemActionType } from "~/types"
 import type { CategoryWithIncludes } from "~/store/category"
 import type { FetchTransactionFilter, TransactionWithIncludes } from "~/store/transaction"
 
@@ -19,7 +19,7 @@ const categoryStore = useCategoryStore()
 const accountStore = useAccountStore()
 
 const { fetchCategoryTypes } = categoryTypeStore
-const { fetchTransaction, getTransactionsByCategoryType, createTransaction } = transactionStore
+const { fetchTransaction, getTransactionsByCategoryType, createTransaction, deleteTransaction } = transactionStore
 const { fetchAccounts } = accountStore
 const { fetchCategoriesByType } = categoryStore
 
@@ -30,8 +30,10 @@ const { transactions } = storeToRefs(transactionStore)
 
 const modalTarget = 'main-modal'
 const transactionFormId = 'transaction-form'
+const formModelActionType = ref<ItemActionType>('create')
 const transactionsByCategoryType = ref<TransactionWithIncludes>(transactions.value)
 const transactionFilters = ref<FetchTransactionFilter>(null)
+const transactionSelected = ref<TransactionWithIncludes>(null)
 const categoryTypeSelected = ref<CategoryType>(null)
 const categorySelected = ref<CategoryWithIncludes>(null)
 
@@ -62,6 +64,21 @@ const handleDateSelected = async (event: DateSelected) => {
   await fetchCategoriesByType(categoryTypeSelected.value?.id)
 }
 
+const handleSelectTransaction = async (transaction: TransactionWithIncludes, action: ItemActionType) => {
+  formModelActionType.value = action
+  transactionSelected.value = transaction
+
+  if (transaction?.value && action !== 'delete') {
+    transaction.date = transaction.date.split('T')[0]
+    await fetchCategoriesByType(transaction.type.id)
+
+    categoryTypeSelected.value = transaction.type
+    categorySelected.value = categories.value.find(category => category.id === transaction.category.id)
+  }
+
+  showModal(modalTarget)
+}
+
 const handleSelectCategoryType = async (event: Event) => {
   const select = event.target as HTMLSelectElement
 
@@ -72,6 +89,11 @@ const handleSelectCategory = async (event: Event) => {
   const select = event.target as HTMLSelectElement
 
   categorySelected.value = categories.value.find(category => category.id === select.value)
+}
+
+const handleDeleteAccount = async (): Promise<void> => {
+  await deleteTransaction(transactionSelected.value, transactionFilters.value)
+  closeModal(modalTarget)
 }
 
 const handleSubmit = async (payload) => {
@@ -113,8 +135,8 @@ watch(categoryTypeSelected, () => transactionsByCategoryType.value = getTransact
           label="Nova Receita"
           class="w-fit"
           input-class="flex items-center gap-2 bg-purple-700 hover:bg-purple-600 text-white py-3 px-5 font-medium rounded-full text-sm"
-          v-show-modal="modalTarget"
           :ignore="false"
+          @click="handleSelectTransaction(null, 'create')"
         >
           <icons-plus class="w-[14px] h-[14px]" stroke-width="2.5" />
           <span>Nova</span>
@@ -131,7 +153,10 @@ watch(categoryTypeSelected, () => transactionsByCategoryType.value = getTransact
         <month-year-selected @handle-click-date-select="handleDateSelected" />
       </div>
 
-      <transaction-list :transactions="transactionsByCategoryType" />
+      <transaction-list
+        :transactions="transactionsByCategoryType"
+        @handle-click="(transaction, action) => handleSelectTransaction(transaction, action)"
+      />
     </div>
 
     <base-modal
@@ -140,12 +165,14 @@ watch(categoryTypeSelected, () => transactionsByCategoryType.value = getTransact
       size="3xl"
     >
       <template #body>
-        <form-kit
+        <section v-if="formModelActionType !== 'delete'">
+          <form-kit
+          type="form"
           :id="transactionFormId"
           :actions="false"
           :incomplete-message="false"
-          type="form"
           @submit="handleSubmit"
+          v-model="transactionSelected"
         >
           <div class="p-6">
             <div class="flex gap-4">
@@ -222,6 +249,14 @@ watch(categoryTypeSelected, () => transactionsByCategoryType.value = getTransact
             />
           </section>
         </form-kit>
+        </section>
+
+        <section class="p-6 text-center" v-if="formModelActionType === 'delete'">
+          <confirm-delete
+            :name="transactionSelected?.description"
+            @handle-click="action => action === 'confirm' ? handleDeleteAccount() : closeModal(modalTarget)"
+          />
+        </section>
       </template>
     </base-modal>
   </client-only>
