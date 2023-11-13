@@ -83,6 +83,17 @@ export const useTransactionStore = defineStore('transactionStore', {
       } finally {
         await this.fetchTransaction(filters)
       }
+    },
+    async deleteTransaction(transaction: Transaction, filters: FetchTransactionFilter) {
+      try {
+        await $fetch(`/api/transaction/${transaction.id}`, {
+          method: 'DELETE'
+        })
+      } catch (error) {
+        console.log(error)
+      } finally {
+        await this.fetchTransaction(filters)
+      }
     }
   }
 })
