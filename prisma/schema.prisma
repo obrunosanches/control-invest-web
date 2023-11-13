@@ -15,28 +15,31 @@ model AccountType {
   description String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  Account     Account[] @relation("fk_account_account_type")
+  archivedAt  DateTime?
+  account     Account[] @relation("fk_account_account_type")
 }
 
-model CategoryType {
+model TransactionType {
   id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  slug        String
+  slug        String        @unique
   description String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  category    Category[]    @relation("fk_category_type")
-  transaction Transaction[] @relation("fk_transaction_type")
+  archivedAt  DateTime?
+  category    Category[]    @relation("fk_category_transaction_type")
+  transaction Transaction[] @relation("fk_transaction_transaction_type")
 }
 
 model Category {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  typeId      String        @db.ObjectId
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  typeId      String          @db.ObjectId
   name        String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  type        CategoryType  @relation("fk_category_type", fields: [typeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  subCategory SubCategory[] @relation("fk_sub_category_category")
-  transaction Transaction[] @relation("fk_transaction_category")
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  archivedAt  DateTime?
+  type        TransactionType @relation("fk_category_transaction_type", fields: [typeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  subCategory SubCategory[]   @relation("fk_sub_category_category")
+  transaction Transaction[]   @relation("fk_transaction_category")
 }
 
 model SubCategory {
@@ -45,37 +48,43 @@ model SubCategory {
   name        String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+  archivedAt  DateTime?
   category    Category      @relation("fk_sub_category_category", fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   transaction Transaction[] @relation("fk_transaction_sub_category")
 }
 
 model Account {
-  id             String        @id @default(auto()) @map("_id") @db.ObjectId
-  accountTypeId  String        @db.ObjectId
-  name           String
-  initialBalance Float
-  balance        Float?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  accountType    AccountType   @relation("fk_account_account_type", fields: [accountTypeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  transaction    Transaction[] @relation("fk_transaction_account")
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  accountTypeId   String        @db.ObjectId
+  name            String
+  initialBalance  Float
+  balance         Float?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  archivedAt      DateTime?
+  accountType     AccountType   @relation("fk_account_account_type", fields: [accountTypeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  transactionFrom Transaction[] @relation("fk_transaction_account_from")
+  transactionTo   Transaction[] @relation("fk_transaction_account_to")
 }
 
 model Transaction {
-  id             String       @id @default(auto()) @map("_id") @db.ObjectId
-  categoryTypeId String       @db.ObjectId
-  categoryId     String       @db.ObjectId
-  subCategoryId  String       @db.ObjectId
-  accountId      String       @db.ObjectId
-  description    String
-  value          Float
-  date           DateTime
-  isActive       Boolean
-  mustIgnore     Boolean
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  type           CategoryType @relation("fk_transaction_type", fields: [categoryTypeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  category       Category     @relation("fk_transaction_category", fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  subCategory    SubCategory  @relation("fk_transaction_sub_category", fields: [subCategoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  account        Account      @relation("fk_transaction_account", fields: [accountId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  typeId        String          @db.ObjectId
+  categoryId    String          @db.ObjectId
+  subCategoryId String          @db.ObjectId
+  accountFromId String          @db.ObjectId
+  accountToId   String?         @db.ObjectId
+  description   String
+  value         Float
+  date          DateTime
+  isActive      Boolean
+  mustIgnore    Boolean
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  archivedAt    DateTime?
+  type          TransactionType @relation("fk_transaction_transaction_type", fields: [typeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  category      Category        @relation("fk_transaction_category", fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  subCategory   SubCategory     @relation("fk_transaction_sub_category", fields: [subCategoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  accountFrom   Account         @relation("fk_transaction_account_from", fields: [accountFromId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  accountTo     Account?        @relation("fk_transaction_account_to", fields: [accountToId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }

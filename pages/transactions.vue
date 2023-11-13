@@ -3,27 +3,27 @@ import { storeToRefs } from "pinia"
 import { reset } from "@formkit/core"
 
 import { useTransactionStore } from "~/store/transaction"
-import { useCategoryTypeStore } from "~/store/categoryType"
+import { useTransactionTypeStore } from "~/store/transactionType"
 import { useCategoryStore } from "~/store/category"
 import { useAccountStore } from "~/store/account"
 import { closeModal, showModal } from "~/plugins/modal"
 
-import type { CategoryType } from "@prisma/client"
+import type { TransactionType } from "@prisma/client"
 import type { DateSelected, ItemActionType } from "~/types"
 import type { CategoryWithIncludes } from "~/store/category"
 import type { FetchTransactionFilter, TransactionWithIncludes } from "~/store/transaction"
 
 const transactionStore = useTransactionStore()
-const categoryTypeStore = useCategoryTypeStore()
+const transactionTypeStore = useTransactionTypeStore()
 const categoryStore = useCategoryStore()
 const accountStore = useAccountStore()
 
-const { fetchCategoryTypes } = categoryTypeStore
-const { fetchTransaction, getTransactionsByCategoryType, createTransaction, deleteTransaction } = transactionStore
+const { fetchTransactionTypes, getDefaultTransactionTypes } = transactionTypeStore
+const { fetchTransaction, getTransactionsByTransactionType, createTransaction, deleteTransaction } = transactionStore
 const { fetchAccounts } = accountStore
 const { fetchCategoriesByType } = categoryStore
 
-const { categoryTypes } = storeToRefs(categoryTypeStore)
+const { transactionTypes } = storeToRefs(transactionTypeStore)
 const { accounts } = storeToRefs(accountStore)
 const { categories } = storeToRefs(categoryStore)
 const { transactions } = storeToRefs(transactionStore)
@@ -31,14 +31,14 @@ const { transactions } = storeToRefs(transactionStore)
 const modalTarget = 'main-modal'
 const transactionFormId = 'transaction-form'
 const formModelActionType = ref<ItemActionType>('create')
-const transactionsByCategoryType = ref<TransactionWithIncludes>(transactions.value)
+const transactionsByTransactionType = ref<TransactionWithIncludes>(transactions.value)
 const transactionFilters = ref<FetchTransactionFilter>(null)
-const transactionSelected = ref<TransactionWithIncludes>(null)
-const categoryTypeSelected = ref<CategoryType>(null)
+const transactionSelected = ref<TransactionWithIncludes>({})
+const transactionTypeSelected = ref<TransactionType>(null)
 const categorySelected = ref<CategoryWithIncludes>(null)
 
 onBeforeMount(async () => {
-  await fetchCategoryTypes()
+  await fetchTransactionTypes()
   await fetchAccounts()
 })
 
@@ -57,11 +57,11 @@ const handleDateSelected = async (event: DateSelected) => {
   transactionFilters.value = {
     month: event.month,
     year: event.year,
-    typeId: categoryTypeSelected.value?.id
+    typeId: transactionTypeSelected.value?.id
   }
 
   await fetchTransaction(transactionFilters.value)
-  await fetchCategoriesByType(categoryTypeSelected.value?.id)
+  await fetchCategoriesByType(transactionTypeSelected.value?.id)
 }
 
 const handleSelectTransaction = async (transaction: TransactionWithIncludes, action: ItemActionType) => {
@@ -72,17 +72,17 @@ const handleSelectTransaction = async (transaction: TransactionWithIncludes, act
     transaction.date = transaction.date.split('T')[0]
     await fetchCategoriesByType(transaction.type.id)
 
-    categoryTypeSelected.value = transaction.type
+    transactionTypeSelected.value = transaction.type
     categorySelected.value = categories.value.find(category => category.id === transaction.category.id)
   }
 
   showModal(modalTarget)
 }
 
-const handleSelectCategoryType = async (event: Event) => {
+const handleSelectTransactionType = async (event: Event) => {
   const select = event.target as HTMLSelectElement
 
-  categoryTypeSelected.value = categoryTypes.value.find(type => type.id === select.value)
+  transactionTypeSelected.value = transactionTypes.value.find(type => type.id === select.value)
 }
 
 const handleSelectCategory = async (event: Event) => {
@@ -100,7 +100,7 @@ const handleSubmit = async (payload) => {
   try {
     await createTransaction({
       ...payload,
-      categoryTypeId: categoryTypeSelected.value.id
+      typeId: transactionTypeSelected.value.id
     }, transactionFilters.value)
   } catch (error) {
     console.error(error)
@@ -110,8 +110,8 @@ const handleSubmit = async (payload) => {
   }
 }
 
-watch(transactions, () => (transactionsByCategoryType.value = getTransactionsByCategoryType(categoryTypeSelected.value?.id)))
-watch(categoryTypeSelected, () => transactionsByCategoryType.value = getTransactionsByCategoryType(categoryTypeSelected.value?.id))
+watch(transactions, () => (transactionsByTransactionType.value = getTransactionsByTransactionType(transactionTypeSelected.value?.id)))
+watch(transactionTypeSelected, () => transactionsByTransactionType.value = getTransactionsByTransactionType(transactionTypeSelected.value?.id))
 </script>
 
 <template>
@@ -122,21 +122,21 @@ watch(categoryTypeSelected, () => transactionsByCategoryType.value = getTransact
           input-class="w-full bg-purple-700 hover:bg-purple-600 text-white py-3.5 px-5 font-medium rounded-full text-sm"
           :options="[
             { label: 'Transações', value: 'transacoes' },
-            ...categoryTypes.map(type => ({ value: type.id, label: type.description }))
+            ...getDefaultTransactionTypes().map(type => ({ value: type.id, label: type.description }))
           ]"
-          @change="handleSelectCategoryType"
+          @change="handleSelectTransactionType"
         />
       </div>
 
       <div class="items-end">
         <form-kit
-          v-if="categoryTypeSelected"
+          v-if="transactionTypeSelected"
           type="button"
           label="Nova Receita"
           class="w-fit"
           input-class="flex items-center gap-2 bg-purple-700 hover:bg-purple-600 text-white py-3 px-5 font-medium rounded-full text-sm"
           :ignore="false"
-          @click="handleSelectTransaction(null, 'create')"
+          @click="handleSelectTransaction({}, 'create')"
         >
           <icons-plus class="w-[14px] h-[14px]" stroke-width="2.5" />
           <span>Nova</span>
@@ -154,7 +154,7 @@ watch(categoryTypeSelected, () => transactionsByCategoryType.value = getTransact
       </div>
 
       <transaction-list
-        :transactions="transactionsByCategoryType"
+        :transactions="transactionsByTransactionType"
         @handle-click="(transaction, action) => handleSelectTransaction(transaction, action)"
       />
     </div>
@@ -198,7 +198,7 @@ watch(categoryTypeSelected, () => transactionsByCategoryType.value = getTransact
               </div>
               <div class="basis-2/4">
                 <form-select
-                  name="accountId"
+                  name="accountFromId"
                   label="Conta"
                   :options="[
                     { label: 'Selecione uma conta', value: '' },

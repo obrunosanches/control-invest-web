@@ -7,33 +7,26 @@ export interface AccountWithIncludes extends Account {
 }
 
 interface State {
-  accounts: AccountWithIncludes[]
+  accounts: AccountWithIncludes[],
+  globalBalance: number
 }
 
 export const useAccountStore = defineStore('accounts', {
   state: (): State => ({
-    accounts: []
+    accounts: [],
+    globalBalance: 0
   }),
   getters: {
     getAccountBalance(state: State) {
-      return (id?: string) => {
-        if (!id) {
-          return state.accounts
-            .map(account => account.balance)
-            .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
-        }
-        
-        return state.accounts
-          .map(account => account.balance)
-          .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
-      }
+      return () => state.accounts
+        .map(account => account.balance)
+        .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
     }
   },
   actions: {
     async fetchAccounts() {
       try {
-        this.accounts = await $fetch<AccountWithIncludes>('/api/accounts')
-        
+        this.accounts = await $fetch<AccountWithIncludes[]>('/api/accounts')
       } catch (error) {
         console.error(error)
       }

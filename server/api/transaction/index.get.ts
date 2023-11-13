@@ -14,7 +14,7 @@ export default defineEventHandler((event) => {
   }
   
   if (query.type !== '') {
-    filters.categoryTypeId = query.type
+    filters.typeId = query.type
   }
   
   return prisma.transaction.findMany({
@@ -26,7 +26,8 @@ export default defineEventHandler((event) => {
       type: true,
       category: true,
       subCategory: true,
-      account: true
+      accountFrom: true,
+      accountTo: true
     }
   })
 })

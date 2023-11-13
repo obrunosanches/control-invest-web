@@ -1,7 +1,7 @@
 import { prisma } from "~/server/database/connect"
 
 export default defineEventHandler(() => {
-  return prisma.categoryType.findMany({
+  return prisma.transactionType.findMany({
     orderBy: {
       description: 'asc'
     }

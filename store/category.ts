@@ -1,9 +1,9 @@
 import { defineStore } from "pinia"
 
-import type { Category, CategoryType, SubCategory } from "@prisma/client"
+import type { Category, TransactionType, SubCategory } from "@prisma/client"
 
 export interface CategoryWithIncludes extends Category {
-  type: CategoryType
+  type: TransactionType
   subCategory: SubCategory[]
 }
 
@@ -21,13 +21,13 @@ export const useCategoryStore = defineStore('categoryStore', {
     }
   },
   actions: {
-    async fetchCategoriesByType(categoryTypeId) {
-      if (!categoryTypeId) {
+    async fetchCategoriesByType(typeId) {
+      if (!typeId) {
         return void 0
       }
       
       try {
-        this.categories = await $fetch<CategoryWithIncludes[]>(`/api/category?type=${categoryTypeId}`)
+        this.categories = await $fetch<CategoryWithIncludes[]>(`/api/category?type=${typeId}`)
       } catch (error) {
         console.error(error)
       }

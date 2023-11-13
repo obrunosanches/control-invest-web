@@ -2,37 +2,37 @@
 import { reset } from "@formkit/core"
 
 import { useCategoryStore } from "~/store/category"
-import { useCategoryTypeStore } from "~/store/categoryType"
+import { useTransactionTypeStore } from "~/store/transactionType"
 import { useSubCategoryStore } from "~/store/subCategory"
 import { closeModal, showModal } from "~/plugins/modal"
 
-import type { Category, CategoryType, SubCategory } from "@prisma/client"
+import type { Category, TransactionType, SubCategory } from "@prisma/client"
 import type { ItemActionType } from "~/types"
 
 import ConfirmDelete from "~/components/ConfirmDelete.vue"
 
-const categoryTypeStore = useCategoryTypeStore()
+const transactionTypeStore = useTransactionTypeStore()
 const categoryStore = useCategoryStore()
 const subCategoryStore = useSubCategoryStore()
 
-const { fetchCategoryTypes } = categoryTypeStore
+const { fetchTransactionTypes, getDefaultTransactionTypes } = transactionTypeStore
 const { fetchCategoriesByType, createOrUpdateCategory, deleteCategory } = categoryStore
 const { createOrUpdateSubCategory, deleteSubCategory } = subCategoryStore
-const { categoryTypes } = storeToRefs(categoryTypeStore)
+const { transactionTypes } = storeToRefs(transactionTypeStore)
 const { categories } = storeToRefs(categoryStore)
 
 const modalTarget = 'main-modal'
 const categoryFormId = 'category-form'
 const subCategoryFormId = 'sub-category-form'
 
-const categoryTypeSelected = ref<CategoryType>(null)
+const transactionTypeSelected = ref<TransactionType>(null)
 const categorySelected = ref<Category>(null)
 const subCategorySelected = ref<SubCategory>(null)
 const formModelActionType = ref<ItemActionType>('create')
 const formModel = ref<'category' | 'sub-category'>('category')
 
 onBeforeMount(async () => {
-  await fetchCategoryTypes()
+  await fetchTransactionTypes()
   await fetchCategories()
 
   window.addEventListener('on-close-modal', () => {
@@ -43,23 +43,18 @@ onBeforeMount(async () => {
   })
 })
 
-const categoryTypesOptions = computed(() => categoryTypes.value.map(item => ({
-  value: item.id,
-  label: item.description
-})))
-
 const fetchCategories = async () => {
-  if (!categoryTypeSelected.value) {
-    categoryTypeSelected.value = categoryTypes.value.find(() => true)
+  if (!transactionTypeSelected.value) {
+    transactionTypeSelected.value = transactionTypes.value.find(() => true)
   }
 
-  await fetchCategoriesByType(categoryTypeSelected.value.id)
+  await fetchCategoriesByType(transactionTypeSelected.value.id)
 }
 
-const handleSelectCategoryType = async (event: Event) => {
+const handleSelectTransactionType = async (event: Event) => {
   const select = event.target as HTMLSelectElement
 
-  categoryTypeSelected.value = categoryTypes.value.find(category => category.id === select.value)
+  transactionTypeSelected.value = transactionTypes.value.find(category => category.id === select.value)
 
   await fetchCategories()
 }
@@ -98,7 +93,7 @@ const handleFormCategorySubmit = async (payload): Promise<void> => {
     await createOrUpdateCategory({
       ...categorySelected,
       ...payload,
-      typeId: categoryTypeSelected.value.id
+      typeId: transactionTypeSelected.value.id
     })
   } catch (error) {
     console.log(error)
@@ -132,10 +127,9 @@ const handleFormSubCategorySubmit = async (payload): Promise<void> => {
     <div class="flex justify-between gap-4 mt-6">
       <div class="w-1/3">
         <form-select
-          name="accountTypeId"
           input-class="w-full bg-gray-500 text-white py-3.5 px-5 font-medium rounded-full text-sm"
-          :options="categoryTypesOptions"
-          @change="handleSelectCategoryType"
+          :options="getDefaultTransactionTypes().map(type => ({ value: type.id, label: type.description }))"
+          @change="handleSelectTransactionType"
         />
       </div>
 
