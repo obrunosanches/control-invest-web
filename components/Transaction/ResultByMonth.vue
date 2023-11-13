@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { formatCurrency } from "~/utils/currency"
 import { useTransactionStore } from "~/store/transaction"
+import { useAccountStore } from "~/store/account"
 
-const { getBalance } = useTransactionStore()
+const { getTransactionBalance } = useTransactionStore()
+const { getAccountBalance } = useAccountStore()
 
-const balance = computed(() => getBalance())
-const earnings = computed(() => getBalance('earnings'))
-const expenses = computed(() => getBalance('expenses'))
+const balance = computed(() => getAccountBalance())
+const earnings = computed(() => getTransactionBalance('earnings'))
+const expenses = computed(() => getTransactionBalance('expenses'))
 const globalBalance = computed(() => earnings.value - expenses.value)
 </script>
 
