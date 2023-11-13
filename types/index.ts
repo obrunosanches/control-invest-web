@@ -1,4 +1,4 @@
-export type CategoryTypeSlug = 'expenses' | 'earnings'
+export type TransactionTypeSlug = 'expenses' | 'earnings' | 'expenses-transfer' | 'earnings-transfer'
 
 export type ItemActionType = 'create' | 'update' | 'delete'
 

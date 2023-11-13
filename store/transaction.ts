@@ -1,14 +1,16 @@
 import { defineStore } from "pinia"
 
-import type { Account, Category, CategoryType, SubCategory, Transaction } from "@prisma/client"
-import type { CategoryTypeSlug } from "~/types"
 import { useAccountStore } from "~/store/account"
 
+import type { Account, Category, TransactionType, SubCategory, Transaction } from "@prisma/client"
+import type { TransactionTypeSlug } from "~/types"
+
 export interface TransactionWithIncludes extends Transaction {
-  type: CategoryType
+  type: TransactionType
   category: Category
   subCategory: SubCategory
-  account: Account
+  accountFrom: Account
+  accountTo?: Account
 }
 
 interface State {
@@ -27,19 +29,19 @@ export const useTransactionStore = defineStore('transactionStore', {
   }),
   getters: {
     getTransactionBalance(state: State) {
-      return (slug: CategoryTypeSlug) => {
+      return (slug: TransactionTypeSlug) => {
         return state.transactions
           .map(transaction => transaction.type.slug === slug ? transaction.value : 0)
           .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
       }
     },
-    getTransactionsByCategoryType(state: State) {
-      return (categoryTypeId: string) => {
-        if (!categoryTypeId) {
+    getTransactionsByTransactionType(state: State) {
+      return (typeId: string) => {
+        if (!typeId) {
           return state.transactions
         }
         
-        return state.transactions.filter((transaction) => transaction.categoryTypeId === categoryTypeId)
+        return state.transactions.filter((transaction) => transaction.typeId === typeId)
       }
     }
   },
@@ -58,15 +60,17 @@ export const useTransactionStore = defineStore('transactionStore', {
       }
     },
     async createTransaction(transaction: Transaction, filters: FetchTransactionFilter) {
+      const { fetchAccounts } = useAccountStore()
+      
       try {
         const apiUrl = `/api/transaction${transaction.id ? `/${transaction.id}` : ''}`
         
         await $fetch(apiUrl, {
           method: transaction.id ? 'PUT' : 'POST',
           body: {
-            accountId: transaction.accountId,
+            accountFromId: transaction.accountFromId,
             categoryId: transaction.categoryId,
-            categoryTypeId: transaction.categoryTypeId,
+            typeId: transaction.typeId,
             date: new Date(transaction.date),
             description: transaction.description,
             subCategoryId: transaction.subCategoryId,
@@ -78,10 +82,13 @@ export const useTransactionStore = defineStore('transactionStore', {
       } catch (error) {
         console.error(error)
       } finally {
+        await fetchAccounts()
         await this.fetchTransaction(filters)
       }
     },
     async deleteTransaction(transaction: Transaction, filters: FetchTransactionFilter) {
+      const { fetchAccounts } = useAccountStore()
+      
       try {
         await $fetch(`/api/transaction/${transaction.id}`, {
           method: 'DELETE'
@@ -89,6 +96,7 @@ export const useTransactionStore = defineStore('transactionStore', {
       } catch (error) {
         console.log(error)
       } finally {
+        await fetchAccounts()
         await this.fetchTransaction(filters)
       }
     }

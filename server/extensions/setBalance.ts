@@ -10,14 +10,14 @@ export default Prisma.defineExtension((client) => {
       transaction: {
         async $allOperations({ operation, query, args }) {
           if (['create', 'update', 'delete'].includes(operation)) {
-            let accountId = null
+            let accountFromId = null
             let balance = 0
             
             if (operation === 'create') {
-              const account = await $fetch<Account>(`/api/accounts/${args.data.accountId}`)
+              const account = await $fetch<Account>(`/api/accounts/${args.data.accountFromId}`)
               const category = await $fetch<CategoryWithIncludes>(`/api/category/${args.data.categoryId}`)
               
-              accountId = args.data.accountId
+              accountFromId = args.data.accountFromId
               balance = account.balance ?? 0
               
               switch (category.type.slug) {
@@ -34,8 +34,8 @@ export default Prisma.defineExtension((client) => {
               const transaction = await $fetch<TransactionWithIncludes>(`/api/transaction/${args?.where?.id}`)
               const category = await $fetch<CategoryWithIncludes>(`/api/category/${transaction.categoryId}`)
               
-              accountId = transaction.accountId
-              balance = transaction.account.balance ?? 0
+              accountFromId = transaction.accountFromId
+              balance = transaction.accountFrom.balance ?? 0
               
               if (transaction.value !== args.data.value) {
                 switch (category.type.slug) {
@@ -55,8 +55,8 @@ export default Prisma.defineExtension((client) => {
               const transaction = await $fetch<TransactionWithIncludes>(`/api/transaction/${args?.where?.id}`)
               const category = await $fetch<CategoryWithIncludes>(`/api/category/${transaction.categoryId}`)
               
-              accountId = transaction.accountId
-              balance = transaction.account.balance ?? 0
+              accountFromId = transaction.accountFromId
+              balance = transaction.accountFrom.balance ?? 0
               
               switch (category.type.slug) {
                 case 'expenses':
@@ -70,7 +70,7 @@ export default Prisma.defineExtension((client) => {
             
             await client.account.update({
               where: {
-                id: accountId
+                id: accountFromId
               },
               data: {
                 balance

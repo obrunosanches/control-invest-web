@@ -3,7 +3,7 @@ const prisma = new PrismaClient()
 
 const load = async () => {
   try {
-    await prisma.categoryType.deleteMany({})
+    await prisma.transactionType.deleteMany({})
     await prisma.accountType.deleteMany({})
     await prisma.category.deleteMany({})
     await prisma.subCategory.deleteMany({})
@@ -17,7 +17,7 @@ const load = async () => {
       ]
     })
     
-    await prisma.categoryType.create({
+    await prisma.transactionType.create({
       data: {
         description: "Despesas",
         slug: 'expenses',
@@ -27,10 +27,9 @@ const load = async () => {
             subCategory: {
               create: [
                 { name: "Almoço" },
-                { name: "Lanches" },
+                { name: "Lanche" },
                 { name: "Trabalho" },
-                { name: "Comer fora" },
-                { name: "Fast food" },
+                { name: "Restaurante" },
                 { name: "Padaria" }
               ]
             }
@@ -44,6 +43,7 @@ const load = async () => {
                 { name: "Manutenção" },
                 { name: "Limpeza" },
                 { name: "Multas" },
+                { name: "Imposto" },
                 { name: "Taxas" }
               ]
             }
@@ -53,7 +53,8 @@ const load = async () => {
             subCategory: {
               create: [
                 { name : "Faculdade" },
-                { name : "Cursos" }
+                { name : "Curso" },
+                { name : "Certificação" },
               ]
             }
           },
@@ -70,19 +71,18 @@ const load = async () => {
             subCategory: {
               create: [
                 { name: "Cinema" },
-                { name: "Viagens" }
+                { name: "Viagem" }
               ]
             }
           },
           {
-            name: "Moradia",
+            name: "Casa",
             subCategory: {
               create: [
-                { name: "Sacolão" },
                 { name: "Conta fixa" },
-                { name: "Supermercado" },
                 { name: "Açougue" },
-                { name: "Petshop" }
+                { name: "Sacolão" },
+                { name: "Supermercado" }
               ]
             }
           },
@@ -91,6 +91,7 @@ const load = async () => {
             subCategory: {
               create: [
                 { name: "Academia" },
+                { name: "Barbearia" },
                 { name: "Consultas" },
                 { name: "Remédios" },
                 { name: "Exames" }
@@ -98,10 +99,21 @@ const load = async () => {
             }
           },
           {
-            name: "Serviços",
+            name: "Petshop",
             subCategory: {
               create: [
-                { name: "Streaming" }
+                { name: "Saúde" },
+                { name: "Alimentação" }
+              ]
+            }
+          },
+          {
+            name: "Assinaturas e serviços",
+            subCategory: {
+              create: [
+                { name: "Streaming" },
+                { name: "TV a Cabo" },
+                { name: "Plano funerário" }
               ]
             }
           },
@@ -129,7 +141,8 @@ const load = async () => {
             subCategory: {
               create: [
                 { name: "Cursos" },
-                { name: "Aniversário" }
+                { name: "Aniversário" },
+                { name: "Doação" }
               ]
             }
           },
@@ -137,9 +150,8 @@ const load = async () => {
             name: "Pagamentos",
             subCategory: {
               create: [
-                { name: "Freelas" },
-                { name: "Doação" },
-                { name: "Dívidas" }
+                { name: "Dívidas" },
+                { name: "Cartão de Crédito" }
               ]
             }
           },
@@ -147,10 +159,11 @@ const load = async () => {
             name: "Investimentos",
             subCategory: {
               create: [
+                { name: "Ações" },
                 { name: "Renda Fixa" },
                 { name: "Tesouro Direto" },
-                { name: "Bolsa" },
-                { name: "Fundos" }
+                { name: "Fundos imobiliários" },
+                { name: "Fundos de investimento" }
               ]
             }
           }],
@@ -158,7 +171,7 @@ const load = async () => {
       }
     })
     
-    await prisma.categoryType.create({
+    await prisma.transactionType.create({
       data: {
         description: "Receitas",
         slug: 'earnings',
@@ -167,6 +180,7 @@ const load = async () => {
             name: "Benfícios",
             subCategory: {
               create: [
+                { name: "Salário" },
                 { name: "Alimentação" },
                 { name: "Refeição" },
                 { name: "Transporte" }
@@ -174,23 +188,48 @@ const load = async () => {
             }
           },
           {
-            name: "Rendimentos",
+            name: "Extras",
             subCategory: {
               create: [
-                { name: "Conta bancária" },
-                { name: "Dividendos" }
+                { name: "Freelas" },
+                { name: "Rendimentos" },
+                { name: "Vendas" }
               ]
             }
           },
           {
-            name: "Serviços",
+            name: "Investimentos",
             subCategory: {
               create: [
-                { name: "Freelas" }
+                { name: "Dividendos" }
               ]
             }
           }],
         },
+      }
+    })
+    
+    await prisma.transactionType.create({
+      data: {
+        description: "Despesas de transferência",
+        slug: 'expenses-transfer',
+        category: {
+          create: [{
+            name: "Transferência"
+          }]
+        }
+      }
+    })
+    
+    await prisma.transactionType.create({
+      data: {
+        description: "Receitas de transferência",
+        slug: 'earnings-transfer',
+        category: {
+          create: [{
+            name: "Transferência"
+          }]
+        }
       }
     })
   } catch (e) {
