@@ -2,8 +2,14 @@
 import type { TransactionWithIncludes } from "~/store/transaction"
 import { formatCurrency } from "~/utils/currency"
 
+import type { ItemActionType } from "~/types"
+
 const props = defineProps<{
   transactions: TransactionWithIncludes[]
+}>()
+
+const emit = defineEmits<{
+  (e: 'handleClick', transaction: TransactionWithIncludes, action: ItemActionType)
 }>()
 </script>
 
@@ -68,6 +74,7 @@ const props = defineProps<{
               type="button"
               wrapper-class="flex"
               :ignore="false"
+              @click="emit('handleClick', transaction, 'update')"
             >
               <icons-edit class="text-blue-500 hover:text-blue-400" />
             </form-kit>
@@ -75,6 +82,7 @@ const props = defineProps<{
               type="button"
               wrapper-class="flex"
               :ignore="false"
+              @click="emit('handleClick', transaction, 'delete')"
             >
               <icons-delete class="text-rose-600 hover:text-rose-500" />
             </form-kit>
