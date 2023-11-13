@@ -2,6 +2,7 @@ import { defineStore } from "pinia"
 
 import type { Account, Category, CategoryType, SubCategory, Transaction } from "@prisma/client"
 import type { CategoryTypeSlug } from "~/types"
+import { useAccountStore } from "~/store/account"
 
 export interface TransactionWithIncludes extends Transaction {
   type: CategoryType
@@ -25,15 +26,11 @@ export const useTransactionStore = defineStore('transactionStore', {
     transactions: []
   }),
   getters: {
-    getBalance(state: State) {
-      return (slug?: CategoryTypeSlug) => {
-        if (!slug) {
-          return state.transactions.find(() => true)?.account?.balance ?? 0
-        }
-        
+    getTransactionBalance(state: State) {
+      return (slug: CategoryTypeSlug) => {
         return state.transactions
-        .map(transaction => transaction.type.slug === slug ? transaction.value : 0)
-        .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
+          .map(transaction => transaction.type.slug === slug ? transaction.value : 0)
+          .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
       }
     },
     getTransactionsByCategoryType(state: State) {

@@ -14,6 +14,21 @@ export const useAccountStore = defineStore('accounts', {
   state: (): State => ({
     accounts: []
   }),
+  getters: {
+    getAccountBalance(state: State) {
+      return (id?: string) => {
+        if (!id) {
+          return state.accounts
+            .map(account => account.balance)
+            .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
+        }
+        
+        return state.accounts
+          .map(account => account.balance)
+          .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
+      }
+    }
+  },
   actions: {
     async fetchAccounts() {
       try {
