@@ -13,7 +13,7 @@ const globalBalance = computed(() => earnings.value - expenses.value)
 </script>
 
 <template>
-<div class="flex-auto bg-white border border-black[0.07] rounded-2xl p-4">
+<div class="flex-auto w-1/4 bg-white border border-black[0.07] rounded-2xl p-4">
   <span class="block text-gray-500 font-medium">
     Saldo Atual >
   </span>
@@ -24,7 +24,8 @@ const globalBalance = computed(() => earnings.value - expenses.value)
     {{ formatCurrency({ value: balance }) }}
   </span>
 </div>
-<div class="flex-auto bg-white border border-black[0.07] rounded-2xl p-4">
+
+<div class="flex-auto w-1/4 bg-white border border-black[0.07] rounded-2xl p-4">
   <span class="block text-gray-500 font-medium">
     Receitas >
   </span>
@@ -35,7 +36,8 @@ const globalBalance = computed(() => earnings.value - expenses.value)
     {{ formatCurrency({ value: earnings }) }}
   </span>
 </div>
-<div class="flex-auto bg-white border border-black[0.07] rounded-2xl p-4">
+
+<div class="flex-auto w-1/4 bg-white border border-black[0.07] rounded-2xl p-4">
   <span class="block text-gray-500 font-medium">
     Despesas >
   </span>
@@ -46,7 +48,8 @@ const globalBalance = computed(() => earnings.value - expenses.value)
     {{ formatCurrency({ value: expenses }) }}
   </span>
 </div>
-<div class="flex-auto bg-white border border-black[0.07] rounded-2xl p-4">
+
+<div class="flex-auto w-1/4 bg-white border border-black[0.07] rounded-2xl p-4">
   <span class="block text-gray-500 font-medium">
     Balanço mensal >
   </span>
