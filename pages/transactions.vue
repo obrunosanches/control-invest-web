@@ -65,16 +65,18 @@ const handleDateSelected = async (event: DateSelected) => {
 }
 
 const handleSelectTransaction = async (transaction: TransactionWithIncludes, action: ItemActionType) => {
-  formModelActionType.value = action
-  transactionSelected.value = transaction
+  const newTransaction = Object.assign({}, transaction)
 
-  if (transaction?.value && action !== 'delete') {
-    transaction.date = transaction.date.split('T')[0]
-    await fetchCategoriesByType(transaction.type.id)
+  if (newTransaction.id && action !== 'delete') {
+    newTransaction.date = newTransaction.date.split('T').slice(0, 1)
+    await fetchCategoriesByType(newTransaction.type.id)
 
-    transactionTypeSelected.value = transaction.type
-    categorySelected.value = categories.value.find(category => category.id === transaction.category.id)
+    transactionTypeSelected.value = newTransaction.type
+    categorySelected.value = categories.value.find(category => category.id === newTransaction.category.id)
   }
+
+  formModelActionType.value = action
+  transactionSelected.value = newTransaction
 
   showModal(modalTarget)
 }
