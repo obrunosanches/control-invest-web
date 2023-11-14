@@ -71,7 +71,7 @@ export const useTransactionStore = defineStore('transactionStore', {
             accountFromId: transaction.accountFromId,
             categoryId: transaction.categoryId,
             typeId: transaction.typeId,
-            date: new Date(transaction.date),
+            date: transaction.date,
             description: transaction.description,
             subCategoryId: transaction.subCategoryId,
             value: parseFloat(transaction.value),
