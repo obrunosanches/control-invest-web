@@ -9,8 +9,7 @@ export interface TransactionWithIncludes extends Transaction {
   type: TransactionType
   category: Category
   subCategory: SubCategory
-  accountFrom: Account
-  accountTo?: Account
+  account: Account
 }
 
 interface State {
@@ -65,13 +64,26 @@ export const useTransactionStore = defineStore('transactionStore', {
       try {
         const apiUrl = `/api/transaction${transaction.id ? `/${transaction.id}` : ''}`
         
+        const currentDate = new Date()
+        const currentTimezoneOffset = currentDate.getTimezoneOffset() * 60000
+        const currentDateWithoutTimezone = new Date(currentDate.valueOf() - currentTimezoneOffset)
+        
+        const transactionDateWithoutTimezone = new Date(transaction.date).toISOString().slice(0, -1)
+        const transactionDate = new Date(transactionDateWithoutTimezone)
+        
         await $fetch(apiUrl, {
           method: transaction.id ? 'PUT' : 'POST',
           body: {
-            accountFromId: transaction.accountFromId,
+            accountId: transaction.accountId,
             categoryId: transaction.categoryId,
             typeId: transaction.typeId,
-            date: transaction.date,
+            date: new Date(
+              transactionDate.getFullYear(),
+              transactionDate.getMonth(),
+              transactionDate.getDate(),
+              currentDateWithoutTimezone.getHours(),
+              currentDateWithoutTimezone.getMinutes()
+            ),
             description: transaction.description,
             subCategoryId: transaction.subCategoryId,
             value: parseFloat(transaction.value),

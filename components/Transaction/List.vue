@@ -57,8 +57,8 @@ const emit = defineEmits<{
         </td>
         <td
           :class="[
-            transaction.type.slug === 'earnings' && 'text-green-500',
-            transaction.type.slug === 'expenses' && 'text-red-500'
+            transaction.type.slug.includes('earnings') && 'text-green-500',
+            transaction.type.slug.includes('expenses') && 'text-red-500'
           ].join(' ')"
           class="px-3 py-4"
         >
@@ -69,7 +69,7 @@ const emit = defineEmits<{
         </td>
         <td class="px-3 py-4">{{ transaction.category.name }}</td>
         <td class="px-3 py-4">{{ transaction.subCategory.name }}</td>
-        <td class="px-3 py-4">{{ transaction.accountFrom.name }}</td>
+        <td class="px-3 py-4">{{ transaction.account.name }}</td>
         <td class="w-30 px-3 py-4">
           <div class="flex gap-2">
             <form-kit

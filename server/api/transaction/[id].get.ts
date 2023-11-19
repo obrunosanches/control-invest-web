@@ -9,8 +9,7 @@ export default defineEventHandler((event) => {
       type: true,
       category: true,
       subCategory: true,
-      accountFrom: true,
-      accountTo: true
+      account: true
     }
   })
 })
