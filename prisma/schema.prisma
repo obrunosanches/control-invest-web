@@ -63,8 +63,7 @@ model Account {
   updatedAt       DateTime      @updatedAt
   archivedAt      DateTime?
   accountType     AccountType   @relation("fk_account_account_type", fields: [accountTypeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  transactionFrom Transaction[] @relation("fk_transaction_account_from")
-  transactionTo   Transaction[] @relation("fk_transaction_account_to")
+  transaction     Transaction[] @relation("fk_transaction_account")
 }
 
 model Transaction {
@@ -72,8 +71,7 @@ model Transaction {
   typeId        String          @db.ObjectId
   categoryId    String          @db.ObjectId
   subCategoryId String          @db.ObjectId
-  accountFromId String          @db.ObjectId
-  accountToId   String?         @db.ObjectId
+  accountId     String          @db.ObjectId
   description   String
   value         Float
   date          DateTime
@@ -85,6 +83,5 @@ model Transaction {
   type          TransactionType @relation("fk_transaction_transaction_type", fields: [typeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   category      Category        @relation("fk_transaction_category", fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   subCategory   SubCategory     @relation("fk_transaction_sub_category", fields: [subCategoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  accountFrom   Account         @relation("fk_transaction_account_from", fields: [accountFromId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  accountTo     Account?        @relation("fk_transaction_account_to", fields: [accountToId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  account       Account         @relation("fk_transaction_account", fields: [accountId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }

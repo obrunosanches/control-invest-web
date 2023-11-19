@@ -10,18 +10,19 @@ export default Prisma.defineExtension((client) => {
       transaction: {
         async $allOperations({ operation, query, args }) {
           if (['create', 'update', 'delete'].includes(operation)) {
-            let accountFromId = null
+            let accountId = null
             let balance = 0
             
             if (operation === 'create') {
-              const account = await $fetch<Account>(`/api/accounts/${args.data.accountFromId}`)
+              const account = await $fetch<Account>(`/api/accounts/${args.data.accountId}`)
               const category = await $fetch<CategoryWithIncludes>(`/api/category/${args.data.categoryId}`)
               
-              accountFromId = args.data.accountFromId
+              accountId = args.data.accountId
               balance = account.balance ?? 0
               
               switch (category.type.slug) {
                 case 'expenses':
+                case 'expenses-transfer':
                   balance -= args.data.value
                   break
                 
@@ -34,12 +35,13 @@ export default Prisma.defineExtension((client) => {
               const transaction = await $fetch<TransactionWithIncludes>(`/api/transaction/${args?.where?.id}`)
               const category = await $fetch<CategoryWithIncludes>(`/api/category/${transaction.categoryId}`)
               
-              accountFromId = transaction.accountFromId
-              balance = transaction.accountFrom.balance ?? 0
+              accountId = transaction.accountId
+              balance = transaction.account.balance ?? 0
               
               if (transaction.value !== args.data.value) {
                 switch (category.type.slug) {
                   case 'expenses':
+                  case 'expenses-transfer':
                     balance += transaction.value
                     balance -= args.data.value
                     break
@@ -55,11 +57,12 @@ export default Prisma.defineExtension((client) => {
               const transaction = await $fetch<TransactionWithIncludes>(`/api/transaction/${args?.where?.id}`)
               const category = await $fetch<CategoryWithIncludes>(`/api/category/${transaction.categoryId}`)
               
-              accountFromId = transaction.accountFromId
-              balance = transaction.accountFrom.balance ?? 0
+              accountId = transaction.accountId
+              balance = transaction.account.balance ?? 0
               
               switch (category.type.slug) {
                 case 'expenses':
+                case 'expenses-transfer':
                   balance += transaction.value
                   break
                 
@@ -70,7 +73,7 @@ export default Prisma.defineExtension((client) => {
             
             await client.account.update({
               where: {
-                id: accountFromId
+                id: accountId
               },
               data: {
                 balance

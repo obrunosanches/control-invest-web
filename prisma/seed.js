@@ -215,7 +215,12 @@ const load = async () => {
         slug: 'expenses-transfer',
         category: {
           create: [{
-            name: "Transferência"
+            name: "Transferência",
+            subCategory: {
+              create: [
+                { name: "Valor enviado" }
+              ]
+            }
           }]
         }
       }
@@ -227,7 +232,12 @@ const load = async () => {
         slug: 'earnings-transfer',
         category: {
           create: [{
-            name: "Transferência"
+            name: "Transferência",
+            subCategory: {
+              create: [
+                { name: "Valor recebido" }
+              ]
+            }
           }]
         }
       }
