@@ -9,7 +9,7 @@ import { useAccountStore } from "~/store/account"
 import { closeModal, showModal } from "~/plugins/modal"
 
 import type { TransactionType } from "@prisma/client"
-import type { DateSelected, ItemActionType } from "~/types"
+import type { DateSelected, ItemActionType, TransactionTypesOptions } from "~/types"
 import type { CategoryWithIncludes } from "~/store/category"
 import type { FetchTransactionFilter, TransactionWithIncludes } from "~/store/transaction"
 
@@ -19,7 +19,13 @@ const categoryStore = useCategoryStore()
 const accountStore = useAccountStore()
 
 const { fetchTransactionTypes, getDefaultTransactionTypes } = transactionTypeStore
-const { fetchTransaction, getTransactionsByTransactionType, createTransaction, deleteTransaction } = transactionStore
+const {
+  fetchTransaction,
+  getTransactionsByTransactionType,
+  createTransaction,
+  createTransfer,
+  deleteTransaction
+} = transactionStore
 const { fetchAccounts } = accountStore
 const { fetchCategoriesByType } = categoryStore
 
@@ -31,6 +37,7 @@ const { transactions } = storeToRefs(transactionStore)
 const modalTarget = 'main-modal'
 const transactionFormId = 'transaction-form'
 const formModelActionType = ref<ItemActionType>('create')
+const formModelTransactionTypeOptions = ref<TransactionTypesOptions>('transaction')
 const transactionsByTransactionType = ref<TransactionWithIncludes>(transactions.value)
 const transactionFilters = ref<FetchTransactionFilter>(null)
 const transactionSelected = ref<TransactionWithIncludes>({})
@@ -40,6 +47,12 @@ const categorySelected = ref<CategoryWithIncludes>(null)
 onBeforeMount(async () => {
   await fetchTransactionTypes()
   await fetchAccounts()
+
+  window.addEventListener('on-close-modal', () => {
+    formModelActionType.value = 'create'
+    categorySelected.value = null
+    transactionSelected.value = Object.assign({}, null)
+  })
 })
 
 const subCategoriesOptions = computed(() => {
@@ -64,12 +77,19 @@ const handleDateSelected = async (event: DateSelected) => {
   await fetchCategoriesByType(transactionTypeSelected.value?.id)
 }
 
+const handleSelectTransactionType = async (event: Event) => {
+  const select = event.target as HTMLSelectElement
+  const transactionType = transactionTypes.value.find(type => type.slug === select.value) as TransactionType
+
+  formModelTransactionTypeOptions.value = select.value
+  transactionTypeSelected.value = transactionType
+}
+
 const handleSelectTransaction = async (transaction: TransactionWithIncludes, action: ItemActionType) => {
   const newTransaction = Object.assign({}, transaction)
 
   if (newTransaction.id && action !== 'delete') {
     newTransaction.date = newTransaction.date.split('T').slice(0, 1)
-    await fetchCategoriesByType(newTransaction.type.id)
 
     transactionTypeSelected.value = newTransaction.type
     categorySelected.value = categories.value.find(category => category.id === newTransaction.category.id)
@@ -79,12 +99,6 @@ const handleSelectTransaction = async (transaction: TransactionWithIncludes, act
   transactionSelected.value = newTransaction
 
   showModal(modalTarget)
-}
-
-const handleSelectTransactionType = async (event: Event) => {
-  const select = event.target as HTMLSelectElement
-
-  transactionTypeSelected.value = transactionTypes.value.find(type => type.id === select.value)
 }
 
 const handleSelectCategory = async (event: Event) => {
@@ -100,10 +114,15 @@ const handleDeleteAccount = async (): Promise<void> => {
 
 const handleSubmit = async (payload) => {
   try {
-    await createTransaction({
-      ...payload,
-      typeId: transactionTypeSelected.value.id
-    }, transactionFilters.value)
+    const transactionData = payload
+
+    if (formModelTransactionTypeOptions.value !== 'transfer') {
+      transactionData.typeId = transactionTypeSelected.value.id
+
+      return await createTransaction(transactionData, transactionFilters.value)
+    }
+
+    await createTransfer(transactionData, transactionFilters.value)
   } catch (error) {
     console.error(error)
   } finally {
@@ -113,7 +132,7 @@ const handleSubmit = async (payload) => {
 }
 
 watch(transactions, () => (transactionsByTransactionType.value = getTransactionsByTransactionType(transactionTypeSelected.value?.id)))
-watch(transactionTypeSelected, () => transactionsByTransactionType.value = getTransactionsByTransactionType(transactionTypeSelected.value?.id))
+// watch(transactionTypeSelected, () => transactionsByTransactionType.value = getTransactionsByTransactionType(transactionTypeSelected.value?.id))
 </script>
 
 <template>
@@ -123,8 +142,9 @@ watch(transactionTypeSelected, () => transactionsByTransactionType.value = getTr
         <form-select
           input-class="w-full bg-purple-700 hover:bg-purple-600 text-white py-3.5 px-5 font-medium rounded-full text-sm"
           :options="[
-            { label: 'Transações', value: 'transacoes' },
-            ...getDefaultTransactionTypes().map(type => ({ value: type.id, label: type.description }))
+            { value: 'transaction', label: 'Transações' },
+            ...getDefaultTransactionTypes().map(type => ({ value: type.slug, label: type.description })),
+            { value: 'transfer', label: 'Transferência' },
           ]"
           @change="handleSelectTransactionType"
         />
@@ -132,7 +152,7 @@ watch(transactionTypeSelected, () => transactionsByTransactionType.value = getTr
 
       <div class="items-end">
         <form-kit
-          v-if="transactionTypeSelected"
+          v-if="formModelTransactionTypeOptions !== 'transaction'"
           type="button"
           label="Nova Receita"
           class="w-fit"
@@ -169,16 +189,84 @@ watch(transactionTypeSelected, () => transactionsByTransactionType.value = getTr
       <template #body>
         <section v-if="formModelActionType !== 'delete'">
           <form-kit
-          type="form"
-          :id="transactionFormId"
-          :actions="false"
-          :incomplete-message="false"
-          @submit="handleSubmit"
-          v-model="transactionSelected"
-        >
-          <div class="p-6">
-            <div class="flex gap-4">
-              <div class="basis-2/4">
+            type="form"
+            :id="transactionFormId"
+            :actions="false"
+            :incomplete-message="false"
+            @submit="handleSubmit"
+            v-model="transactionSelected"
+          >
+            <section v-if="formModelTransactionTypeOptions !== 'transfer'">
+              <div class="p-6">
+                <div class="flex gap-4">
+                  <div class="basis-2/4">
+                    <div class="flex gap-4">
+                      <div class="flex-1">
+                        <form-input
+                          name="value"
+                          label="Valor"
+                          validation="required:trim"
+                        />
+                      </div>
+
+                      <div class="flex-1">
+                        <form-input
+                          type="date"
+                          name="date"
+                          label="Data"
+                          validation="required:trim"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="basis-2/4">
+                    <form-select
+                      name="accountId"
+                      label="Conta"
+                      :options="[
+                        { label: 'Selecione uma conta', value: '' },
+                        ...accounts.map(account => ({ value: account.id, label: account.name }))
+                      ]"
+                      validation="required:trim"
+                    />
+                  </div>
+                </div>
+
+                <div class="flex mt-6">
+                  <form-input
+                    name="description"
+                    label="Descrição"
+                    validation="required:trim"
+                  />
+                </div>
+
+                <div class="flex gap-4 mt-6">
+                  <form-select
+                    name="categoryId"
+                    label="Categoria"
+                    :options="[
+                      { label: 'Selecione uma categoria', value: '' },
+                      ...categories.map(category => ({ value: category.id, label: category.name }))
+                    ]"
+                    validation="required:trim"
+                    @change="handleSelectCategory"
+                  />
+
+                  <form-select
+                    name="subCategoryId"
+                    label="Sub Categoria"
+                    :options="[
+                      { label: 'Selecione uma Sub Categoria', value: '' },
+                      ...subCategoriesOptions
+                    ]"
+                    validation="required:trim"
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section v-if="formModelTransactionTypeOptions === 'transfer'">
+              <div class="p-6">
                 <div class="flex gap-4">
                   <div class="flex-1">
                     <form-input
@@ -197,60 +285,48 @@ watch(transactionTypeSelected, () => transactionsByTransactionType.value = getTr
                     />
                   </div>
                 </div>
+
+                <div class="flex mt-6">
+                  <form-input
+                    name="description"
+                    label="Descrição"
+                    validation="required:trim"
+                  />
+                </div>
+
+                <div class="flex gap-4 mt-6">
+                  <form-select
+                    name="accountFrom"
+                    label="Conta de origem"
+                    :options="[
+                      { label: 'Selecione a conta de origem', value: '' },
+                      ...accounts.map(account => ({ value: account.id, label: account.name }))
+                    ]"
+                    validation="required:trim"
+                    @change="handleSelectCategory"
+                  />
+
+                  <form-select
+                    name="accountTo"
+                    label="Conta de destino"
+                    :options="[
+                      { label: 'Selecione a conta de destino', value: '' },
+                      ...accounts.map(account => ({ value: account.id, label: account.name }))
+                    ]"
+                    validation="required:trim"
+                  />
+                </div>
               </div>
-              <div class="basis-2/4">
-                <form-select
-                  name="accountFromId"
-                  label="Conta"
-                  :options="[
-                    { label: 'Selecione uma conta', value: '' },
-                    ...accounts.map(account => ({ value: account.id, label: account.name }))
-                  ]"
-                  validation="required:trim"
-                />
-              </div>
-            </div>
+            </section>
 
-            <div class="flex mt-6">
-              <form-input
-                name="description"
-                label="Descrição"
-                validation="required:trim"
+            <section class="p-6 rounded-b border-t border-black[0.9] text-right">
+              <form-kit
+                type="submit"
+                input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm"
+                label="Confirmar"
               />
-            </div>
-
-            <div class="flex gap-4 mt-6">
-              <form-select
-                name="categoryId"
-                label="Categoria"
-                :options="[
-                  { label: 'Selecione uma categoria', value: '' },
-                  ...categories.map(category => ({ value: category.id, label: category.name }))
-                ]"
-                validation="required:trim"
-                @change="handleSelectCategory"
-              />
-
-              <form-select
-                name="subCategoryId"
-                label="Sub Categoria"
-                :options="[
-                  { label: 'Selecione uma Sub Categoria', value: '' },
-                  ...subCategoriesOptions
-                ]"
-                validation="required:trim"
-              />
-            </div>
-          </div>
-
-          <section class="p-6 rounded-b border-t border-black[0.9] text-right">
-            <form-kit
-              type="submit"
-              input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm"
-              label="Confirmar"
-            />
-          </section>
-        </form-kit>
+            </section>
+          </form-kit>
         </section>
 
         <section class="p-6 text-center" v-if="formModelActionType === 'delete'">
