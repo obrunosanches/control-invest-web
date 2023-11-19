@@ -1,6 +1,7 @@
 import { defineStore } from "pinia"
 
 import type { TransactionType } from "@prisma/client"
+import type { TransactionTypesOptions } from "~/types"
 
 interface State {
   transactionTypes: TransactionType[]
@@ -13,6 +14,9 @@ export const useTransactionTypeStore = defineStore('transactionTypeStore', {
   getters: {
     getDefaultTransactionTypes(state: State) {
       return () => state.transactionTypes.filter(type => !type.slug.includes('transfer'))
+    },
+    getTransactionType(state: State) {
+      return (slug: TransactionTypesOptions) => state.transactionTypes.find(type => type.slug === slug)
     }
   },
   actions: {

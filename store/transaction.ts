@@ -4,6 +4,8 @@ import { useAccountStore } from "~/store/account"
 
 import type { Account, Category, TransactionType, SubCategory, Transaction } from "@prisma/client"
 import type { TransactionTypeSlug } from "~/types"
+import { useTransactionTypeStore } from "~/store/transactionType"
+import { useCategoryStore } from "~/store/category"
 
 export interface TransactionWithIncludes extends Transaction {
   type: TransactionType
@@ -20,6 +22,14 @@ export interface FetchTransactionFilter {
   month: string
   year: string
   typeId?: string
+}
+
+export interface CreateTransaction {
+  accountFrom: string
+  accountTo: string
+  date: string
+  description: string
+  value: string
 }
 
 export const useTransactionStore = defineStore('transactionStore', {
@@ -97,6 +107,42 @@ export const useTransactionStore = defineStore('transactionStore', {
         await fetchAccounts()
         await this.fetchTransaction(filters)
       }
+    },
+    async createTransfer(payload: CreateTransaction, filters: FetchTransactionFilter) {
+      const { fetchCategoriesByType } = useCategoryStore()
+      const { getTransactionType } = useTransactionTypeStore()
+      
+      const expenseTransferType = getTransactionType('expenses-transfer')
+      const earningTransferType = getTransactionType('earnings-transfer')
+      
+      const expenseCategories = await fetchCategoriesByType(expenseTransferType?.id)
+      const earningCategories = await fetchCategoriesByType(earningTransferType?.id)
+      
+      const expenseCategory = expenseCategories.find(() => true)
+      const expenseSubCategory = expenseCategory?.subCategory.find(() => true)
+      
+      const earningCategory = earningCategories.find(() => true)
+      const earningSubCategory = earningCategory?.subCategory.find(() => true)
+      
+      await this.createTransaction({
+        accountId: payload.accountFrom,
+        categoryId: expenseCategory?.id,
+        date: payload.date,
+        description: payload.description,
+        typeId: expenseTransferType?.id,
+        subCategoryId: expenseSubCategory?.id,
+        value: payload.value
+      }, filters)
+      
+      await this.createTransaction({
+        accountId: payload.accountTo,
+        categoryId: earningCategory?.id,
+        date: payload.date,
+        description: payload.description,
+        typeId: earningTransferType?.id,
+        subCategoryId: earningSubCategory?.id,
+        value: payload.value
+      }, filters)
     },
     async deleteTransaction(transaction: Transaction, filters: FetchTransactionFilter) {
       const { fetchAccounts } = useAccountStore()
