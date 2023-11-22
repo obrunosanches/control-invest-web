@@ -1,11 +1,11 @@
 import { defineStore } from "pinia"
 
 import { useAccountStore } from "~/store/account"
-
-import type { Account, Category, TransactionType, SubCategory, Transaction } from "@prisma/client"
-import type { TransactionTypeSlug } from "~/types"
 import { useTransactionTypeStore } from "~/store/transactionType"
 import { useCategoryStore } from "~/store/category"
+
+import type { Account, Category, TransactionType, SubCategory, Transaction } from "@prisma/client"
+import type { TransactionTypeSlug, TransactionTypesOptions } from "~/types"
 
 export interface TransactionWithIncludes extends Transaction {
   type: TransactionType
@@ -16,6 +16,7 @@ export interface TransactionWithIncludes extends Transaction {
 
 interface State {
   transactions: TransactionWithIncludes[]
+  transactionTypeOptionSelected: TransactionTypesOptions
 }
 
 export interface FetchTransactionFilter {
@@ -34,7 +35,8 @@ export interface CreateTransaction {
 
 export const useTransactionStore = defineStore('transactionStore', {
   state: (): State => ({
-    transactions: []
+    transactions: [],
+    transactionTypeOptionSelected: 'transaction'
   }),
   getters: {
     getTransactionBalance(state: State) {
@@ -51,6 +53,11 @@ export const useTransactionStore = defineStore('transactionStore', {
         }
         
         return state.transactions.filter((transaction) => transaction.typeId === typeId)
+      }
+    },
+    setTransactionTypeOption() {
+      return (option: TransactionTypesOption) => {
+        this.transactionTypeOptionSelected = option
       }
     }
   },

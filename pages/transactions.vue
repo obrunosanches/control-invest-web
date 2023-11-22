@@ -22,6 +22,7 @@ const { fetchTransactionTypes, getDefaultTransactionTypes } = transactionTypeSto
 const {
   fetchTransaction,
   getTransactionsByTransactionType,
+  setTransactionTypeOption,
   createTransaction,
   createTransfer,
   deleteTransaction
@@ -32,12 +33,11 @@ const { fetchCategoriesByType } = categoryStore
 const { transactionTypes } = storeToRefs(transactionTypeStore)
 const { accounts } = storeToRefs(accountStore)
 const { categories } = storeToRefs(categoryStore)
-const { transactions } = storeToRefs(transactionStore)
+const { transactions, transactionTypeOptionSelected } = storeToRefs(transactionStore)
 
 const modalTarget = 'main-modal'
 const transactionFormId = 'transaction-form'
 const formModelActionType = ref<ItemActionType>('create')
-const formModelTransactionTypeOptions = ref<TransactionTypesOptions>('transaction')
 const transactionsByTransactionType = ref<TransactionWithIncludes>(transactions.value)
 const transactionFilters = ref<FetchTransactionFilter>(null)
 const transactionSelected = ref<TransactionWithIncludes>({})
@@ -47,6 +47,8 @@ const categorySelected = ref<CategoryWithIncludes>(null)
 onBeforeMount(async () => {
   await fetchTransactionTypes()
   await fetchAccounts()
+
+  setTransactionTypeOption('transaction')
 
   window.addEventListener('on-close-modal', () => {
     formModelActionType.value = 'create'
@@ -81,7 +83,7 @@ const handleSelectTransactionType = async (event: Event) => {
   const select = event.target as HTMLSelectElement
   const transactionType = transactionTypes.value.find(type => type.slug === select.value) as TransactionType
 
-  formModelTransactionTypeOptions.value = select.value
+  setTransactionTypeOption(select.value)
   transactionTypeSelected.value = transactionType
 }
 
@@ -116,7 +118,7 @@ const handleSubmit = async (payload) => {
   try {
     const transactionData = payload
 
-    if (formModelTransactionTypeOptions.value !== 'transfer') {
+    if (transactionTypeOptionSelected.value !== 'transfer') {
       transactionData.typeId = transactionTypeSelected.value.id
 
       return await createTransaction(transactionData, transactionFilters.value)
@@ -152,7 +154,7 @@ watch(transactions, () => (transactionsByTransactionType.value = getTransactions
 
       <div class="items-end">
         <form-kit
-          v-if="formModelTransactionTypeOptions !== 'transaction'"
+          v-if="transactionTypeOptionSelected !== 'transaction'"
           type="button"
           label="Nova Receita"
           class="w-fit"
@@ -196,7 +198,7 @@ watch(transactions, () => (transactionsByTransactionType.value = getTransactions
             @submit="handleSubmit"
             v-model="transactionSelected"
           >
-            <section v-if="formModelTransactionTypeOptions !== 'transfer'">
+            <section v-if="transactionTypeOptionSelected !== 'transfer'">
               <div class="p-6">
                 <div class="flex gap-4">
                   <div class="basis-2/4">
@@ -265,7 +267,7 @@ watch(transactions, () => (transactionsByTransactionType.value = getTransactions
               </div>
             </section>
 
-            <section v-if="formModelTransactionTypeOptions === 'transfer'">
+            <section v-if="transactionTypeOptionSelected === 'transfer'">
               <div class="p-6">
                 <div class="flex gap-4">
                   <div class="flex-1">
