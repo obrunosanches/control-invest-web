@@ -70,7 +70,7 @@ const containerModalClasseName = computed(() => modalPositionClasses[props.posit
       :class="containerModalClasseName"
     >
       <div class="relative p-4 w-full h-full md:h-auto" :class="modalClassName">
-        <div class="relative rounded-lg shadow bg-white border-black[0.07]">
+        <div class="relative rounded-lg shadow-xl bg-white border border-black[0.07]">
           <header
             class="flex items-center justify-between border-b border-black[0.07] p-5"
             aria-labelledby="modal-title"
