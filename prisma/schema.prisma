@@ -64,6 +64,17 @@ model Account {
   archivedAt      DateTime?
   accountType     AccountType   @relation("fk_account_account_type", fields: [accountTypeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   transaction     Transaction[] @relation("fk_transaction_account")
+  accountFrom     Transfer[]    @relation("fk_transfer_account_from")
+  accountTo       Transfer[]    @relation("fk_transfer_account_to")
+}
+
+model Transfer {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  accountFromId   String        @db.ObjectId
+  accountToId     String        @db.ObjectId
+  accountFrom     Account       @relation("fk_transfer_account_from", fields: [accountFromId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  accountTo       Account       @relation("fk_transfer_account_to", fields: [accountToId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  transaction     Transaction[] @relation("fk_transaction_transfer")
 }
 
 model Transaction {
@@ -72,6 +83,7 @@ model Transaction {
   categoryId    String          @db.ObjectId
   subCategoryId String          @db.ObjectId
   accountId     String          @db.ObjectId
+  transferId    String?         @db.ObjectId
   description   String
   value         Float
   date          DateTime
@@ -84,4 +96,5 @@ model Transaction {
   category      Category        @relation("fk_transaction_category", fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   subCategory   SubCategory     @relation("fk_transaction_sub_category", fields: [subCategoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   account       Account         @relation("fk_transaction_account", fields: [accountId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  transfer      Transfer?       @relation("fk_transaction_transfer", fields: [transferId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
