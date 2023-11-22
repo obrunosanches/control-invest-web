@@ -5,7 +5,7 @@ import { useTransactionTypeStore } from "~/store/transactionType"
 import { useCategoryStore } from "~/store/category"
 
 import type { Account, Category, TransactionType, SubCategory, Transaction } from "@prisma/client"
-import type { TransactionTypeSlug, TransactionTypesOptions } from "~/types"
+import type { ItemActionType, TransactionTypeSlug, TransactionTypesOptions } from "~/types"
 
 export interface TransactionWithIncludes extends Transaction {
   type: TransactionType
@@ -14,15 +14,18 @@ export interface TransactionWithIncludes extends Transaction {
   account: Account
 }
 
-interface State {
-  transactions: TransactionWithIncludes[]
-  transactionTypeOptionSelected: TransactionTypesOptions
-}
-
 export interface FetchTransactionFilter {
   month: string
   year: string
   typeId?: string
+}
+
+interface State {
+  transactions: TransactionWithIncludes[]
+  transactionSelected: TransactionWithIncludes
+  transactionTypeOptionSelected: TransactionTypesOptions
+  transactionFilters: FetchTransactionFilter
+  formActionType: ItemActionType
 }
 
 export interface CreateTransaction {
@@ -36,7 +39,10 @@ export interface CreateTransaction {
 export const useTransactionStore = defineStore('transactionStore', {
   state: (): State => ({
     transactions: [],
-    transactionTypeOptionSelected: 'transaction'
+    transactionSelected: null,
+    transactionTypeOptionSelected: 'transaction',
+    transactionFilters: {},
+    formActionType: 'create'
   }),
   getters: {
     getTransactionBalance(state: State) {
@@ -53,6 +59,19 @@ export const useTransactionStore = defineStore('transactionStore', {
         }
         
         return state.transactions.filter((transaction) => transaction.typeId === typeId)
+      }
+    },
+    setTransaction() {
+      return (transaction: TransactionWithIncludes) => (this.transactionSelected = transaction)
+    },
+    setFormActionType() {
+      return (action: ItemActionType) => {
+        this.formActionType = action
+      }
+    },
+    setTransactionFilter() {
+      return (filters: FetchTransactionFilter) => {
+        this.transactionFilters = filters
       }
     },
     setTransactionTypeOption() {

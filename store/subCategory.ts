@@ -14,11 +14,10 @@ export const useSubCategoryStore = defineStore('subCategoryStore', {
   }),
   actions: {
     async createOrUpdateSubCategory(subCategory: SubCategory) {
-      const { categories, fetchCategoriesByType } = useCategoryStore()
       const apiUrl = `/api/category/${subCategory.categoryId}/sub-category${subCategory.id ? `/${subCategory.id}` : ''}`
       
       try {
-        const response = await $fetch<Category>(apiUrl, {
+        await $fetch<Category>(apiUrl, {
           method: subCategory.id ? 'PUT' : 'POST',
           body: {
             name: subCategory.name,
