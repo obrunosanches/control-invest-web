@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { showModal } from "~/plugins/modal"
 
+import { modalTransactionTarget } from "~/consts/transaction"
+
 useHead({
   title: 'Control Invest',
   bodyAttrs: {
@@ -21,7 +23,7 @@ useHead({
           <span class="self-center text-xl font-semibold whitespace-nowrap">Control Invest</span>
         </div>
 
-        <transaction-options @handle-click="option => showModal('main-modal-default')" />
+        <transaction-options @handle-click="() => showModal(modalTransactionTarget)" />
 
         <ul class="px-3 py-4 space-y-2">
           <sidebar-item route="/">

@@ -1,6 +1,9 @@
 import { defineStore } from "pinia"
 
-import type { Category, TransactionType, SubCategory } from "@prisma/client"
+import { useTransactionTypeStore } from "~/store/transactionType"
+
+import type { Category, SubCategory, TransactionType } from "@prisma/client"
+import type { TransactionTypeSlug } from "~/types"
 
 export interface CategoryWithIncludes extends Category {
   type: TransactionType
@@ -8,16 +11,21 @@ export interface CategoryWithIncludes extends Category {
 }
 
 interface State {
-  categories: CategoryWithIncludes[]
+  categories: CategoryWithIncludes[],
+  categorySelected: CategoryWithIncludes
 }
 
 export const useCategoryStore = defineStore('categoryStore', {
   state: (): State => ({
-    categories: []
+    categories: [],
+    categorySelected: null
   }),
   getters: {
     getCategory(state) {
       return (id: string) => state.categories.find((category) => category.id === id)
+    },
+    setCategory() {
+      return (category: CategoryWithIncludes) => (this.categorySelected = category)
     }
   },
   actions: {
@@ -32,6 +40,22 @@ export const useCategoryStore = defineStore('categoryStore', {
         this.categories = categories
         
         return categories
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async fetchCategoriesByOption(slug: TransactionTypeSlug): Promise<CategoryWithIncludes[]> {
+      try {
+        const { getTransactionType } = useTransactionTypeStore()
+        const transactionType = getTransactionType(slug)
+        
+        if (!transactionType) {
+          this.categories = []
+          
+          return void 0
+        }
+
+        this.categories = await $fetch<CategoryWithIncludes[]>(`/api/category?type=${transactionType.id}`)
       } catch (error) {
         console.error(error)
       }
