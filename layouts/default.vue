@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { showModal } from "~/plugins/modal"
+
 useHead({
   title: 'Control Invest',
   bodyAttrs: {
@@ -18,6 +20,8 @@ useHead({
           <img src="~/assets/images/logo.svg" class="h-6 mr-3 sm:h-9" alt="Control Money Logo"/>
           <span class="self-center text-xl font-semibold whitespace-nowrap">Control Invest</span>
         </div>
+
+        <transaction-options @handle-click="option => showModal('main-modal-default')" />
 
         <ul class="px-3 py-4 space-y-2">
           <sidebar-item route="/">
@@ -52,4 +56,6 @@ useHead({
       <router-view></router-view>
     </main>
   </div>
+
+  <transaction-form-modal />
 </template>
