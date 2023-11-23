@@ -19,7 +19,8 @@ export interface TransactionWithIncludes extends Transaction {
 export interface FetchTransactionFilter {
   month: string
   year: string
-  typeId?: string
+  typeId?: string,
+  transferId?: string
 }
 
 interface State {
@@ -31,8 +32,8 @@ interface State {
 }
 
 export interface CreateTransaction {
-  accountFrom: string
-  accountTo: string
+  accountFromId: string
+  accountToId: string
   date: string
   description: string
   value: string
@@ -109,8 +110,6 @@ export const useTransactionStore = defineStore('transactionStore', {
         const transactionDateWithoutTimezone = new Date(transaction.date).toISOString().slice(0, -1)
         const transactionDate = new Date(transactionDateWithoutTimezone)
         
-        transaction.transferId
-        
         await $fetch(apiUrl, {
           method: transaction.id ? 'PUT' : 'POST',
           body: {
@@ -157,12 +156,12 @@ export const useTransactionStore = defineStore('transactionStore', {
       const earningSubCategory = earningCategory?.subCategory.find(() => true)
       
       const transfer = await createTransfer({
-        accountFromId: payload.accountFrom,
-        accountToId: payload.accountTo
+        accountFromId: payload.accountFromId,
+        accountToId: payload.accountToId
       }) as Transfer
       
       await this.createTransaction({
-        accountId: payload.accountFrom,
+        accountId: payload.accountFromId,
         categoryId: expenseCategory?.id,
         date: payload.date,
         description: payload.description,
@@ -173,7 +172,7 @@ export const useTransactionStore = defineStore('transactionStore', {
       }, filters)
       
       await this.createTransaction({
-        accountId: payload.accountTo,
+        accountId: payload.accountToId,
         categoryId: earningCategory?.id,
         date: payload.date,
         description: payload.description,
@@ -185,13 +184,32 @@ export const useTransactionStore = defineStore('transactionStore', {
     },
     async deleteTransaction(transaction: Transaction, filters: FetchTransactionFilter) {
       const { fetchAccounts } = useAccountStore()
+      const { deleteTransfer } = useTransferStore()
+      
+      let transactions = [transaction]
+      const isTransfer = transaction.transferId
+      
+      if (isTransfer) {
+        const queryParams = new URLSearchParams()
+        queryParams.append('transferId', transaction.transferId)
+        
+        transactions = await $fetch<Transaction[]>(`/api/transaction?${queryParams.toString()}`)
+      }
       
       try {
-        await $fetch(`/api/transaction/${transaction.id}`, {
-          method: 'DELETE'
-        })
+        const deleteAllTransactions = async (items: Transaction[]) => {
+          console.log('items', JSON.parse(JSON.stringify(items)))
+          
+          for (const item of items) {
+            await $fetch(`/api/transaction/${item.id}`, { method: 'DELETE' })
+          }
+          console.log('All transactinos were deleted')
+        }
+        
+        await deleteAllTransactions(transactions)
+        await deleteTransfer(transaction.transferId)
       } catch (error) {
-        console.log(error)
+        console.error(error)
       } finally {
         await fetchAccounts()
         await this.fetchTransaction(filters)
