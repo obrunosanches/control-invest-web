@@ -77,8 +77,8 @@ export const useTransactionStore = defineStore('transactionStore', {
       }
     },
     setTransactionTypeOption() {
-      return (option: TransactionTypesOption) => {
-        this.transactionTypeOptionSelected = option
+      return (option: TransactionTypesOptions) => {
+        this.transactionTypeOptionSelected = option.includes('transfer') ? 'transfer' : option
       }
     }
   },
