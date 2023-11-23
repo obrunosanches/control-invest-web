@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Account } from "@prisma/client"
-import type { ItemActionType } from "~/types"
+import type { ItemActionType, TransactionTypesOptions } from "~/types"
 import type { AccountWithIncludes } from "~/store/account"
 import { formatCurrency } from "~/utils/currency"
 
@@ -10,6 +10,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'handleClick', account: Account, action: ItemActionType): void
+  (e: 'handleOptionsClick', option: TransactionTypesOptions): void
 }>()
 </script>
 
@@ -56,6 +57,7 @@ const emit = defineEmits<{
             wrapper-class="flex"
             input-class="flex gap-2"
             :ignore="false"
+            @click="$emit('handleOptionsClick', 'earnings')"
           >
             <icons-plus-circle class="text-lime-600 hover:text-lime-500" />
             Receita
@@ -67,6 +69,7 @@ const emit = defineEmits<{
             wrapper-class="flex"
             input-class="flex gap-2"
             :ignore="false"
+            @click="$emit('handleOptionsClick', 'expenses')"
           >
             <icons-plus-circle class="text-red-600 hover:text-red-500" />
             Despesa
@@ -78,6 +81,7 @@ const emit = defineEmits<{
             wrapper-class="flex"
             input-class="flex gap-2"
             :ignore="false"
+            @click="$emit('handleOptionsClick', 'transaction')"
           >
             <icons-transaction />
             Transações

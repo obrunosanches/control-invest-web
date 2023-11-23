@@ -4,16 +4,20 @@ import { reset } from "@formkit/core"
 
 import { closeModal, showModal } from '~/plugins/modal'
 import { useAccountTypesStore } from "~/store/accountType"
+import { useTransactionStore } from "~/store/transaction"
 
 import { type AccountWithIncludes, useAccountStore } from "~/store/account"
 import type { ItemActionType } from "~/types"
+import { modalTransactionTarget } from "~/consts/transaction"
 
 import ConfirmDelete from "~/components/ConfirmDelete.vue"
 
 const accountTypesStore = useAccountTypesStore()
+const transactionStore = useTransactionStore()
 const accountStore = useAccountStore()
 
 const { fetchAccountTypes } = accountTypesStore
+const { setTransactionTypeOption } = transactionStore
 const { fetchAccounts, createOrUpdateAccount, deleteAccount } = accountStore
 
 const { accountTypes } = storeToRefs(accountTypesStore)
@@ -80,13 +84,17 @@ const handleSubmit = async (payload): Promise<void> => {
         type="button"
         label="Nova conta"
         @click="handleSelectAccount(null, 'create')"
-        input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm"
+        input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-full text-sm"
       />
     </div>
 
     <account-list
       :accounts="accounts"
       @handle-click="(account, action) => handleSelectAccount(account, action)"
+      @handle-options-click="option => {
+        setTransactionTypeOption(option)
+        showModal(modalTransactionTarget)
+      }"
     />
 
     <base-modal
