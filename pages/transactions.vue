@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia"
-
+import { useCategoryStore } from "~/store/category"
 import { useTransactionStore } from "~/store/transaction"
 import { useTransactionTypeStore } from "~/store/transactionType"
-import type { TransactionType } from "@prisma/client"
 
+import type { TransactionType } from "@prisma/client"
 import type { DateSelected, ItemActionType, TransactionTypesOptions } from "~/types"
 import type { TransactionWithIncludes } from "~/store/transaction"
 
@@ -14,7 +13,9 @@ import { showModal } from "~/plugins/modal"
 
 const transactionStore = useTransactionStore()
 const transactionTypeStore = useTransactionTypeStore()
+const categoryStore = useCategoryStore()
 
+const { getCategory, setCategory, fetchCategoriesByOption } = categoryStore
 const { getDefaultTransactionTypes, getTransactionType } = transactionTypeStore
 const {
   fetchTransaction,
@@ -23,8 +24,6 @@ const {
   setFormActionType,
   setTransactionFilter
 } = transactionStore
-
-const { transactions } = storeToRefs(transactionStore)
 
 const transactionTypeSelected = ref<TransactionType>(null)
 const transactionTypeOptionSelected = ref<TransactionTypesOptions>('transaction')
@@ -47,6 +46,9 @@ const handleDateSelected = async (event: DateSelected) => {
 
 const handleSelectTransactionType = async (event: Event) => {
   const select = event.target as HTMLSelectElement
+
+  await fetchCategoriesByOption(select.value)
+
   const transactionType = getTransactionType(select.value)
 
   setTransactionTypeOption(select.value)
@@ -57,8 +59,13 @@ const handleSelectTransactionType = async (event: Event) => {
 const handleSelectTransaction = async (transaction: TransactionWithIncludes, action: ItemActionType) => {
   const newTransaction = Object.assign({}, transaction)
 
+  await fetchCategoriesByOption(newTransaction.id ? newTransaction.type.slug : transactionTypeOptionSelected.value)
+
   if (newTransaction.id) {
     setTransactionTypeOption(newTransaction.type.slug)
+    const category = getCategory(newTransaction.category.id)
+
+    setCategory(category)
 
     newTransaction.date = newTransaction.date.split('T').slice(0, 1)
     transactionTypeSelected.value = newTransaction.type
@@ -111,10 +118,7 @@ const handleSelectTransaction = async (transaction: TransactionWithIncludes, act
         <month-year-selected @handle-click-date-select="dateSelected => handleDateSelected(dateSelected)" />
       </div>
 
-      <transaction-list
-        :transactions="transactions"
-        @handle-click="(transaction, action) => handleSelectTransaction(transaction, action)"
-      />
+      <transaction-list @handle-click="(transaction, action) => handleSelectTransaction(transaction, action)" />
     </div>
   </client-only>
 </template>
