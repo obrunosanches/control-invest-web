@@ -9,7 +9,6 @@ import { useCategoryStore } from "~/store/category"
 import { closeModal } from "~/plugins/modal"
 
 import type { TransactionTypesOptions } from "~/types"
-import type { TransactionWithIncludes } from "~/store/transaction"
 
 import { modalTransactionTarget, formTransactionId } from "~/consts/transaction"
 
@@ -18,8 +17,8 @@ const categoryStore = useCategoryStore()
 const transactionStore = useTransactionStore()
 const transactionTypeStore = useTransactionTypeStore()
 
-const { fetchCategoriesByOption, fetchCategoriesByType, getCategory, setCategory } = categoryStore
-const { setFormActionType, setTransaction, createTransfer, createTransaction, deleteTransaction } = transactionStore
+const { fetchCategoriesByOption, getCategory, setCategory } = categoryStore
+const { setTransaction, createTransfer, createTransaction, deleteTransaction } = transactionStore
 const { getTransactionType } = transactionTypeStore
 const { fetchAccounts } = accountStore
 
@@ -31,7 +30,6 @@ onBeforeMount(async () => {
   await fetchAccounts()
 
   window.addEventListener('on-close-modal', () => {
-    setFormActionType('create')
     setCategory(null)
     setTransaction(Object.assign({}, null))
   })
@@ -101,12 +99,9 @@ const handleSubmit = async (payload): Promise<void> => {
 
 watch(transactionTypeOptionSelected, async (option: TransactionTypesOptions) => {
   await fetchCategoriesByOption(option)
-})
 
-watch(transactionSelected, async (transaction: TransactionWithIncludes) => {
-  if (transaction.id) {
-    await fetchCategoriesByType(transaction.type.id)
-    const category = getCategory(transaction.category.id)
+  if (transactionSelected.value.id) {
+    const category = getCategory(transactionSelected.value.category.id)
 
     setCategory(category)
   }

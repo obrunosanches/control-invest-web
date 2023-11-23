@@ -24,7 +24,16 @@ onMounted(() => {
 
     months.value.push(firstLetterUppercase(month).replace('.', ''))
   })
+
+  onClickDateSelect()
 })
+
+const onClickDateSelect = () => {
+  emit('handleClickDateSelect', {
+    month: dateSelected.value.getMonth().toString(),
+    year: dateSelected.value.getFullYear().toString()
+  })
+}
 
 const monthYearLabel = computed(() => {
   const finalDate = formatDate({
@@ -82,14 +91,7 @@ const handleSelectDate = (value) => {
   toggleShowSelectByMonth()
 }
 
-watchEffect(() => {
-  if (!shouldShowSelectDateByMonth.value) {
-    emit('handleClickDateSelect', {
-      month: dateSelected.value.getMonth().toString(),
-      year: dateSelected.value.getFullYear().toString()
-    })
-  }
-})
+watch(dateSelected, () => onClickDateSelect())
 </script>
 
 <template>
