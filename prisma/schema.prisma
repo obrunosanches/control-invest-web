@@ -85,6 +85,7 @@ model Transaction {
   accountId     String          @db.ObjectId
   transferId    String?         @db.ObjectId
   description   String
+  note          String?
   value         Float
   date          DateTime
   isActive      Boolean
