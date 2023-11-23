@@ -6,17 +6,27 @@ export default defineEventHandler((event) => {
   const initialDate = new Date(query.year, query.month, 1).setUTCHours(0, 0, 0, 0)
   const finishDate = new Date(query.year, Number(query.month) + 1, 0).setUTCHours(23, 59, 59, 999)
   
-  const filters: { date: Object } = {
-    date: {
+  let filters: {
+    date?: Object
+    typeId?: string
+    transferId?: string
+  } = {}
+  
+  if (query.month && query.year) {
+    filters.date = {
       gte: new Date(initialDate),
       lte: new Date(finishDate)
     }
   }
   
-  if (query.type !== '') {
+  if (query.typeId) {
     filters.typeId = query.type
   }
   
+  if (query.transferId) {
+    filters.transferId = query.transferId
+  }
+
   return prisma.transaction.findMany({
     where: filters,
     orderBy: {
