@@ -7,7 +7,7 @@ import type { TransactionTypesOptions } from "~/types"
 const transactionStore = useTransactionStore()
 const transactionTypeStore = useTransactionTypeStore()
 
-const { setTransactionTypeOption } = transactionStore
+const { setFormActionType, setTransactionTypeOption } = transactionStore
 const { fetchTransactionTypes, getDefaultTransactionTypes } = transactionTypeStore
 
 const OPTIONS_ICONS = {
@@ -26,6 +26,7 @@ const emit = defineEmits<{
 }>()
 
 const handleActionOptions = (option: TransactionTypesOptions) => {
+  setFormActionType('create')
   setTransactionTypeOption(option)
   emit('handleClick', option)
 }
