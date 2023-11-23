@@ -17,7 +17,7 @@ const categoryStore = useCategoryStore()
 const transactionStore = useTransactionStore()
 const transactionTypeStore = useTransactionTypeStore()
 
-const { fetchCategoriesByOption, getCategory, setCategory } = categoryStore
+const { setCategory } = categoryStore
 const { setTransaction, createTransfer, createTransaction, deleteTransaction } = transactionStore
 const { getTransactionType } = transactionTypeStore
 const { fetchAccounts } = accountStore
@@ -125,127 +125,94 @@ watch(transactionTypeOptionSelected, async (option: TransactionTypesOptions) => 
             v-model="transactionSelected"
             @submit="handleSubmit"
           >
-            <section v-if="transactionTypeOptionSelected !== 'transfer'">
-              <div class="p-6">
-                <div class="flex gap-4">
-                  <div class="basis-2/4">
-                    <div class="flex gap-4">
-                      <div class="flex-1">
-                        <form-input
-                          name="value"
-                          label="Valor"
-                          validation="required:trim"
-                        />
-                      </div>
+            <div class="p-6">
+              <div class="flex gap-4">
+                <div :class="transactionTypeOptionSelected !== 'transfer' ? 'basis-2/4' : 'basis-full'">
+                  <div class="flex gap-4">
+                    <div class="flex-1">
+                      <form-input
+                        name="value"
+                        label="Valor"
+                        validation="required:trim"
+                      />
+                    </div>
 
-                      <div class="flex-1">
-                        <form-input
-                          type="date"
-                          name="date"
-                          label="Data"
-                          validation="required:trim"
-                        />
-                      </div>
+                    <div class="flex-1">
+                      <form-input
+                        type="date"
+                        name="date"
+                        label="Data"
+                        validation="required:trim"
+                      />
                     </div>
                   </div>
-                  <div class="basis-2/4">
-                    <form-select
-                      name="accountId"
-                      label="Conta"
-                      :options="[
-                          { label: 'Selecione uma conta', value: '' },
-                          ...accounts.map(account => ({ value: account.id, label: account.name }))
-                        ]"
-                      validation="required:trim"
-                    />
-                  </div>
                 </div>
-
-                <div class="flex mt-6">
-                  <form-input
-                    name="description"
-                    label="Descrição"
-                    validation="required:trim"
-                  />
-                </div>
-
-                <div class="flex gap-4 mt-6">
+                <div class="basis-2/4" v-if="transactionTypeOptionSelected !== 'transfer'">
                   <form-select
-                    name="categoryId"
-                    label="Categoria"
+                    name="accountId"
+                    label="Conta"
                     :options="[
-                        { label: 'Selecione uma categoria', value: '' },
-                        ...categories.map(category => ({ value: category.id, label: category.name }))
-                      ]"
-                    validation="required:trim"
-                    @change="handleSelectCategory"
-                  />
-
-                  <form-select
-                    name="subCategoryId"
-                    label="Sub Categoria"
-                    :options="[
-                        { label: 'Selecione uma Sub Categoria', value: '' },
-                        ...subCategoriesOptions
-                      ]"
-                    validation="required:trim"
-                  />
-                </div>
-              </div>
-            </section>
-
-            <section v-if="transactionTypeOptionSelected === 'transfer'">
-              <div class="p-6">
-                <div class="flex gap-4">
-                  <div class="flex-1">
-                    <form-input
-                      name="value"
-                      label="Valor"
-                      validation="required:trim"
-                    />
-                  </div>
-
-                  <div class="flex-1">
-                    <form-input
-                      type="date"
-                      name="date"
-                      label="Data"
-                      validation="required:trim"
-                    />
-                  </div>
-                </div>
-
-                <div class="flex mt-6">
-                  <form-input
-                    name="description"
-                    label="Descrição"
-                    validation="required:trim"
-                  />
-                </div>
-
-                <div class="flex gap-4 mt-6">
-                  <form-select
-                    name="accountFrom"
-                    label="Conta de origem"
-                    :options="[
-                        { label: 'Selecione a conta de origem', value: '' },
-                        ...accounts.map(account => ({ value: account.id, label: account.name }))
-                      ]"
-                    validation="required:trim"
-                  />
-
-                  <form-select
-                    name="accountTo"
-                    label="Conta de destino"
-                    :options="[
-                        { label: 'Selecione a conta de destino', value: '' },
+                        { label: 'Selecione uma conta', value: '' },
                         ...accounts.map(account => ({ value: account.id, label: account.name }))
                       ]"
                     validation="required:trim"
                   />
                 </div>
               </div>
-            </section>
+
+              <div class="flex mt-6">
+                <form-input
+                  name="description"
+                  label="Descrição"
+                  validation="required:trim"
+                />
+              </div>
+
+              <div class="flex gap-4 mt-6" v-if="transactionTypeOptionSelected !== 'transfer'">
+                <form-select
+                  name="categoryId"
+                  label="Categoria"
+                  :options="[
+                      { label: 'Selecione uma categoria', value: '' },
+                      ...categories.map(category => ({ value: category.id, label: category.name }))
+                    ]"
+                  validation="required:trim"
+                  @change="handleSelectCategory"
+                />
+
+                <form-select
+                  name="subCategoryId"
+                  label="Sub Categoria"
+                  :options="[
+                      { label: 'Selecione uma Sub Categoria', value: '' },
+                      ...subCategoriesOptions
+                    ]"
+                  validation="required:trim"
+                />
+              </div>
+
+              <div class="flex gap-4 mt-6" v-if="transactionTypeOptionSelected === 'transfer'">
+                <form-select
+                  name="accountFromId"
+                  label="Conta de origem"
+                  :options="[
+                      { label: 'Selecione a conta de origem', value: '' },
+                      ...accounts.map(account => ({ value: account.id, label: account.name }))
+                    ]"
+                  validation="required:trim"
+                />
+
+                <form-select
+                  name="accountToId"
+                  label="Conta de destino"
+                  :options="[
+                      { label: 'Selecione a conta de destino', value: '' },
+                      ...accounts.map(account => ({ value: account.id, label: account.name }))
+                    ]"
+                  validation="required:trim"
+                />
+              </div>
+            </div>
 
             <section class="p-6 rounded-b border-t border-black[0.9] text-right">
               <form-kit
@@ -259,7 +226,7 @@ watch(transactionTypeOptionSelected, async (option: TransactionTypesOptions) => 
 
         <section class="p-6 text-center" v-if="formActionType === 'delete'">
           <confirm-delete
-            :name="transactionSelected?.description"
+            :name="transactionSelected?.description ?? ''"
             @handle-click="action => action === 'confirm' ? handleDeleteAccount() : closeModal(modalTransactionTarget)"
           />
         </section>
