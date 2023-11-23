@@ -138,7 +138,7 @@ const handleFormSubCategorySubmit = async (payload): Promise<void> => {
           type="button"
           label="Adicionar Categoria"
           class="bg-purple-700 hover:bg-purple-600"
-          input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-lg text-sm"
+          input-class="bg-purple-700 hover:bg-purple-600 text-white py-2.5 px-5 font-medium rounded-full text-sm"
           @click="handleSelectCategory(null, 'create')"
         />
       </div>
