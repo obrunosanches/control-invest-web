@@ -168,6 +168,16 @@ watch(transactionTypeOptionSelected, async (option: TransactionTypesOptions) => 
                 />
               </div>
 
+              <div class="flex mt-6">
+                <form-input
+                  type="textarea"
+                  name="note"
+                  label="Observação"
+                  rows="6"
+                  validation="required:trim|length:0,600"
+                />
+              </div>
+
               <div class="flex gap-4 mt-6" v-if="transactionTypeOptionSelected !== 'transfer'">
                 <form-select
                   name="categoryId"
