@@ -3,12 +3,14 @@ import { storeToRefs } from "pinia"
 
 import { useTransactionStore } from "~/store/transaction"
 import { useTransactionTypeStore } from "~/store/transactionType"
-import { showModal } from "~/plugins/modal"
-
 import type { TransactionType } from "@prisma/client"
+
 import type { DateSelected, ItemActionType, TransactionTypesOptions } from "~/types"
 import type { TransactionWithIncludes } from "~/store/transaction"
+
 import { modalTransactionTarget } from "~/consts/transaction"
+
+import { showModal } from "~/plugins/modal"
 
 const transactionStore = useTransactionStore()
 const transactionTypeStore = useTransactionTypeStore()
@@ -16,7 +18,6 @@ const transactionTypeStore = useTransactionTypeStore()
 const { getDefaultTransactionTypes, getTransactionType } = transactionTypeStore
 const {
   fetchTransaction,
-  getTransactionsByTransactionType,
   setTransactionTypeOption,
   setTransaction,
   setFormActionType,
@@ -25,7 +26,6 @@ const {
 
 const { transactions } = storeToRefs(transactionStore)
 
-const transactionsByTransactionType = ref<TransactionWithIncludes>(transactions.value)
 const transactionTypeSelected = ref<TransactionType>(null)
 const transactionTypeOptionSelected = ref<TransactionTypesOptions>('transaction')
 
@@ -58,9 +58,9 @@ const handleSelectTransaction = async (transaction: TransactionWithIncludes, act
   const newTransaction = Object.assign({}, transaction)
 
   if (newTransaction.id) {
-    newTransaction.date = newTransaction.date.split('T').slice(0, 1)
-
     setTransactionTypeOption(newTransaction.type.slug)
+
+    newTransaction.date = newTransaction.date.split('T').slice(0, 1)
     transactionTypeSelected.value = newTransaction.type
   }
 
@@ -69,8 +69,6 @@ const handleSelectTransaction = async (transaction: TransactionWithIncludes, act
 
   showModal(modalTransactionTarget)
 }
-
-watch(transactions, () => (transactionsByTransactionType.value = getTransactionsByTransactionType(transactionTypeSelected.value?.id)))
 </script>
 
 <template>
@@ -114,7 +112,7 @@ watch(transactions, () => (transactionsByTransactionType.value = getTransactions
       </div>
 
       <transaction-list
-        :transactions="transactionsByTransactionType"
+        :transactions="transactions"
         @handle-click="(transaction, action) => handleSelectTransaction(transaction, action)"
       />
     </div>
