@@ -3,12 +3,15 @@ import { useTransactionTypeStore } from "~/store/transactionType"
 import { useTransactionStore } from "~/store/transaction"
 
 import type { TransactionTypesOptions } from "~/types"
+import { useCategoryStore } from "~/store/category"
 
 const transactionStore = useTransactionStore()
 const transactionTypeStore = useTransactionTypeStore()
+const categoryStore = useCategoryStore()
 
 const { setFormActionType, setTransactionTypeOption } = transactionStore
 const { fetchTransactionTypes, getDefaultTransactionTypes } = transactionTypeStore
+const { fetchCategoriesByOption } = categoryStore
 
 const OPTIONS_ICONS = {
   'EXPENSES': defineAsyncComponent(() => import('~/components/Icons/Expenses.vue')),
@@ -25,14 +28,16 @@ const emit = defineEmits<{
   (e: 'handleClick', option: TransactionTypesOptions): void
 }>()
 
-const handleActionOptions = (option: TransactionTypesOptions) => {
+const handleActionOptions = async (option: TransactionTypesOptions) => {
+  await fetchCategoriesByOption(option)
+
   setFormActionType('create')
   setTransactionTypeOption(option)
   emit('handleClick', option)
 }
 
 const toggleOptions = (event: Event) => {
-  const target = event.target as HTMLElement
+  const target = event.target as HTMLDivElement
 
   if (shouldShowOptions.value && containerOptions.value !== target) {
     shouldShowOptions.value = false

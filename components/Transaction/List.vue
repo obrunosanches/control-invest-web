@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import type { TransactionWithIncludes } from "~/store/transaction"
+import { storeToRefs } from "pinia"
+
+import { useTransactionStore } from "~/store/transaction"
 import { formatCurrency } from "~/utils/currency"
 
-import type { ItemActionType } from "~/types"
+const { transactions } = storeToRefs(useTransactionStore())
 
-const props = defineProps<{
-  transactions: TransactionWithIncludes[]
-}>()
+import type { TransactionWithIncludes } from "~/store/transaction"
+import type { ItemActionType } from "~/types"
 
 const emit = defineEmits<{
   (e: 'handleClick', transaction: TransactionWithIncludes, action: ItemActionType)
@@ -29,7 +30,7 @@ const emit = defineEmits<{
     </template>
 
     <template #body>
-      <base-table-body-row v-for="transaction in props.transactions">
+      <base-table-body-row v-for="transaction in transactions">
         <td class="w-24 px-3 py-4 flex items-center justify-center">
           <svg class="w-6 h-6" viewBox="0 0 24 24">
             <g v-if="transaction.isActive" transform="translate(17162 10827)">
