@@ -31,9 +31,9 @@ export const useTransferStore = defineStore('transferStore', {
         console.error(error)
       }
     },
-    async deleteTransfer(transferId: string) {
+    async deleteTransfer(transfer: Transfer) {
       try {
-        await $fetch(`/api/transfer/${transferId}`, {
+        await $fetch(`/api/transfer/${transfer.id}`, {
           method: 'DELETE'
         })
       } catch (error) {

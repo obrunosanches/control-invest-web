@@ -206,9 +206,9 @@ export const useTransactionStore = defineStore('transactionStore', {
           }
           console.log('All transactinos were deleted')
         }
-        
+
         await deleteAllTransactions(transactions)
-        await deleteTransfer(transaction.transferId)
+        isTransfer && await deleteTransfer(transaction.transferId)
       } catch (error) {
         console.error(error)
       } finally {
