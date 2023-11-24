@@ -32,15 +32,17 @@ onBeforeMount(async () => {
   await fetchAccounts()
 
   window.addEventListener('on-show-modal', async () => {
-    const { value, date, accountId, description, note, categoryId, subCategoryId, transfer } = transactionSelected.value ?? {}
+    const { id, value, date, accountId, description, note, categoryId, subCategoryId, transfer } = transactionSelected.value ?? {}
 
     formValues.value = {
+      id,
       value,
       accountId,
       description,
       note,
       categoryId,
       subCategoryId,
+      transfer,
       accountFromId: transfer?.accountFromId,
       accountToId: transfer?.accountToId,
       date: date
@@ -57,7 +59,10 @@ onBeforeMount(async () => {
     setCategory(null)
     setTransaction(Object.assign({}, null))
     formValues.value = Object.assign({}, null)
-    reset(formTransactionId)
+
+    if (formActionType.value !== 'delete') {
+      reset(formTransactionId)
+    }
   })
 })
 
@@ -263,7 +268,7 @@ const handleSubmit = async (payload): Promise<void> => {
         <section class="p-6 text-center" v-if="formActionType === 'delete'">
           <confirm-delete
             :name="formValues?.description ?? ''"
-            :transaction="formValues"
+            :form-values="formValues"
             @handle-click="action => action === 'confirm' ? handleDeleteAccount() : closeModal(modalTransactionTarget)"
           />
         </section>
