@@ -17,6 +17,9 @@ export const useAccountStore = defineStore('accounts', {
     globalBalance: 0
   }),
   getters: {
+    getAccount(state: State) {
+      return (id: string) => state.accounts.find(account => account.id === id)
+    },
     getAccountBalance(state: State) {
       return () => state.accounts
         .map(account => account.balance)

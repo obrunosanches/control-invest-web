@@ -1,3 +1,5 @@
+import type { Transfer } from "@prisma/client"
+
 export interface FormValues {
   value: string
   date: string
@@ -6,6 +8,5 @@ export interface FormValues {
   note: string
   categoryId: string
   subCategoryId: string
-  accountFromId: string
-  accountToId: string
+  transfer: Transfer
 }
