@@ -8,7 +8,7 @@ import { useTransactionTypeStore } from "~/store/transactionType"
 import { useCategoryStore } from "~/store/category"
 import { closeModal } from "~/plugins/modal"
 
-import type { TransactionTypesOptions } from "~/types"
+// import type { TransactionTypesOptions } from "~/types"
 
 import { modalTransactionTarget, formTransactionId } from "~/consts/transaction"
 
@@ -29,9 +29,22 @@ const { transactionSelected, transactionTypeOptionSelected, transactionFilters, 
 onBeforeMount(async () => {
   await fetchAccounts()
 
+  window.addEventListener('on-show-modal', async () => {
+    const transactionData = Object.assign({}, transactionSelected.value)
+
+    transactionData.date = transactionData.date ?? new Date(
+      transactionFilters.value.year,
+      transactionFilters.value.month,
+      new Date().getDate()
+    ).toISOString().split('T')[0]
+
+    setTransaction(transactionData)
+  })
+
   window.addEventListener('on-close-modal', () => {
     setCategory(null)
     setTransaction(Object.assign({}, null))
+    reset(formTransactionId)
   })
 })
 
@@ -96,16 +109,6 @@ const handleSubmit = async (payload): Promise<void> => {
     reset(formTransactionId)
   }
 }
-
-watch(transactionTypeOptionSelected, async (option: TransactionTypesOptions) => {
-  await fetchCategoriesByOption(option)
-
-  if (transactionSelected.value.id) {
-    const category = getCategory(transactionSelected.value.category.id)
-
-    setCategory(category)
-  }
-})
 </script>
 
 <template>
@@ -174,7 +177,7 @@ watch(transactionTypeOptionSelected, async (option: TransactionTypesOptions) => 
                   name="note"
                   label="Observação"
                   rows="6"
-                  validation="required:trim|length:0,600"
+                  validation="length:0,600"
                 />
               </div>
 
@@ -237,6 +240,7 @@ watch(transactionTypeOptionSelected, async (option: TransactionTypesOptions) => 
         <section class="p-6 text-center" v-if="formActionType === 'delete'">
           <confirm-delete
             :name="transactionSelected?.description ?? ''"
+            :transaction="transactionSelected"
             @handle-click="action => action === 'confirm' ? handleDeleteAccount() : closeModal(modalTransactionTarget)"
           />
         </section>
