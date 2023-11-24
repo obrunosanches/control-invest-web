@@ -32,20 +32,9 @@ const emit = defineEmits<{
     <template #body>
       <base-table-body-row v-for="transaction in transactions">
         <td class="w-24 px-3 py-4 flex items-center justify-center">
-          <svg class="w-6 h-6" viewBox="0 0 24 24">
-            <g v-if="transaction.isActive" transform="translate(17162 10827)">
-              <circle cx="12" cy="12" r="12" transform="translate(-17162 -10827)" fill="#4caf50" />
-              <path d="M14.127,6,7.165,12.962,4,9.8" transform="translate(-17159.064 -10824.481)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-            </g>
-            <g v-else transform="translate(-960 -977.271)">
-              <g transform="translate(960 977.271)">
-                <circle cx="12" cy="12" r="12" fill="#f74444" />
-              </g>
-              <g transform="translate(972 983.811)">
-                <line y2="5.558" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                <line transform="translate(0 10.117)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-              </g>
-            </g>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path v-if="transaction.isActive" stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path v-else stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
           </svg>
         </td>
         <td class="w-28 px-3 py-4">

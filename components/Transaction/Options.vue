@@ -96,7 +96,7 @@ const handleShowOptions = () => {
               <div class="flex items-center gap-4">
                 <component
                   :class="[
-                    option.value.includes('earnings') && 'text-green-500',
+                    option.value.includes('earnings') && 'text-lime-500',
                     option.value.includes('expenses') && 'text-red-500',
                     option.value.includes('transfer') && 'text-blue-500',
                   ].join(' ')"

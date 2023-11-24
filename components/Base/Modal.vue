@@ -24,6 +24,11 @@ const props = defineProps({
     required: false,
     default: ''
   },
+  headerTitleColor: {
+    type: String,
+    required: false,
+    default: ''
+  },
 })
 
 const modalSizeClasses = {
@@ -73,6 +78,7 @@ const containerModalClasseName = computed(() => modalPositionClasses[props.posit
         <div class="relative rounded-lg shadow-xl bg-white border border-black[0.07]">
           <header
             class="flex items-center justify-between border-b border-black[0.07] p-5"
+            :class="props.headerTitleColor"
             aria-labelledby="modal-title"
             v-if="props.title"
           >
