@@ -125,6 +125,7 @@ export const useTransactionStore = defineStore('transactionStore', {
               currentDateWithoutTimezone.getMinutes()
             ),
             description: transaction.description,
+            note: transaction.note,
             subCategoryId: transaction.subCategoryId,
             value: parseFloat(transaction.value),
             isActive: true,
