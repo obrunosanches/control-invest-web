@@ -58,16 +58,15 @@ const handleSelectTransactionType = async (event: Event) => {
 
 const handleSelectTransaction = async (transaction: TransactionWithIncludes, action: ItemActionType) => {
   const newTransaction = Object.assign({}, transaction)
+  const option = newTransaction.id ? newTransaction.type.slug : transactionTypeOptionSelected.value
 
-  await fetchCategoriesByOption(newTransaction.id ? newTransaction.type.slug : transactionTypeOptionSelected.value)
+  await fetchCategoriesByOption(option)
+  setTransactionTypeOption(option)
 
   if (newTransaction.id) {
-    setTransactionTypeOption(newTransaction.type.slug)
     const category = getCategory(newTransaction.category.id)
 
     setCategory(category)
-
-    newTransaction.date = newTransaction.date.split('T').slice(0, 1)
     transactionTypeSelected.value = newTransaction.type
   }
 
@@ -109,9 +108,7 @@ const handleSelectTransaction = async (transaction: TransactionWithIncludes, act
       </div>
     </div>
 
-    <div class="flex gap-4 mt-8">
-      <transaction-result-by-month />
-    </div>
+    <transaction-result-by-month class="w-full mt-8" />
 
     <div class="bg-slate-50 border border-black[0.07] rounded-2xl mt-4">
       <div class="px-6 py-6">

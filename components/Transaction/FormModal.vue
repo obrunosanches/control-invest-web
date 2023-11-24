@@ -8,9 +8,9 @@ import { useTransactionTypeStore } from "~/store/transactionType"
 import { useCategoryStore } from "~/store/category"
 import { closeModal } from "~/plugins/modal"
 
-// import type { TransactionTypesOptions } from "~/types"
-
 import { modalTransactionTarget, formTransactionId } from "~/consts/transaction"
+
+import type { FormValues } from "~/types/transactions"
 
 const accountStore = useAccountStore()
 const categoryStore = useCategoryStore()
@@ -26,29 +26,42 @@ const { accounts } = storeToRefs(accountStore)
 const { categories, categorySelected } = storeToRefs(categoryStore)
 const { transactionSelected, transactionTypeOptionSelected, transactionFilters, formActionType } = storeToRefs(transactionStore)
 
+const formValues = ref<FormValues>({})
+
 onBeforeMount(async () => {
   await fetchAccounts()
 
   window.addEventListener('on-show-modal', async () => {
-    const transactionData = Object.assign({}, transactionSelected.value)
+    const { value, date, accountId, description, note, categoryId, subCategoryId, transfer } = transactionSelected.value ?? {}
 
-    transactionData.date = transactionData.date ?? new Date(
-      transactionFilters.value.year,
-      transactionFilters.value.month,
-      new Date().getDate()
-    ).toISOString().split('T')[0]
-
-    setTransaction(transactionData)
+    formValues.value = {
+      value,
+      accountId,
+      description,
+      note,
+      categoryId,
+      subCategoryId,
+      accountFromId: transfer?.accountFromId,
+      accountToId: transfer?.accountToId,
+      date: date
+        ? date.split('T').slice(0, 1)
+        : new Date(
+          transactionFilters.value.year,
+          transactionFilters.value.month,
+          new Date().getDate()
+        ).toISOString().split('T')[0]
+    }
   })
 
   window.addEventListener('on-close-modal', () => {
     setCategory(null)
     setTransaction(Object.assign({}, null))
+    formValues.value = Object.assign({}, null)
     reset(formTransactionId)
   })
 })
 
-const modalTitle = computed(() => {
+const modalData = computed(() => {
   const action = {
     'create': 'Nova',
     'update': 'Editar',
@@ -61,7 +74,16 @@ const modalTitle = computed(() => {
     'transfer': 'transferência'
   }
 
-  return [action[formActionType.value], options[transactionTypeOptionSelected.value]].join(' ')
+  const color = {
+    'earnings': 'lime-500',
+    'expenses': 'red-500',
+    'transfer': 'blue-500'
+  }
+
+  return {
+    title: [action[formActionType.value], options[transactionTypeOptionSelected.value]].join(' '),
+    color: color[transactionTypeOptionSelected.value]
+  }
 })
 
 const subCategoriesOptions = computed(() => {
@@ -83,7 +105,7 @@ const handleSelectCategory = async (event: Event) => {
 }
 
 const handleDeleteAccount = async (): Promise<void> => {
-  await deleteTransaction(transactionSelected.value, transactionFilters.value)
+  await deleteTransaction(formValues.value, transactionFilters.value)
   closeModal(modalTransactionTarget)
 }
 
@@ -115,7 +137,8 @@ const handleSubmit = async (payload): Promise<void> => {
   <client-only>
     <base-modal
       :target="modalTransactionTarget"
-      :title="modalTitle"
+      :title="modalData.title"
+      :header-title-color="`text-${modalData.color}`"
       size="3xl"
     >
       <template #body>
@@ -125,7 +148,7 @@ const handleSubmit = async (payload): Promise<void> => {
             :id="formTransactionId"
             :actions="false"
             :incomplete-message="false"
-            v-model="transactionSelected"
+            v-model="formValues"
             @submit="handleSubmit"
           >
             <div class="p-6">
@@ -176,7 +199,7 @@ const handleSubmit = async (payload): Promise<void> => {
                   type="textarea"
                   name="note"
                   label="Observação"
-                  rows="6"
+                  rows="4"
                   validation="length:0,600"
                 />
               </div>
@@ -239,8 +262,8 @@ const handleSubmit = async (payload): Promise<void> => {
 
         <section class="p-6 text-center" v-if="formActionType === 'delete'">
           <confirm-delete
-            :name="transactionSelected?.description ?? ''"
-            :transaction="transactionSelected"
+            :name="formValues?.description ?? ''"
+            :transaction="formValues"
             @handle-click="action => action === 'confirm' ? handleDeleteAccount() : closeModal(modalTransactionTarget)"
           />
         </section>
