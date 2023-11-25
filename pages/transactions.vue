@@ -115,7 +115,10 @@ const handleSelectTransaction = async (transaction: TransactionWithIncludes, act
         <month-year-selected @handle-click-date-select="dateSelected => handleDateSelected(dateSelected)" />
       </div>
 
-      <transaction-list @handle-click="(transaction, action) => handleSelectTransaction(transaction, action)" />
+      <transaction-list
+        :option-selected="transactionTypeOptionSelected"
+        @handle-click="(transaction, action) => handleSelectTransaction(transaction, action)"
+      />
     </div>
   </client-only>
 </template>
