@@ -55,13 +55,25 @@ export const useTransactionStore = defineStore('transactionStore', {
           .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
       }
     },
-    getTransactionsByTransactionType(state: State) {
-      return (typeId: string) => {
-        if (!typeId) {
-          return state.transactions
+    getTransactionsByTransactionTypeOption(state: State) {
+      return (option: TransactionTypesOptions) => {
+        const newList = Object.assign([], state.transactions)
+        
+        if (!option) {
+          return newList
         }
         
-        return state.transactions.filter((transaction) => transaction.typeId === typeId)
+        switch (option) {
+          case "earnings":
+          case "expenses":
+            return newList.filter(item => item.type.slug === option)
+          
+          case "transfer":
+            return newList.filter(item => item.type.slug.includes('transfer'))
+          
+          default:
+            return newList
+        }
       }
     },
     setTransaction() {
