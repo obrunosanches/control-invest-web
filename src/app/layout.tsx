@@ -1,10 +1,13 @@
 import type { Metadata } from 'next'
-import { Manrope } from 'next/font/google'
+
 import Image from "next/image"
+import Link from "next/link"
+import { Manrope } from 'next/font/google'
+import { CircleDollarSign, Landmark, LayoutDashboard, Tags } from 'lucide-react'
 
 import './globals.css'
 
-const inter = Manrope({
+const manrope = Manrope({
   subsets: ['latin'],
   variable: '--font-manrope'
 })
@@ -20,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={inter.className}>
+    <html lang="en" className={manrope.className}>
       <body className="bg-slate-100 text-gray-600">
         <div className="flex">
           <div className="shrink-0 w-56">
@@ -32,6 +35,44 @@ export default function RootLayout({
                 <Image src="/logo.svg" width={36} height={36} className="mr-3" alt="Control Money Logo" />
                 <span className="self-center text-xl font-semibold whitespace-nowrap">Control Invest</span>
               </div>
+              
+              <ul className="px-3 py-4 space-y-2">
+                <li>
+                  <Link href="/" className="flex items-center p-3 rounded-lg text-gray-500 hover:bg-slate-100">
+                    <div className="flex gap-4">
+                      <LayoutDashboard strokeWidth={1.5} />
+                      Dashboard
+                    </div>
+                  </Link>
+                </li>
+                
+                <li>
+                  <Link href="/transactions" className="flex items-center p-3 rounded-lg text-gray-500 hover:bg-slate-100">
+                    <div className="flex gap-4">
+                      <CircleDollarSign strokeWidth={1.5} />
+                      Transações
+                    </div>
+                  </Link>
+                </li>
+
+                <li>
+                  <Link href="/categories" className="flex items-center p-3 rounded-lg text-gray-500 hover:bg-slate-100">
+                    <div className="flex gap-4">
+                      <Tags strokeWidth={1.5} />
+                      Categorias
+                    </div>
+                  </Link>
+                </li>
+
+                <li>
+                  <Link href="/accounts" className="flex items-center p-3 rounded-lg text-gray-500 hover:bg-slate-100">
+                    <div className="flex gap-4">
+                      <Landmark strokeWidth={1.5} />
+                      Contas
+                    </div>
+                  </Link>
+                </li>
+              </ul>
             </aside>
           </div>
           

@@ -1,8 +1,8 @@
-export default function Home() {
+export default function Accounts() {
   return (
     <>
       <h1 className="text-3xl font-bold">
-        Dashboard
+        Contas
       </h1>
     </>
   )

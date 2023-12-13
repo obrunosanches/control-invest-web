@@ -1,8 +1,8 @@
-export default function Home() {
+export default function Transactions() {
   return (
     <>
       <h1 className="text-3xl font-bold">
-        Dashboard
+        Transações
       </h1>
     </>
   )
