@@ -1,8 +1,13 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Manrope } from 'next/font/google'
+import Image from "next/image"
+
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Manrope({
+  subsets: ['latin'],
+  variable: '--font-manrope'
+})
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -15,8 +20,26 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className={inter.className}>
+      <body className="bg-slate-100 text-gray-600">
+        <div className="flex">
+          <div className="shrink-0 w-56">
+            <aside
+              className="h-full w-56 fixed border-r bg-white border-black[0.07]"
+              aria-label="Sidebar"
+            >
+              <div className="flex justify-center py-4 mt-4">
+                <Image src="/logo.svg" width={36} height={36} className="mr-3" alt="Control Money Logo" />
+                <span className="self-center text-xl font-semibold whitespace-nowrap">Control Invest</span>
+              </div>
+            </aside>
+          </div>
+          
+          <main className="p-8 w-full max-w-screen-2xl mx-auto">
+            {children}
+          </main>
+        </div>
+      </body>
     </html>
   )
 }
