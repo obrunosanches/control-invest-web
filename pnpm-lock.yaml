@@ -9,8 +9,8 @@ dependencies:
     specifier: ^5.0.4
     version: 5.0.4
   lucide-react:
-    specifier: ^0.295.0
-    version: 0.295.0(react@18.2.0)
+    specifier: ^0.298.0
+    version: 0.298.0(react@18.2.0)
   next:
     specifier: 14.0.4
     version: 14.0.4(react-dom@18.2.0)(react@18.2.0)
@@ -32,7 +32,7 @@ devDependencies:
     specifier: ^18
     version: 18.2.17
   autoprefixer:
-    specifier: ^10.0.1
+    specifier: ^10.4.16
     version: 10.4.16(postcss@8.4.32)
   eslint:
     specifier: ^8
@@ -44,7 +44,7 @@ devDependencies:
     specifier: ^8
     version: 8.4.32
   tailwindcss:
-    specifier: ^3.3.0
+    specifier: ^3.3.6
     version: 3.3.6
   typescript:
     specifier: ^5
@@ -1802,8 +1802,8 @@ packages:
       yallist: 4.0.0
     dev: true
 
-  /lucide-react@0.295.0(react@18.2.0):
-    resolution: {integrity: sha512-5tQQ8V4Qn9DZscW55OOk9i5z4R0TfJiMjLEwM1P1jqtY5aPD3AnY049Zfb+fyXAa1JcUS5o26Wsl/3dfvTue6w==}
+  /lucide-react@0.298.0(react@18.2.0):
+    resolution: {integrity: sha512-tWoxZ663Zf/n8VxXTHnTJsU/w1ysWT1LORnIL1pzqElFdSqBhWbZeJ3sLdCZ5FpzpbkpkYEtluhuTyG2BTDYNQ==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
