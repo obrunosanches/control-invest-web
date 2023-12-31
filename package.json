@@ -6,24 +6,31 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migration:generate": "drizzle-kit generate:pg"
   },
   "dependencies": {
-    "git-commit-msg-linter": "^5.0.4",
-    "lucide-react": "^0.298.0",
+    "dotenv": "^16.3.1",
+    "drizzle-orm": "^0.29.2",
+    "drizzle-zod": "^0.5.1",
+    "git-commit-msg-linter": "^5.0.6",
+    "lucide-react": "^0.303.0",
     "next": "14.0.4",
+    "pg": "^8.11.3",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/pg": "^8.10.9",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.16",
+    "drizzle-kit": "^0.20.9",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
     "postcss": "^8",
-    "tailwindcss": "^3.3.6",
+    "tailwindcss": "^3.4.0",
     "typescript": "^5"
   }
 }
