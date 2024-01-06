@@ -10,35 +10,35 @@ CREATE TABLE IF NOT EXISTS "account" (
 	"name" varchar(255) NOT NULL,
 	"initial_balance" numeric,
 	"balance" numeric,
-	"created_at" timestamp DEFAULT now(),
-	"updated_at" timestamp DEFAULT now(),
-	"archived_at" timestamp
+	"created_at" timestamp with time zone DEFAULT now(),
+	"updated_at" timestamp with time zone DEFAULT now(),
+	"archived_at" timestamp with time zone
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "account_type" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"description" varchar(60) NOT NULL,
-	"created_at" timestamp DEFAULT now(),
-	"updated_at" timestamp DEFAULT now(),
-	"archived_at" timestamp
+	"created_at" timestamp with time zone DEFAULT now(),
+	"updated_at" timestamp with time zone DEFAULT now(),
+	"archived_at" timestamp with time zone
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "category" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"type_id" integer NOT NULL,
 	"name" varchar(255) NOT NULL,
-	"created_at" timestamp DEFAULT now(),
-	"updated_at" timestamp DEFAULT now(),
-	"archived_at" timestamp
+	"created_at" timestamp with time zone DEFAULT now(),
+	"updated_at" timestamp with time zone DEFAULT now(),
+	"archived_at" timestamp with time zone
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "sub_category" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"category_id" integer NOT NULL,
 	"name" varchar(255) NOT NULL,
-	"created_at" timestamp DEFAULT now(),
-	"updated_at" timestamp DEFAULT now(),
-	"archived_at" timestamp
+	"created_at" timestamp with time zone DEFAULT now(),
+	"updated_at" timestamp with time zone DEFAULT now(),
+	"archived_at" timestamp with time zone
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "transaction" (
@@ -47,24 +47,25 @@ CREATE TABLE IF NOT EXISTS "transaction" (
 	"category_id" integer NOT NULL,
 	"sub_category_id" integer NOT NULL,
 	"account_id" integer NOT NULL,
-	"transfer_id" integer NOT NULL,
-	"description" varchar(255) NOT NULL,
-	"value" numeric,
-	"date" timestamp,
-	"is_active" boolean,
-	"must_ignore" boolean,
-	"created_at" timestamp DEFAULT now(),
-	"updated_at" timestamp DEFAULT now(),
-	"archived_at" timestamp
+	"transfer_id" integer,
+	"description" varchar(60) NOT NULL,
+	"note" varchar(255),
+	"value" numeric NOT NULL,
+	"date" timestamp with time zone NOT NULL,
+	"is_active" boolean DEFAULT true,
+	"must_ignore" boolean DEFAULT false,
+	"created_at" timestamp with time zone DEFAULT now(),
+	"updated_at" timestamp with time zone DEFAULT now(),
+	"archived_at" timestamp with time zone
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "transaction_type" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"description" varchar(60) NOT NULL,
 	"slug" "slug" NOT NULL,
-	"created_at" timestamp DEFAULT now(),
-	"updated_at" timestamp DEFAULT now(),
-	"archived_at" timestamp,
+	"created_at" timestamp with time zone DEFAULT now(),
+	"updated_at" timestamp with time zone DEFAULT now(),
+	"archived_at" timestamp with time zone,
 	CONSTRAINT "transaction_type_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint

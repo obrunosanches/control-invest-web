@@ -1,5 +1,4 @@
 import { boolean, decimal, integer, pgEnum, pgTable, serial, timestamp, varchar } from 'drizzle-orm/pg-core'
-import type { PgColumnBuilderBase } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
 export const transactionSlugEnum = pgEnum(
@@ -7,23 +6,21 @@ export const transactionSlugEnum = pgEnum(
   ['expenses', 'earnings', 'expenses-transfer', 'earnings-transfer']
 )
 
-const DEFAULT_COLUMNS: Record<string, PgColumnBuilderBase> = {
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
-  archivedAt: timestamp('archived_at')
-}
-
 export const accountType = pgTable('account_type', {
   id: serial('id').primaryKey(),
   description: varchar('description', { length: 60 }).notNull(),
-  ...DEFAULT_COLUMNS
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true }).defaultNow(),
+  archivedAt: timestamp('archived_at', { mode: 'date', withTimezone: true })
 })
 
 export const transactionType = pgTable('transaction_type', {
   id: serial('id').primaryKey(),
   description: varchar('description', { length: 60 }).notNull(),
   slug: transactionSlugEnum('slug').unique().notNull(),
-  ...DEFAULT_COLUMNS
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true }).defaultNow(),
+  archivedAt: timestamp('archived_at', { mode: 'date', withTimezone: true })
 })
 
 export const category = pgTable('category', {
@@ -33,7 +30,9 @@ export const category = pgTable('category', {
     onDelete: 'cascade'
   }),
   name: varchar('name', { length: 255 }).notNull(),
-  ...DEFAULT_COLUMNS
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true }).defaultNow(),
+  archivedAt: timestamp('archived_at', { mode: 'date', withTimezone: true })
 })
 
 export const subCategory = pgTable('sub_category', {
@@ -43,7 +42,9 @@ export const subCategory = pgTable('sub_category', {
     onDelete: 'cascade'
   }),
   name: varchar('name', { length: 255 }).notNull(),
-  ...DEFAULT_COLUMNS
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true }).defaultNow(),
+  archivedAt: timestamp('archived_at', { mode: 'date', withTimezone: true })
 })
 
 export const account = pgTable('account', {
@@ -55,7 +56,9 @@ export const account = pgTable('account', {
   name: varchar('name', { length: 255 }).notNull(),
   initialBalance: decimal('initial_balance', { scale: 2 }),
   balance: decimal('balance', { scale: 2 }),
-  ...DEFAULT_COLUMNS
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true }).defaultNow(),
+  archivedAt: timestamp('archived_at', { mode: 'date', withTimezone: true })
 })
 
 export const transfer = pgTable('transfer', {
@@ -88,17 +91,19 @@ export const transaction = pgTable('transaction', {
     onUpdate: 'cascade',
     onDelete: 'cascade'
   }),
-  transferId: integer('transfer_id').notNull().references(() => transfer.id, {
+  transferId: integer('transfer_id').references(() => transfer.id, {
     onUpdate: 'cascade',
     onDelete: 'cascade'
   }),
   description: varchar('description', { length: 60 }).notNull(),
-  note: varchar('description', { length: 255 }).notNull(),
-  value: decimal('value', { scale: 2 }),
-  date: timestamp('date'),
-  isActive: boolean('is_active'),
-  mustIgnore: boolean('must_ignore'),
-  ...DEFAULT_COLUMNS
+  note: varchar('note', { length: 255 }),
+  value: decimal('value', { scale: 2 }).notNull(),
+  date: timestamp('date', { mode: 'date', withTimezone: true }).notNull(),
+  isActive: boolean('is_active').default(true),
+  mustIgnore: boolean('must_ignore').default(false),
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true }).defaultNow(),
+  archivedAt: timestamp('archived_at', { mode: 'date', withTimezone: true })
 })
 
 // *********** relations *********** //
@@ -114,7 +119,7 @@ export const transactionTypeRelations = relations(transactionType, ({ many }) =>
 
 export const categoryRelations = relations(category, ({ one, many }) => ({
   type: one(transactionType, {
-    fields: [category.id],
+    fields: [category.typeId],
     references: [transactionType.id]
   }),
   subCategories: many(subCategory),
@@ -122,8 +127,8 @@ export const categoryRelations = relations(category, ({ one, many }) => ({
 }))
 
 export const subCategoryRelations = relations(subCategory, ({ one, many }) => ({
-  type: one(category, {
-    fields: [subCategory.id],
+  category: one(category, {
+    fields: [subCategory.categoryId],
     references: [category.id]
   }),
   transactions: many(transaction)
@@ -131,7 +136,7 @@ export const subCategoryRelations = relations(subCategory, ({ one, many }) => ({
 
 export const accountRelations = relations(account, ({ one, many }) => ({
   type: one(accountType, {
-    fields: [account.id],
+    fields: [account.accountTypeId],
     references: [accountType.id]
   }),
   account_to: many(transfer),

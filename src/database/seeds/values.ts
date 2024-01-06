@@ -1,9 +1,9 @@
 import { ACCOUNTS_SEEDS, ACCOUNTS_TYPES_SEEDS, CATEGORIES_SEEDS, SUB_CATEGORIES_SEEDS } from './constants'
-import { AccountProps, AccountTypeProps, CategoryProps, SubCategoryProps, TransactionProps } from './types'
+import { AccountProps, AccountTypeProps, CategoryProps, SubCategoryProps, TransactionTypeProps } from './types'
 
 export const accountTypesSeed = ACCOUNTS_TYPES_SEEDS
 
-export const transactionTypesSeed: TransactionProps[] = [
+export const transactionTypesSeed: TransactionTypeProps[] = [
   { description: 'Despesas', slug: 'expenses' },
   { description: 'Receitas', slug: 'earnings' },
   { description: 'Despesas de transferência', slug: 'expenses-transfer' },
@@ -29,17 +29,17 @@ export const getAccountsSeed = (types: AccountTypeProps[]): AccountProps[]  => {
   return accounts
 }
 
-export const getCategorySeed = (types: TransactionProps[]): CategoryProps[]  => {
+export const getCategorySeed = (types: TransactionTypeProps[]): CategoryProps[]  => {
   const categoriesSeed: CategoryProps[] = []
   
   types.forEach((type) => {
     CATEGORIES_SEEDS
-      .filter(seed => seed.relationWith === type.slug)
-      .map(item => {
-        categoriesSeed.push({
-          name: item.name,
-          typeId: type.id!
-        })
+    .filter(seed => seed.relationWith === type.slug)
+    .map(item => {
+      categoriesSeed.push({
+        name: item.name,
+        typeId: type.id!
+      })
     })
   })
   
@@ -51,12 +51,12 @@ export const getSubCategorySeed = (categories: CategoryProps[]): SubCategoryProp
   
   categories.forEach(category => {
     SUB_CATEGORIES_SEEDS
-      .filter(item => item.relationWith === category.name)
-      .map(seed => {
-        subCategorySeed.push({
-          name: seed.name,
-          categoryId: category.id!
-        })
+    .filter(item => item.relationWith === category.name)
+    .map(seed => {
+      subCategorySeed.push({
+        name: seed.name,
+        categoryId: category.id!
+      })
     })
   })
   

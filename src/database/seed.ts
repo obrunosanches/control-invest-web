@@ -8,9 +8,11 @@ import { accountTypesSeed, getAccountsSeed, getCategorySeed, getSubCategorySeed,
 async function main() {
   console.log('Seed started...')
   await db.delete(accountType)
+  await db.delete(account)
   await db.delete(transactionType)
   
   await db.execute(sql`ALTER SEQUENCE account_type_id_seq RESTART;`)
+  await db.execute(sql`ALTER SEQUENCE account_id_seq RESTART;`)
   await db.execute(sql`ALTER SEQUENCE transaction_type_id_seq RESTART;`)
   await db.execute(sql`ALTER SEQUENCE category_id_seq RESTART;`)
   await db.execute(sql`ALTER SEQUENCE sub_category_id_seq RESTART;`)
