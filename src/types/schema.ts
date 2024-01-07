@@ -1,4 +1,4 @@
-import { account, accountType, category, subCategory, transactionType } from '../schema'
+import { account, accountType, category, subCategory, transactionType } from '@/database/schema'
 
 export type AccountTypeProps = (typeof accountType.$inferInsert)
 export type AccountProps = (typeof account.$inferInsert)

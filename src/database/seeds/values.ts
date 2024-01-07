@@ -1,5 +1,5 @@
-import { ACCOUNTS_SEEDS, ACCOUNTS_TYPES_SEEDS, CATEGORIES_SEEDS, SUB_CATEGORIES_SEEDS } from './constants'
-import { AccountProps, AccountTypeProps, CategoryProps, SubCategoryProps, TransactionTypeProps } from './types'
+import { ACCOUNTS_SEEDS, ACCOUNTS_TYPES_SEEDS, CATEGORIES_SEEDS, SUB_CATEGORIES_SEEDS } from '@/consts/schema'
+import { AccountProps, AccountTypeProps, CategoryProps, SubCategoryProps, TransactionTypeProps } from '@/types/schema'
 
 export const accountTypesSeed = ACCOUNTS_TYPES_SEEDS
 
