@@ -10,6 +10,8 @@
     "migration:generate": "drizzle-kit generate:pg",
     "migration:push": "drizzle-kit push:pg",
     "migration:seed": "tsx src/database/seeds/index.ts",
+    "migration:procedures": "tsx src/database/procedures/index.ts",
+    "migration:triggers": "tsx src/database/triggers/index.ts",
     "migration": "pnpm migration:generate && pnpm migration:push && pnpm migration:seed"
   },
   "dependencies": {
