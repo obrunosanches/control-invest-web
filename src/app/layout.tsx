@@ -1,15 +1,16 @@
 import type { Metadata } from 'next'
-
+import { Manrope as FontSans } from 'next/font/google'
 import Image from "next/image"
 import Link from "next/link"
-import { Manrope } from 'next/font/google'
 import { CircleDollarSign, Landmark, LayoutDashboard, Tags } from 'lucide-react'
 
-import './globals.css'
+import { cn } from "@/lib/utils"
 
-const manrope = Manrope({
+import './styles/globals.css'
+
+const fontSans = FontSans({
   subsets: ['latin'],
-  variable: '--font-manrope'
+  variable: "--font-sans"
 })
 
 export const metadata: Metadata = {
@@ -23,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={manrope.className}>
+    <html lang="en" className={cn(fontSans.variable)}>
       <body className="bg-slate-100 text-gray-600">
         <div className="flex">
           <div className="shrink-0 w-56">
