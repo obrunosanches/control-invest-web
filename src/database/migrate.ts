@@ -4,7 +4,7 @@ import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import { db, client } from './connect'
 
 async function main() {
-  console.log('Migration started...')
+  console.log('migration started...')
   
   await migrate(db, { migrationsFolder: './drizzle' })
 }

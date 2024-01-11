@@ -12,7 +12,7 @@
     "migration:seed": "tsx src/database/seeds/index.ts",
     "migration:procedures": "tsx src/database/procedures/index.ts",
     "migration:triggers": "tsx src/database/triggers/index.ts",
-    "migration": "pnpm migration:generate && pnpm migration:push && pnpm migration:seed"
+    "migration": "pnpm migration:generate && pnpm migration:push && pnpm migration:seed && tsx src/database/procedures/index.ts && tsx src/database/triggers/index.ts"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
