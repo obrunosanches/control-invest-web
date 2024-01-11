@@ -1,0 +1,384 @@
+{
+  "info": {
+    "name": "control-invest",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "api-nuxt",
+      "event": [],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:3001/api/account"
+      }
+    },
+    {
+      "name": "account",
+      "item": [
+        {
+          "name": "create",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "Conne",
+                "value": "",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "url": "http://localhost:3000/api/account",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Teste\",\n  \"accountTypeId\": 1,\n  \"initialBalance\": \"123\",\n  \"balance\": \"123\",\n  \"test\": 123\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "show",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:3000/api/account"
+          }
+        },
+        {
+          "name": "[id]",
+          "item": [
+            {
+              "name": "[delete]",
+              "event": [],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": "http://localhost:3000/api/account/7",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Teste qwe\",\n  \"accountTypeId\": 1,\n  \"initialBalance\": \"1000.98\",\n  \"balance\": \"123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "[show]",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "http://localhost:3000/api/account/1"
+              }
+            },
+            {
+              "name": "[update]",
+              "event": [],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": "http://localhost:3000/api/account/2",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"balance\": \"1000\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "account-type",
+      "item": [
+        {
+          "name": "type (show)",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:3000/api/account-type"
+          }
+        }
+      ]
+    },
+    {
+      "name": "category",
+      "item": [
+        {
+          "name": "create",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "http://localhost:3000/api/category",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alimentação teste\",\n  \"type_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "show",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:3000/api/category"
+          }
+        },
+        {
+          "name": "[id]",
+          "item": [
+            {
+              "name": "delete",
+              "event": [],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": "http://localhost:3000/api/category/20"
+              }
+            },
+            {
+              "name": "update",
+              "event": [],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": "http://localhost:3000/api/category/1",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Alimentação\",\n  \"type_id\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "show",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "http://localhost:3000/api/category/1"
+              }
+            }
+          ]
+        },
+        {
+          "name": "type",
+          "item": [
+            {
+              "name": "[id]",
+              "item": [
+                {
+                  "name": "show",
+                  "event": [],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": "http://localhost:3000/api/category/type/1"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sub-category",
+      "item": [
+        {
+          "name": "[delete]",
+          "event": [],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "http://localhost:3000/api/category/17/sub-category/60",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"teste\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "[update]",
+          "event": [],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "http://localhost:3000/api/category/17/sub-category/59",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"teste 59\",\n  \"category_id\": 17\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "transaction",
+      "item": [
+        {
+          "name": "create",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "http://localhost:3000/api/transaction",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type_id\": 4,\n  \"category_id\": 1,\n  \"sub_category_id\": 1,\n  \"account_id\": 1,\n  \"description\": \"transação via api\",\n  \"note\": \"nota via api\",\n  \"date\": \"2023-01-16T02:59:59.999Z\",\n  \"value\": \"1000\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "show",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:3000/api/transaction?year=2023&month=jan"
+          }
+        },
+        {
+          "name": "[id]",
+          "item": [
+            {
+              "name": "delete",
+              "event": [],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": "http://localhost:3000/api/transaction/142"
+              }
+            },
+            {
+              "name": "show",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "http://localhost:3000/api/transaction/129"
+              }
+            },
+            {
+              "name": "update",
+              "event": [],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": "http://localhost:3000/api/transaction/1",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"value\": \"2000\",\n    \"date\": \"2024-01-10T20:59:59.999Z\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "transaction-type",
+      "item": [
+        {
+          "name": "show",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:3000/api/transaction-type"
+          }
+        }
+      ]
+    },
+    {
+      "name": "transfer",
+      "item": [
+        {
+          "name": "create",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "http://localhost:3000/api/transfer",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountFromId\": 1,\n  \"accountToId\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "[id]",
+          "item": [
+            {
+              "name": "delete",
+              "event": [],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": "http://localhost:3000/api/transfer/1"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": []
+}

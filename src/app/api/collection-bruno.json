@@ -1,0 +1,807 @@
+{
+  "name": "control-invest",
+  "version": "1",
+  "items": [
+    {
+      "type": "http",
+      "name": "api-nuxt",
+      "seq": 1,
+      "request": {
+        "url": "http://localhost:3001/api/account",
+        "method": "GET",
+        "headers": [],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": []
+        },
+        "auth": {
+          "mode": "none",
+          "basic": {
+            "username": "",
+            "password": ""
+          },
+          "bearer": {
+            "token": ""
+          }
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "query": []
+      }
+    },
+    {
+      "type": "folder",
+      "name": "account",
+      "items": [
+        {
+          "type": "http",
+          "name": "create",
+          "seq": 2,
+          "request": {
+            "url": "http://localhost:3000/api/account",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": "application/json",
+                "enabled": true
+              },
+              {
+                "name": "Conne",
+                "value": "",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"Teste\",\n  \"accountTypeId\": 1,\n  \"initialBalance\": \"123\",\n  \"balance\": \"123\",\n  \"test\": 123\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "show",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:3000/api/account",
+            "method": "GET",
+            "headers": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        },
+        {
+          "type": "folder",
+          "name": "[id]",
+          "items": [
+            {
+              "type": "http",
+              "name": "[delete]",
+              "seq": 3,
+              "request": {
+                "url": "http://localhost:3000/api/account/7",
+                "method": "DELETE",
+                "headers": [],
+                "body": {
+                  "mode": "json",
+                  "json": "{\n  \"name\": \"Teste qwe\",\n  \"accountTypeId\": 1,\n  \"initialBalance\": \"1000.98\",\n  \"balance\": \"123\"\n}",
+                  "formUrlEncoded": [],
+                  "multipartForm": []
+                },
+                "auth": {
+                  "mode": "none",
+                  "basic": {
+                    "username": "",
+                    "password": ""
+                  },
+                  "bearer": {
+                    "token": ""
+                  }
+                },
+                "script": {},
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "query": []
+              }
+            },
+            {
+              "type": "http",
+              "name": "[show]",
+              "seq": 1,
+              "request": {
+                "url": "http://localhost:3000/api/account/1",
+                "method": "GET",
+                "headers": [],
+                "body": {
+                  "mode": "none",
+                  "formUrlEncoded": [],
+                  "multipartForm": []
+                },
+                "auth": {
+                  "mode": "none",
+                  "basic": {
+                    "username": "",
+                    "password": ""
+                  },
+                  "bearer": {
+                    "token": ""
+                  }
+                },
+                "script": {},
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "query": []
+              }
+            },
+            {
+              "type": "http",
+              "name": "[update]",
+              "seq": 2,
+              "request": {
+                "url": "http://localhost:3000/api/account/2",
+                "method": "PUT",
+                "headers": [],
+                "body": {
+                  "mode": "json",
+                  "json": "{\n  \"balance\": \"1000\"\n}",
+                  "formUrlEncoded": [],
+                  "multipartForm": []
+                },
+                "auth": {
+                  "mode": "none",
+                  "basic": {
+                    "username": "",
+                    "password": ""
+                  },
+                  "bearer": {
+                    "token": ""
+                  }
+                },
+                "script": {},
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "query": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "account-type",
+      "items": [
+        {
+          "type": "http",
+          "name": "type (show)",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:3000/api/account-type",
+            "method": "GET",
+            "headers": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "category",
+      "items": [
+        {
+          "type": "http",
+          "name": "create",
+          "seq": 2,
+          "request": {
+            "url": "http://localhost:3000/api/category",
+            "method": "POST",
+            "headers": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"Alimentação teste\",\n  \"type_id\": 1\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "show",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:3000/api/category",
+            "method": "GET",
+            "headers": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        },
+        {
+          "type": "folder",
+          "name": "[id]",
+          "items": [
+            {
+              "type": "http",
+              "name": "delete",
+              "seq": 3,
+              "request": {
+                "url": "http://localhost:3000/api/category/20",
+                "method": "DELETE",
+                "headers": [],
+                "body": {
+                  "mode": "none",
+                  "formUrlEncoded": [],
+                  "multipartForm": []
+                },
+                "auth": {
+                  "mode": "none",
+                  "basic": {
+                    "username": "",
+                    "password": ""
+                  },
+                  "bearer": {
+                    "token": ""
+                  }
+                },
+                "script": {},
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "query": []
+              }
+            },
+            {
+              "type": "http",
+              "name": "update",
+              "seq": 2,
+              "request": {
+                "url": "http://localhost:3000/api/category/1",
+                "method": "PUT",
+                "headers": [],
+                "body": {
+                  "mode": "json",
+                  "json": "{\n  \"name\": \"Alimentação\",\n  \"type_id\": 1\n}",
+                  "formUrlEncoded": [],
+                  "multipartForm": []
+                },
+                "auth": {
+                  "mode": "none",
+                  "basic": {
+                    "username": "",
+                    "password": ""
+                  },
+                  "bearer": {
+                    "token": ""
+                  }
+                },
+                "script": {},
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "query": []
+              }
+            },
+            {
+              "type": "http",
+              "name": "show",
+              "seq": 1,
+              "request": {
+                "url": "http://localhost:3000/api/category/1",
+                "method": "GET",
+                "headers": [],
+                "body": {
+                  "mode": "none",
+                  "formUrlEncoded": [],
+                  "multipartForm": []
+                },
+                "auth": {
+                  "mode": "none",
+                  "basic": {
+                    "username": "",
+                    "password": ""
+                  },
+                  "bearer": {
+                    "token": ""
+                  }
+                },
+                "script": {},
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "query": []
+              }
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "type",
+          "items": [
+            {
+              "type": "folder",
+              "name": "[id]",
+              "items": [
+                {
+                  "type": "http",
+                  "name": "show",
+                  "seq": 1,
+                  "request": {
+                    "url": "http://localhost:3000/api/category/type/1",
+                    "method": "GET",
+                    "headers": [],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": []
+                    },
+                    "auth": {
+                      "mode": "none",
+                      "basic": {
+                        "username": "",
+                        "password": ""
+                      },
+                      "bearer": {
+                        "token": ""
+                      }
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "query": []
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "sub-category",
+      "items": [
+        {
+          "type": "http",
+          "name": "[delete]",
+          "seq": 2,
+          "request": {
+            "url": "http://localhost:3000/api/category/17/sub-category/60",
+            "method": "DELETE",
+            "headers": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"teste\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "[update]",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:3000/api/category/17/sub-category/59",
+            "method": "PUT",
+            "headers": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"teste 59\",\n  \"category_id\": 17\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "transaction",
+      "items": [
+        {
+          "type": "http",
+          "name": "create",
+          "seq": 2,
+          "request": {
+            "url": "http://localhost:3000/api/transaction",
+            "method": "POST",
+            "headers": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"type_id\": 4,\n  \"category_id\": 1,\n  \"sub_category_id\": 1,\n  \"account_id\": 1,\n  \"description\": \"transação via api\",\n  \"note\": \"nota via api\",\n  \"date\": \"2023-01-16T02:59:59.999Z\",\n  \"value\": \"1000\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "show",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:3000/api/transaction?year=2023&month=jan",
+            "method": "GET",
+            "headers": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": [
+              {
+                "name": "year",
+                "value": "2023",
+                "enabled": true
+              },
+              {
+                "name": "month",
+                "value": "jan",
+                "enabled": true
+              }
+            ]
+          }
+        },
+        {
+          "type": "folder",
+          "name": "[id]",
+          "items": [
+            {
+              "type": "http",
+              "name": "delete",
+              "seq": 2,
+              "request": {
+                "url": "http://localhost:3000/api/transaction/142",
+                "method": "DELETE",
+                "headers": [],
+                "body": {
+                  "mode": "none",
+                  "formUrlEncoded": [],
+                  "multipartForm": []
+                },
+                "auth": {
+                  "mode": "none",
+                  "basic": {
+                    "username": "",
+                    "password": ""
+                  },
+                  "bearer": {
+                    "token": ""
+                  }
+                },
+                "script": {},
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "query": []
+              }
+            },
+            {
+              "type": "http",
+              "name": "show",
+              "seq": 1,
+              "request": {
+                "url": "http://localhost:3000/api/transaction/129",
+                "method": "GET",
+                "headers": [],
+                "body": {
+                  "mode": "none",
+                  "formUrlEncoded": [],
+                  "multipartForm": []
+                },
+                "auth": {
+                  "mode": "none",
+                  "basic": {
+                    "username": "",
+                    "password": ""
+                  },
+                  "bearer": {
+                    "token": ""
+                  }
+                },
+                "script": {},
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "query": []
+              }
+            },
+            {
+              "type": "http",
+              "name": "update",
+              "seq": 3,
+              "request": {
+                "url": "http://localhost:3000/api/transaction/1",
+                "method": "PUT",
+                "headers": [],
+                "body": {
+                  "mode": "json",
+                  "json": "{\n    \"value\": \"2000\",\n    \"date\": \"2024-01-10T20:59:59.999Z\"\n}\n",
+                  "formUrlEncoded": [],
+                  "multipartForm": []
+                },
+                "auth": {
+                  "mode": "none",
+                  "basic": {
+                    "username": "",
+                    "password": ""
+                  },
+                  "bearer": {
+                    "token": ""
+                  }
+                },
+                "script": {},
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "query": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "transaction-type",
+      "items": [
+        {
+          "type": "http",
+          "name": "show",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:3000/api/transaction-type",
+            "method": "GET",
+            "headers": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "transfer",
+      "items": [
+        {
+          "type": "http",
+          "name": "create",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:3000/api/transfer",
+            "method": "POST",
+            "headers": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"accountFromId\": 1,\n  \"accountToId\": 2\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        },
+        {
+          "type": "folder",
+          "name": "[id]",
+          "items": [
+            {
+              "type": "http",
+              "name": "delete",
+              "seq": 1,
+              "request": {
+                "url": "http://localhost:3000/api/transfer/1",
+                "method": "DELETE",
+                "headers": [],
+                "body": {
+                  "mode": "none",
+                  "formUrlEncoded": [],
+                  "multipartForm": []
+                },
+                "auth": {
+                  "mode": "none",
+                  "basic": {
+                    "username": "",
+                    "password": ""
+                  },
+                  "bearer": {
+                    "token": ""
+                  }
+                },
+                "script": {},
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "query": []
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "environments": []
+}
