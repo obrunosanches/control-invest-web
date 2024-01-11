@@ -19,8 +19,8 @@ export const getAccountsSeed = (types: AccountTypeProps[]): AccountProps[]  => {
     .map(item => {
       accounts.push({
         name: item.name,
-        accountTypeId: type.id!,
-        initialBalance: item.initialBalance,
+        account_type_id: type.id!,
+        initial_balance: item.initialBalance,
         balance: item.balance
       })
     })
@@ -38,7 +38,7 @@ export const getCategorySeed = (types: TransactionTypeProps[]): CategoryProps[] 
     .map(item => {
       categoriesSeed.push({
         name: item.name,
-        typeId: type.id!
+        type_id: type.id!
       })
     })
   })
@@ -55,7 +55,7 @@ export const getSubCategorySeed = (categories: CategoryProps[]): SubCategoryProp
     .map(seed => {
       subCategorySeed.push({
         name: seed.name,
-        categoryId: category.id!
+        category_id: category.id!
       })
     })
   })
