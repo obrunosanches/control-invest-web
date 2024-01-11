@@ -1,9 +1,9 @@
 import 'dotenv/config'
 import { sql } from 'drizzle-orm'
 
-import { db, client } from './connect'
-import { account, accountType, category, subCategory, transactionType } from './schema'
-import { accountTypesSeed, getAccountsSeed, getCategorySeed, getSubCategorySeed, transactionTypesSeed } from './seeds/values'
+import { db, client } from '../connect'
+import { account, accountType, category, subCategory, transactionType } from '../schema'
+import { accountTypesSeed, getAccountsSeed, getCategorySeed, getSubCategorySeed, transactionTypesSeed } from './values'
 
 async function main() {
   console.log('Seed started...')
