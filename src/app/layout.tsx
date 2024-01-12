@@ -25,11 +25,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={cn(fontSans.variable)}>
-      <body className="bg-slate-100 text-gray-600">
+      <body className="bg-muted text-muted-foreground">
         <div className="flex">
           <div className="shrink-0 w-56">
             <aside
-              className="h-full w-56 fixed border-r bg-white border-black[0.07]"
+              className="h-full w-56 fixed border-r bg-background border-foreground[0.07]"
               aria-label="Sidebar"
             >
               <div className="flex justify-center py-4 mt-4">
@@ -39,7 +39,7 @@ export default function RootLayout({
               
               <ul className="px-3 py-4 space-y-2">
                 <li>
-                  <Link href="/" className="flex items-center p-3 rounded-lg text-gray-500 hover:bg-slate-100">
+                  <Link href="/" className="flex items-center p-3 rounded-lg hover:bg-muted">
                     <div className="flex gap-4">
                       <LayoutDashboard strokeWidth={1.5} />
                       Dashboard
@@ -48,25 +48,25 @@ export default function RootLayout({
                 </li>
                 
                 <li>
-                  <Link href="/transactions" className="flex items-center p-3 rounded-lg text-gray-500 hover:bg-slate-100">
+                  <Link href="/transactions" className="flex items-center p-3 rounded-lg hover:bg-muted">
                     <div className="flex gap-4">
                       <CircleDollarSign strokeWidth={1.5} />
                       Transações
                     </div>
                   </Link>
                 </li>
-
+                
                 <li>
-                  <Link href="/categories" className="flex items-center p-3 rounded-lg text-gray-500 hover:bg-slate-100">
+                  <Link href="/categories" className="flex items-center p-3 rounded-lg hover:bg-muted">
                     <div className="flex gap-4">
                       <Tags strokeWidth={1.5} />
                       Categorias
                     </div>
                   </Link>
                 </li>
-
+                
                 <li>
-                  <Link href="/accounts" className="flex items-center p-3 rounded-lg text-gray-500 hover:bg-slate-100">
+                  <Link href="/accounts" className="flex items-center p-3 rounded-lg hover:bg-muted">
                     <div className="flex gap-4">
                       <Landmark strokeWidth={1.5} />
                       Contas
