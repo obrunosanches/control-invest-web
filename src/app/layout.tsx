@@ -2,11 +2,11 @@ import type { Metadata } from 'next'
 import { Manrope as FontSans } from 'next/font/google'
 import Image from "next/image"
 import Link from "next/link"
-import { CircleDollarSign, Landmark, LayoutDashboard, Tags } from 'lucide-react'
+import { BadgeDollarSignIcon, Landmark, LayoutDashboard, Tags } from 'lucide-react'
 
 import { cn } from "@/lib/utils"
 
-import './styles/globals.css'
+import './globals.css'
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -50,7 +50,7 @@ export default function RootLayout({
                 <li>
                   <Link href="/transactions" className="flex items-center p-3 rounded-lg hover:bg-muted">
                     <div className="flex gap-4">
-                      <CircleDollarSign strokeWidth={1.5} />
+                      <BadgeDollarSignIcon strokeWidth={1.5} />
                       Transações
                     </div>
                   </Link>
