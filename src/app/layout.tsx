@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
-import { Manrope as FontSans } from 'next/font/google'
 import Image from "next/image"
 import Link from "next/link"
-import { BadgeDollarSignIcon, Landmark, LayoutDashboard, Tags } from 'lucide-react'
+import { Manrope as FontSans } from 'next/font/google'
 
-import { cn } from "@/lib/utils"
+import { BadgeDollarSignIcon, Landmark, LayoutDashboard, Tags } from 'lucide-react'
 
 import './globals.css'
 
@@ -24,8 +23,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={cn(fontSans.variable)}>
-      <body className="bg-muted text-muted-foreground">
+    <html lang="pt-BR" className={fontSans.variable} suppressHydrationWarning>
+      <body>
         <div className="flex">
           <div className="shrink-0 w-56">
             <aside
