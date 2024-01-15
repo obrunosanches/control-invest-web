@@ -1,7 +1,7 @@
 import { request } from '@/server/request'
 
 import type { AccountWithTypeProps } from '@/types/schema'
-import AccountList from '@/components/layout/account/list'
+import AccountData from '@/components/layout/account/data'
 
 async function getAccount(): Promise<AccountWithTypeProps[]> {
   const response = await request('/account', {
@@ -12,13 +12,14 @@ async function getAccount(): Promise<AccountWithTypeProps[]> {
 
 export default async function Accounts() {
   const accounts = await getAccount()
+  
   return (
     <>
       <h1 className="text-3xl font-bold">
         Contas
       </h1>
       
-      <AccountList accounts={accounts} />
+      <AccountData accounts={accounts} />
     </>
   )
 }

@@ -1,5 +1,5 @@
 import { Sheet } from '@/components/ui/sheet'
-import { Dispatch, ReactNode, SetStateAction } from 'react'
+import type { Dispatch, ReactNode, SetStateAction } from 'react'
 
 function SheetForm({ children, toggle, setToggle }: { children: ReactNode, toggle: boolean; setToggle: Dispatch<SetStateAction<boolean>>  }) {
   return (
