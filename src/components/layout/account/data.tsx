@@ -11,35 +11,66 @@ import AccountList from '@/components/layout/account/list'
 import { Button } from '@/components/ui/button'
 import ConfirmDelete from '@/components/layout/confirm-delete'
 
-import { GetActionTitles } from '@/consts/pages'
+import { GetFormActionTitles } from '@/consts/pages'
 
-import type { AccountWithTypeProps } from '@/types/schema'
-import type { PageActions } from '@/types/pages'
+import type { AccountProps, AccountTypeProps, AccountWithTypeProps } from '@/types/schema'
+import type { FormActions, PageActions } from '@/types/pages'
+import { createOrUpdateAccount, deleteAccount } from '@/services/account'
 
 export type AccountAction = PageActions | 'earning' | 'expense' | 'transaction'
 
 interface ReducerProps {
   action: AccountAction
   account: Partial<AccountWithTypeProps>
+  isAddOrEdit: boolean
   title: string
 }
 
 interface AccountDataProps {
   accounts: AccountWithTypeProps[]
+  accountTypes: AccountTypeProps[]
 }
 
 const reducer = (state: ReducerProps, update: Partial<ReducerProps>) => ({ ...state, ...update })
 
-function AccountData({ accounts }: AccountDataProps) {
+function AccountData({ accounts, accountTypes }: AccountDataProps) {
   const [toggle, setToggle] = useState(false)
   const [state, setState] = useReducer(reducer, {
     action: 'new',
+    isAddOrEdit: true,
     title: getTitle('new'),
     account: {}
   })
   
   function getTitle(action: PageActions) {
-    return GetActionTitles('conta')[action] ?? GetActionTitles('conta')['new']
+    return GetFormActionTitles('conta')[action] ?? GetFormActionTitles('conta')['new']
+  }
+  
+  function handleActionList(action: AccountAction, selected: AccountWithTypeProps) {
+    if (['earning', 'expense', 'transaction'].includes(action)) {
+      return
+    }
+    
+    setState({
+      action,
+      account: selected,
+      isAddOrEdit: action !== 'remove',
+      title: getTitle(action as PageActions)
+    })
+    setToggle(value => !value)
+  }
+  
+  async function handleActionForm(formAction: FormActions, formData?: AccountProps) {
+    if (formData && formAction === 'confirm') {
+      await createOrUpdateAccount({
+        ...(state.account.id && { id: state.account.id }),
+        name: formData.name,
+        initial_balance: formData.initial_balance,
+        account_type_id: formData.account_type_id,
+      })
+    }
+    
+    setToggle(value => !value)
   }
   
   return (
@@ -50,7 +81,7 @@ function AccountData({ accounts }: AccountDataProps) {
           onClick={() => {
             setState({
               action: 'new',
-              title: GetActionTitles('conta')['new'],
+              title: GetFormActionTitles('conta')['new'],
               account: {}
             })
             setToggle(value => !value)
@@ -62,19 +93,8 @@ function AccountData({ accounts }: AccountDataProps) {
       </div>
       
       <AccountList
-        data={accounts}
-        handleAction={(action, data) => {
-          if (['earning', 'expense', 'transaction'].includes(action)) {
-            return
-          }
-          
-          setState({
-            action,
-            account: data,
-            title: getTitle(action as PageActions)
-          })
-          setToggle(value => !value)
-        }}
+        accountData={accounts}
+        handleAction={handleActionList}
       />
       
       <SheetForm toggle={toggle} setToggle={setToggle}>
@@ -85,24 +105,22 @@ function AccountData({ accounts }: AccountDataProps) {
             </h3>
           </SheetHeader>
           
-          {state.action !== 'remove' && (
+          {state.isAddOrEdit && (
             <AccountForm
-              data={state.account}
-              handleAction={(formAction, data) => {
-                setState({
-                  account: data
-                })
-              
-                setToggle(value => !value)
-              }}
+              formData={state.account}
+              accountTypes={accountTypes}
+              handleAction={handleActionForm}
             />
           )}
           
           {state.action === 'remove' && (
             <ConfirmDelete
               item={state.account.name!}
-              handleAction={(action) => {
-                setToggle(value => !value)
+              handleAction={async (action) => {
+                if (action === 'confirm') {
+                  await deleteAccount(state.account.id!)
+                  setToggle(value => !value)
+                }
               }}
             />
           )}

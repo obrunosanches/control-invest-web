@@ -11,17 +11,17 @@ import type { AccountWithTypeProps } from '@/types/schema'
 import type { AccountAction } from '@/components/layout/account/data'
 
 interface AccountListProps {
-  data: AccountWithTypeProps[]
+  accountData: AccountWithTypeProps[]
   handleAction: (
     action: AccountAction,
-    data?: AccountWithTypeProps
+    selected: AccountWithTypeProps
   ) => void
 }
 
-function AccountList({ data, handleAction }: AccountListProps) {
+function AccountList({ accountData, handleAction }: AccountListProps) {
   return (
     <div className="grid grid-cols-2 grid-rows-1 gap-4 mt-6">
-      {data.map(account => {
+      {accountData.map(account => {
         return (
           <Card key={account.id}>
             <CardHeader>
