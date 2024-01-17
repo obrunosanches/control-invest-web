@@ -1,4 +1,7 @@
-import { AlertTriangleIcon } from 'lucide-react'
+'use client'
+
+import { useState } from 'react'
+import { AlertTriangleIcon, Loader2Icon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
@@ -9,6 +12,8 @@ function ConfirmDelete({ item, handleAction }: {
   item: string
   handleAction: (action: FormActions) => void
 }) {
+  const [loading, setLoading] = useState(false)
+  
   return (
     <Card className="mt-4">
       <CardContent>
@@ -21,11 +26,25 @@ function ConfirmDelete({ item, handleAction }: {
       </CardContent>
       
       <CardFooter className="flex gap-4 justify-end">
-        <Button type="button" variant="outline" onClick={() => handleAction('cancel')}>
+        <Button
+          type="button"
+          variant="outline"
+          disabled={loading}
+          onClick={() => handleAction('cancel')}
+        >
           Cancelar
         </Button>
         
-        <Button type="submit" variant="destructive" onClick={() => handleAction('confirm')}>
+        <Button
+          type="submit"
+          variant="destructive"
+          disabled={loading}
+          onClick={() => {
+            setLoading(true)
+            handleAction('confirm')
+          }}
+        >
+          {loading && <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />}
           Confirmar
         </Button>
       </CardFooter>
