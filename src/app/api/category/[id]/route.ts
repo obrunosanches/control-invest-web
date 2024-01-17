@@ -32,7 +32,7 @@ export async function PUT(request: NextRequest, context: Context) {
   const data = createInsertSchema(category).parse({
     ...selected,
     ...body,
-    updatedAt: new Date()
+    updated_at: new Date()
   })
   
   const query = db.update(category).set(data).where(eq(category.id, categoryId))

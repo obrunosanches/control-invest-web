@@ -27,7 +27,7 @@ export async function PUT(request: NextRequest, context: Context) {
   const data = createInsertSchema(account).parse({
     ...selected,
     ...body,
-    updatedAt: new Date()
+    updated_at: new Date()
   })
   
   const query = db.update(account).set(data).where(eq(account.id, accountId))

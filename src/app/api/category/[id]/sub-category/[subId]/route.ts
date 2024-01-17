@@ -18,7 +18,7 @@ export async function PUT(request: NextRequest, context: ContextCategory) {
   const data = createInsertSchema(subCategory).parse({
     ...selected,
     ...body,
-    updatedAt: new Date()
+    updated_at: new Date()
   })
   
   const query = db.update(subCategory).set(data).where(eq(subCategory.id, subCategoryId))

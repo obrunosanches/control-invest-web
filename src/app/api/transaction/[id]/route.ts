@@ -36,7 +36,7 @@ export async function PUT(request: NextRequest, context: Context) {
     ...selected,
     ...body,
     date: new Date(body.date ?? selected?.date),
-    updatedAt: new Date()
+    updated_at: new Date()
   })
   
   const query = db.update(transaction).set(data).where(eq(transaction.id, transactionId))
