@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils'
 
 import type { AccountProps, AccountTypeProps } from '@/types/schema'
 import type { FormActions } from '@/types/pages'
+import { useAppStore } from '@/store'
 
 const formSchema = z.object({
   name: z.string().min(3, 'Informe um nome válido'),
@@ -23,14 +24,14 @@ const formSchema = z.object({
 
 interface AccountFormProps {
   formData: Partial<AccountProps>
-  accountTypes: AccountTypeProps[]
   handleAction: (
     formAction: FormActions,
     formData?: AccountProps
   ) => void
 }
 
-function AccountForm({ formData = {}, accountTypes = [], handleAction }: AccountFormProps) {
+function AccountForm({ formData = {}, handleAction }: AccountFormProps) {
+  const { state: { accountTypes } } = useAppStore()
   const [loading, setLoading] = useState(false)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

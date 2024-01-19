@@ -1,25 +1,37 @@
 import { request } from '@/server/request'
 
-import type { AccountTypeProps, AccountWithTypeProps } from '@/types/schema'
+import { useAppStore } from '@/store'
+
 import AccountData from '@/components/layout/account/data'
+import StoreInitializer from '@/components/layout/store-initializer'
 
-async function getAccount(): Promise<AccountWithTypeProps[]> {
-  const response = await request('/account', {
-    cache: 'no-store'
-  })
-  return await response.json()
-}
+import type { AccountTypeProps, AccountWithTypeProps } from '@/types/schema'
 
-async function getAccountTypes(): Promise<AccountTypeProps[]> {
-  const response = await request('/account-type', {
-    cache: 'no-store'
-  })
-  return await response.json()
+async function fetchAccountData(): Promise<{
+  accounts: AccountWithTypeProps[]
+  accountTypes: AccountTypeProps[]
+}> {
+  const accountsResponse = await request('/account', { cache: 'no-store' })
+  const accountTypesResponse = await request('/account-type', { cache: 'no-store' })
+  
+  const accounts = await accountsResponse.json()
+  const accountTypes = await accountTypesResponse.json()
+  
+  return {
+    accounts,
+    accountTypes
+  }
 }
 
 export default async function Accounts() {
-  const accounts = await getAccount()
-  const accountTypes = await getAccountTypes()
+  const { accounts, accountTypes } = await fetchAccountData()
+  
+  useAppStore.setState({
+    state: {
+      accounts,
+      accountTypes
+    }
+  })
   
   return (
     <>
@@ -27,10 +39,8 @@ export default async function Accounts() {
         Contas
       </h1>
       
-      <AccountData
-        accounts={accounts}
-        accountTypes={accountTypes}
-      />
+      <StoreInitializer state={useAppStore.getState().state}  />
+      <AccountData />
     </>
   )
 }

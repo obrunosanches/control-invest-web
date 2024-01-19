@@ -9,19 +9,21 @@ import { formatCurrency } from '@/utils/currency'
 
 import type { AccountWithTypeProps } from '@/types/schema'
 import type { AccountAction } from '@/components/layout/account/data'
+import { useAppStore } from '@/store'
 
 interface AccountListProps {
-  accountData: AccountWithTypeProps[]
   handleAction: (
     action: AccountAction,
     selected: AccountWithTypeProps
   ) => void
 }
 
-function AccountList({ accountData, handleAction }: AccountListProps) {
+function AccountList({ handleAction }: AccountListProps) {
+  const { state:{ accounts } } = useAppStore()
+  
   return (
     <div className="grid grid-cols-2 grid-rows-1 gap-4 mt-6">
-      {accountData.map(account => {
+      {accounts.map(account => {
         return (
           <Card key={account.id}>
             <CardHeader>
