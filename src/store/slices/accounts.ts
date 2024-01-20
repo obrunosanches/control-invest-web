@@ -23,7 +23,7 @@ export const accountSlice: StateCreator<SliceStoreAccounts> = (set) => ({
       set((state) => ({
         state: {
           ...state.state,
-          accounts: [...state.state.accounts, ...data]
+          accounts: data
         }
       }))
   }
