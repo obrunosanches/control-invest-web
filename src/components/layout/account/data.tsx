@@ -1,53 +1,29 @@
 'use client'
 
-import { useReducer, useState } from 'react'
-import { PlusCircle } from 'lucide-react'
-
-import { SheetContent, SheetHeader } from '@/components/ui/sheet'
 import AccountForm from '@/components/layout/account/form'
-import SheetForm from '@/components/layout/sheet-form'
 import AccountList from '@/components/layout/account/list'
-import { Button } from '@/components/ui/button'
+import ButtomNewItem from '@/components/layout/buttom-new-item'
 import ConfirmDelete from '@/components/layout/confirm-delete'
+import SheetForm from '@/components/layout/sheet-form'
+import { SheetContent, SheetHeader } from '@/components/ui/sheet'
 
 import { useAppStore } from '@/store'
 import { GetFormActionTitles } from '@/consts/pages'
+import { createOrUpdateAccount, deleteAccount } from '@/services/account'
 
 import type { AccountProps, AccountWithTypeProps } from '@/types/schema'
 import type { FormActions, PageActions } from '@/types/pages'
 
-import { createOrUpdateAccount, deleteAccount } from '@/services/account'
-
-interface ReducerProps {
-  action: PageActions
-  account: Partial<AccountWithTypeProps>
-  isAddOrEdit: boolean
-  title: string
-}
-
-const reducer = (state: ReducerProps, update: Partial<ReducerProps>) => ({ ...state, ...update })
-
 function AccountData() {
   const { actions, state } = useAppStore()
-  
-  const [toggle, setToggle] = useState(false)
-  const [accountState, setAccountState] = useReducer(reducer, {
-    action: 'new',
-    isAddOrEdit: true,
-    title: getTitle('new'),
-    account: {}
-  })
-  
-  function getTitle(action: PageActions) {
-    return GetFormActionTitles('conta')[action as 'new' | 'edit' | 'remove'] ?? GetFormActionTitles('conta')['new']
-  }
+  const selected = state.sheet.selected as AccountWithTypeProps
   
   function getAccount() {
-    if (accountState.account.id) {
-      return state.accounts.filter(item => item.id !== accountState.account.id)
+    if (selected.id) {
+      return state.accounts.filter(item => item.id !== selected.id)
     }
     
-    return useAppStore.getState().state.accounts
+    return state.accounts
   }
   
   function handleActionList(action: PageActions, selected: AccountWithTypeProps) {
@@ -55,19 +31,29 @@ function AccountData() {
       return
     }
     
-    setAccountState({
+    actions.setSheetOptions({
       action,
-      account: selected,
-      isAddOrEdit: action !== 'remove',
-      title: getTitle(action)
+      title: GetFormActionTitles('conta')[action as 'new' | 'edit' | 'remove'],
+      selected
     })
-    setToggle(value => !value)
+    
+    actions.setSheetToggle(!state.sheet.toggle)
+  }
+  
+  async function handleActionDelete(action: FormActions) {
+    if (action === 'confirm') {
+      
+      await deleteAccount(selected.id!)
+    }
+    
+    actions.setAccounts(getAccount())
+    actions.setSheetToggle(!state.sheet.toggle)
   }
   
   async function handleActionForm(formAction: FormActions, formData?: AccountProps) {
     if (formData && formAction === 'confirm') {
       const account = await createOrUpdateAccount({
-        ...(accountState.account.id && { id: accountState.account.id }),
+        ...(selected.id && { id: selected.id }),
         name: formData.name,
         initial_balance: formData.initial_balance,
         account_type_id: formData.account_type_id,
@@ -78,58 +64,33 @@ function AccountData() {
       actions.setAccounts([...getAccount(), { ...account, type }])
     }
     
-    setToggle(value => !value)
+    actions.setSheetToggle(!state.sheet.toggle)
   }
   
   return (
     <>
-      <div className="flex justify-end">
-        <Button
-          className="bg-purple-600 text-primary-foreground hover:bg-purple-500"
-          onClick={() => {
-            setAccountState({
-              action: 'new',
-              title: GetFormActionTitles('conta')['new'],
-              account: {}
-            })
-            setToggle(value => !value)
-          }}
-        >
-          <PlusCircle className="mr-2" size={16} strokeWidth={1.5} />
-          Adicionar conta
-        </Button>
-      </div>
-      
+      <ButtomNewItem actionTitle="Conta" title="Adicionar conta" />
       <AccountList handleAction={handleActionList} />
       
-      <SheetForm toggle={toggle} setToggle={setToggle}>
+      <SheetForm>
         <SheetContent className="sm:max-w-2xl">
           <SheetHeader>
             <h3 className="text-muted-foreground text-2xl leading-none tracking-tight font-medium">
-              {accountState.title}
+              {state.sheet.title}
             </h3>
           </SheetHeader>
           
-          {accountState.isAddOrEdit && (
+          {state.sheet.action !== 'remove' && (
             <AccountForm
-              formData={accountState.account}
+              formData={selected}
               handleAction={handleActionForm}
             />
           )}
           
-          {accountState.action === 'remove' && (
+          {state.sheet.action === 'remove' && (
             <ConfirmDelete
-              item={accountState.account.name!}
-              handleAction={async (action) => {
-                if (action === 'confirm') {
-                  await deleteAccount(accountState.account.id!)
-                  
-                  const accounts = getAccount()
-                  
-                  actions.setAccounts(accounts)
-                  setToggle(value => !value)
-                }
-              }}
+              item={selected.name!}
+              handleAction={handleActionDelete}
             />
           )}
         </SheetContent>

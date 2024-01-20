@@ -28,6 +28,7 @@ export default async function Accounts() {
   
   useAppStore.setState({
     state: {
+      ...useAppStore.getState().state,
       accounts,
       accountTypes
     }

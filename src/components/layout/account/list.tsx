@@ -8,12 +8,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { formatCurrency } from '@/utils/currency'
 
 import type { AccountWithTypeProps } from '@/types/schema'
-import type { AccountAction } from '@/components/layout/account/data'
+import type { PageActions } from '@/types/pages'
+
 import { useAppStore } from '@/store'
 
 interface AccountListProps {
   handleAction: (
-    action: AccountAction,
+    action: PageActions,
     selected: AccountWithTypeProps
   ) => void
 }

@@ -1,4 +1,4 @@
-import { AccountTypeProps, AccountWithTypeProps } from '@/types/schema'
+import { AccountTypeProps } from '@/types/schema'
 import { StateCreator } from 'zustand'
 
 export type SliceStateAccountTypes = {
