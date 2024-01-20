@@ -6,21 +6,20 @@ import { PlusCircle } from 'lucide-react'
 import { SheetContent, SheetHeader } from '@/components/ui/sheet'
 import AccountForm from '@/components/layout/account/form'
 import SheetForm from '@/components/layout/sheet-form'
-
 import AccountList from '@/components/layout/account/list'
 import { Button } from '@/components/ui/button'
 import ConfirmDelete from '@/components/layout/confirm-delete'
 
+import { useAppStore } from '@/store'
 import { GetFormActionTitles } from '@/consts/pages'
 
 import type { AccountProps, AccountWithTypeProps } from '@/types/schema'
 import type { FormActions, PageActions } from '@/types/pages'
+
 import { createOrUpdateAccount, deleteAccount } from '@/services/account'
 
-export type AccountAction = PageActions | 'earning' | 'expense' | 'transaction'
-
 interface ReducerProps {
-  action: AccountAction
+  action: PageActions
   account: Partial<AccountWithTypeProps>
   isAddOrEdit: boolean
   title: string
@@ -29,6 +28,8 @@ interface ReducerProps {
 const reducer = (state: ReducerProps, update: Partial<ReducerProps>) => ({ ...state, ...update })
 
 function AccountData() {
+  const { actions, state } = useAppStore()
+  
   const [toggle, setToggle] = useState(false)
   const [accountState, setAccountState] = useReducer(reducer, {
     action: 'new',
@@ -38,10 +39,18 @@ function AccountData() {
   })
   
   function getTitle(action: PageActions) {
-    return GetFormActionTitles('conta')[action] ?? GetFormActionTitles('conta')['new']
+    return GetFormActionTitles('conta')[action as 'new' | 'edit' | 'remove'] ?? GetFormActionTitles('conta')['new']
   }
   
-  function handleActionList(action: AccountAction, selected: AccountWithTypeProps) {
+  function getAccount() {
+    if (accountState.account.id) {
+      return state.accounts.filter(item => item.id !== accountState.account.id)
+    }
+    
+    return useAppStore.getState().state.accounts
+  }
+  
+  function handleActionList(action: PageActions, selected: AccountWithTypeProps) {
     if (['earning', 'expense', 'transaction'].includes(action)) {
       return
     }
@@ -50,19 +59,23 @@ function AccountData() {
       action,
       account: selected,
       isAddOrEdit: action !== 'remove',
-      title: getTitle(action as PageActions)
+      title: getTitle(action)
     })
     setToggle(value => !value)
   }
   
   async function handleActionForm(formAction: FormActions, formData?: AccountProps) {
     if (formData && formAction === 'confirm') {
-      const temp = await createOrUpdateAccount({
+      const account = await createOrUpdateAccount({
         ...(accountState.account.id && { id: accountState.account.id }),
         name: formData.name,
         initial_balance: formData.initial_balance,
         account_type_id: formData.account_type_id,
       })
+      
+      const type = state.accountTypes.find(type => type.id === account.account_type_id)
+      
+      actions.setAccounts([...getAccount(), { ...account, type }])
     }
     
     setToggle(value => !value)
@@ -110,6 +123,10 @@ function AccountData() {
               handleAction={async (action) => {
                 if (action === 'confirm') {
                   await deleteAccount(accountState.account.id!)
+                  
+                  const accounts = getAccount()
+                  
+                  actions.setAccounts(accounts)
                   setToggle(value => !value)
                 }
               }}
