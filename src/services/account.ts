@@ -14,10 +14,12 @@ export async function createOrUpdateAccount(account: AccountProps): Promise<any>
   }
   
   try {
-    await request(apiUrl, {
+    const response = await request(apiUrl, {
       method: account.id ? 'PUT' : 'POST',
       body: JSON.stringify(accountData)
     })
+    
+    return await response.json()
   } catch (error) {
     console.error(error)
   }
