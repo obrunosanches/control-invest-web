@@ -22,5 +22,5 @@ export async function POST(request: NextRequest) {
   const query = db.insert(account).values(data)
   const newData = await query.returning()
   
-  return NextResponse.json(newData)
+  return NextResponse.json(newData[0], { status: 201 })
 }

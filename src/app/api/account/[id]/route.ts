@@ -33,7 +33,7 @@ export async function PUT(request: NextRequest, context: Context) {
   const query = db.update(account).set(data).where(eq(account.id, accountId))
   const newData = await query.returning()
   
-  return NextResponse.json(newData)
+  return NextResponse.json(newData[0], { status: 201 })
 }
 
 export async function DELETE(_: NextRequest, context: Context) {
