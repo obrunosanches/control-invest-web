@@ -5,26 +5,12 @@ import { useAppStore } from '@/store'
 import AccountData from '@/components/layout/account/data'
 import StoreInitializer from '@/components/layout/store-initializer'
 
-import type { AccountTypeProps, AccountWithTypeProps } from '@/types/schema'
-
-async function fetchAccountData(): Promise<{
-  accounts: AccountWithTypeProps[]
-  accountTypes: AccountTypeProps[]
-}> {
+async function fetchAccountData(): Promise<void> {
   const accountsResponse = await request('/account', { cache: 'no-store' })
   const accountTypesResponse = await request('/account-type', { cache: 'no-store' })
   
   const accounts = await accountsResponse.json()
   const accountTypes = await accountTypesResponse.json()
-  
-  return {
-    accounts,
-    accountTypes
-  }
-}
-
-export default async function Accounts() {
-  const { accounts, accountTypes } = await fetchAccountData()
   
   useAppStore.setState({
     state: {
@@ -33,6 +19,10 @@ export default async function Accounts() {
       accountTypes
     }
   })
+}
+
+export default async function Accounts() {
+  await fetchAccountData()
   
   return (
     <>

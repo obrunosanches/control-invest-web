@@ -10,11 +10,11 @@ import { useAppStore } from '@/store'
 import type { ComponentProps } from 'react'
 
 interface ButtomNewItemProps extends ComponentProps<'button'> {
-  actionTitle: string
-  title: string
+  sheetTitle: string
+  buttonTitle: string
 }
 
-function ButtomNewItem({ actionTitle, title, className }: ButtomNewItemProps) {
+function ButtomNewItem({ sheetTitle, buttonTitle, className }: ButtomNewItemProps) {
   const { actions, state } = useAppStore()
   
   return (
@@ -24,7 +24,7 @@ function ButtomNewItem({ actionTitle, title, className }: ButtomNewItemProps) {
         onClick={() => {
           actions.setSheetOptions({
             action: 'new',
-            title: GetFormActionTitles(actionTitle)['new'],
+            title: GetFormActionTitles({ page: sheetTitle })['new'],
             selected: {}
           })
           
@@ -32,7 +32,7 @@ function ButtomNewItem({ actionTitle, title, className }: ButtomNewItemProps) {
         }}
       >
         <PlusCircle className="mr-2" size={16} strokeWidth={1.5} />
-        {title}
+        {buttonTitle}
       </Button>
     </div>
   )

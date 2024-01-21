@@ -1,5 +1,10 @@
-export const GetFormActionTitles = (page: string) => ({
-  new: `Adicionar ${page}`,
+import { PageActions } from '@/types/pages'
+
+export const GetFormActionTitles = ({ prefix, page }: { prefix?: string; page?: string }): Record<PageActions, string> => ({
+  earning: `${prefix} receita`,
   edit: `Editar ${page}`,
-  remove: `Remover ${page}`
+  expense: `${prefix} despesa`,
+  new: `Adicionar ${page}`,
+  remove: `Remover ${page}`,
+  transaction: `${prefix} transação`
 })

@@ -6,6 +6,7 @@ import ButtomNewItem from '@/components/layout/buttom-new-item'
 import ConfirmDelete from '@/components/layout/confirm-delete'
 import SheetForm from '@/components/layout/sheet-form'
 import { SheetContent, SheetHeader } from '@/components/ui/sheet'
+import TransactinoSheetForm from '@/components/layout/transaction/sheet-form'
 
 import { useAppStore } from '@/store'
 import { GetFormActionTitles } from '@/consts/pages'
@@ -18,6 +19,10 @@ function AccountData() {
   const { actions, state } = useAppStore()
   const selected = state.sheet.selected as AccountWithTypeProps
   
+  function shouldShowTransaction (action = state.sheet.action) {
+    return ['earning', 'expense', 'transaction'].includes(action)
+  }
+  
   function getAccount() {
     if (selected.id) {
       return state.accounts.filter(item => item.id !== selected.id)
@@ -27,14 +32,20 @@ function AccountData() {
   }
   
   function handleActionList(action: PageActions, selected: AccountWithTypeProps) {
-    if (['earning', 'expense', 'transaction'].includes(action)) {
-      return
+    const page = {
+      title: GetFormActionTitles({ page: 'conta' })[action],
+      selected
+    }
+    
+    if (shouldShowTransaction(action)) {
+      page.title = GetFormActionTitles({ prefix: 'Nova' })[action]
+      page.selected = {} as any
     }
     
     actions.setSheetOptions({
       action,
-      title: GetFormActionTitles('conta')[action as 'new' | 'edit' | 'remove'],
-      selected
+      title: page.title,
+      selected: page.selected
     })
     
     actions.setSheetToggle(!state.sheet.toggle)
@@ -44,9 +55,9 @@ function AccountData() {
     if (action === 'confirm') {
       
       await deleteAccount(selected.id!)
+      actions.setAccounts(getAccount())
     }
     
-    actions.setAccounts(getAccount())
     actions.setSheetToggle(!state.sheet.toggle)
   }
   
@@ -69,32 +80,33 @@ function AccountData() {
   
   return (
     <>
-      <ButtomNewItem actionTitle="Conta" title="Adicionar conta" />
+      <ButtomNewItem sheetTitle="Conta" buttonTitle="Adicionar conta" />
       <AccountList handleAction={handleActionList} />
       
-      <SheetForm>
-        <SheetContent className="sm:max-w-2xl">
-          <SheetHeader>
-            <h3 className="text-muted-foreground text-2xl leading-none tracking-tight font-medium">
-              {state.sheet.title}
-            </h3>
-          </SheetHeader>
-          
-          {state.sheet.action !== 'remove' && (
-            <AccountForm
-              formData={selected}
-              handleAction={handleActionForm}
-            />
-          )}
-          
-          {state.sheet.action === 'remove' && (
-            <ConfirmDelete
-              item={selected.name!}
-              handleAction={handleActionDelete}
-            />
-          )}
-        </SheetContent>
-      </SheetForm>
+      {shouldShowTransaction() ? (
+        <TransactinoSheetForm />
+      ) : (
+        <SheetForm>
+          <SheetContent className="sm:max-w-2xl">
+            <SheetHeader>
+              <h3 className="text-muted-foreground text-2xl leading-none tracking-tight font-medium">
+                {state.sheet.title}
+              </h3>
+            </SheetHeader>
+            
+            {['new', 'edit'].includes(state.sheet.action) && (
+              <AccountForm formData={selected} handleAction={handleActionForm} />
+            )}
+            
+            {state.sheet.action === 'remove' && (
+              <ConfirmDelete
+                item={selected.name!}
+                handleAction={handleActionDelete}
+              />
+            )}
+          </SheetContent>
+        </SheetForm>
+      )}
     </>
   )
 }
