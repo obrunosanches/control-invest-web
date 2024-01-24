@@ -1,19 +1,43 @@
 'use client'
 
-import { useRef } from 'react'
+import { PropsWithChildren, useRef } from 'react'
 
 import { useAppStore } from '@/store'
-import { StoreState } from '@/store/types'
+import {
+  AccountTypeProps,
+  AccountWithTypeProps,
+  CategoryWithRelationsProps,
+  TransactionTypeProps
+} from '@/types/schema'
 
-function StoreInitializer({ state }: { state: StoreState }) {
+type StoreInitializerProps = {
+  accounts: AccountWithTypeProps[]
+  accountTypes: AccountTypeProps[]
+  categories: CategoryWithRelationsProps[]
+  transactionTypes: TransactionTypeProps[]
+}
+
+function StoreInitializer(props: PropsWithChildren & Partial<StoreInitializerProps>) {
   const initialized = useRef(false)
+  const { actions } = useAppStore()
+  const {
+    accountTypes,
+    transactionTypes,
+    accounts,
+    categories
+  } = props
+  
   
   if (!initialized.current) {
-    useAppStore.setState({ state })
+    accounts && actions.setAccounts(accounts)
+    accountTypes && actions.setAccountTypes(accountTypes)
+    categories && actions.setCategories(categories)
+    transactionTypes && actions.setTransactionType(transactionTypes)
+    
     initialized.current = true
   }
   
-  return null
+  return props.children
 }
 
 export default StoreInitializer

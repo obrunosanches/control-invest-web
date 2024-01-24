@@ -1,18 +1,11 @@
 import { create } from 'zustand'
 
-import { globalSlice, accountSlice, accountTypeSlice } from '@/store/slices'
-import { StoreProps } from '@/store/types'
+import { type AppStoreState, appStateSlice } from '@/store/slices/app-state'
+import { type AppStoreActions, appActionSlice } from '@/store/slices/app-actions'
+
+export type StoreProps = AppStoreState & AppStoreActions
 
 export const useAppStore = create<StoreProps>()((...props) => ({
-    state: {
-      ...accountSlice(...props).state,
-      ...accountTypeSlice(...props).state,
-      ...globalSlice(...props).state
-    },
-    actions: {
-      ...accountSlice(...props).actions,
-      ...accountTypeSlice(...props).actions,
-      ...globalSlice(...props).actions
-    }
-  })
-)
+  ...appStateSlice(...props),
+  ...appActionSlice(...props)
+}))

@@ -1,3 +1,5 @@
+'use client'
+
 import type { AccountProps } from '@/types/schema'
 import type { FormActions } from '@/types/pages'
 import { CardFooter } from '@/components/ui/card'

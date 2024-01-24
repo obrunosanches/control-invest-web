@@ -1,3 +1,5 @@
+'use client'
+
 import { useAppStore } from '@/store'
 
 import { SheetContent, SheetHeader } from '@/components/ui/sheet'
@@ -9,11 +11,11 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import type { FormActions } from '@/types/pages'
 
 function TransactinoSheetForm() {
-  const { actions, state } = useAppStore()
-  const selected = state.sheet.selected as TransactionWithRelationsProps
+  const { actions, state: { sheet } } = useAppStore()
+  const selected = sheet.selected as TransactionWithRelationsProps
   
   async function handleActionForm(formAction: FormActions, formData?: AccountProps) {
-    actions.setSheetToggle(!state.sheet.toggle)
+    actions.setSheetToggle(!sheet.toggle)
   }
   
   return (
@@ -21,7 +23,7 @@ function TransactinoSheetForm() {
       <SheetContent className="sm:max-w-2xl">
         <SheetHeader>
           <h3 className="text-muted-foreground text-2xl leading-none tracking-tight font-medium">
-            {state.sheet.title}
+            {sheet.title}
           </h3>
         </SheetHeader>
         

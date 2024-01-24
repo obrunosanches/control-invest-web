@@ -20,3 +20,8 @@ export interface TransactionWithRelationsProps extends TransactionProps {
   transfer: TransferProps
 }
 
+export interface CategoryWithRelationsProps extends CategoryProps {
+  type: TransactionTypeProps
+  subCategories: SubCategoryProps[]
+}
+

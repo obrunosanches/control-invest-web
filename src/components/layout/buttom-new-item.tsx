@@ -15,7 +15,7 @@ interface ButtomNewItemProps extends ComponentProps<'button'> {
 }
 
 function ButtomNewItem({ sheetTitle, buttonTitle, className }: ButtomNewItemProps) {
-  const { actions, state } = useAppStore()
+  const { actions, state: { sheet } } = useAppStore()
   
   return (
     <div className="flex justify-end">
@@ -27,8 +27,8 @@ function ButtomNewItem({ sheetTitle, buttonTitle, className }: ButtomNewItemProp
             title: GetFormActionTitles({ page: sheetTitle })['new'],
             selected: {}
           })
-          
-          actions.setSheetToggle(!state.sheet.toggle)
+
+          actions.setSheetToggle(!sheet.toggle)
         }}
       >
         <PlusCircle className="mr-2" size={16} strokeWidth={1.5} />

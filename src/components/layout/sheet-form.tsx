@@ -1,13 +1,15 @@
+'use client'
+
 import { Sheet } from '@/components/ui/sheet'
 import { useAppStore } from '@/store'
 
 import type { ReactNode } from 'react'
 
 function SheetForm({ children }: { children: ReactNode }) {
-  const { actions, state } = useAppStore()
+  const { actions, state: { sheet } } = useAppStore()
   
   return (
-    <Sheet open={state.sheet.toggle} onOpenChange={(open) => actions.setSheetToggle(open)}>
+    <Sheet open={sheet.toggle} onOpenChange={(open) => actions.setSheetToggle(open)}>
       {children}
     </Sheet>
   )

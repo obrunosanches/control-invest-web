@@ -4,7 +4,7 @@ export const GetFormActionTitles = ({ prefix, page }: { prefix?: string; page?: 
   earning: `${prefix} receita`,
   edit: `Editar ${page}`,
   expense: `${prefix} despesa`,
-  new: `Adicionar ${page}`,
+  new: `Nova ${page}`,
   remove: `Remover ${page}`,
   transaction: `${prefix} transação`
 })

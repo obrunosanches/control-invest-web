@@ -16,19 +16,19 @@ import type { AccountProps, AccountWithTypeProps } from '@/types/schema'
 import type { FormActions, PageActions } from '@/types/pages'
 
 function AccountData() {
-  const { actions, state } = useAppStore()
-  const selected = state.sheet.selected as AccountWithTypeProps
+  const { actions, state: { accounts, accountTypes, sheet } } = useAppStore()
+  const selected = sheet.selected as AccountWithTypeProps
   
-  function shouldShowTransaction (action = state.sheet.action) {
+  function shouldShowTransaction (action = sheet.action) {
     return ['earning', 'expense', 'transaction'].includes(action)
   }
   
   function getAccount() {
     if (selected.id) {
-      return state.accounts.filter(item => item.id !== selected.id)
+      return accounts.filter(item => item.id !== selected.id)
     }
     
-    return state.accounts
+    return accounts
   }
   
   function handleActionList(action: PageActions, selected: AccountWithTypeProps) {
@@ -48,17 +48,17 @@ function AccountData() {
       selected: page.selected
     })
     
-    actions.setSheetToggle(!state.sheet.toggle)
+    actions.setSheetToggle(!sheet.toggle)
   }
   
   async function handleActionDelete(action: FormActions) {
     if (action === 'confirm') {
-      
       await deleteAccount(selected.id!)
+      
       actions.setAccounts(getAccount())
     }
     
-    actions.setSheetToggle(!state.sheet.toggle)
+    actions.setSheetToggle(!sheet.toggle)
   }
   
   async function handleActionForm(formAction: FormActions, formData?: AccountProps) {
@@ -70,12 +70,12 @@ function AccountData() {
         account_type_id: formData.account_type_id,
       })
       
-      const type = state.accountTypes.find(type => type.id === account.account_type_id)
+      const type = accountTypes.find(type => type.id === account.account_type_id)
       
       actions.setAccounts([...getAccount(), { ...account, type }])
     }
     
-    actions.setSheetToggle(!state.sheet.toggle)
+    actions.setSheetToggle(!sheet.toggle)
   }
   
   return (
@@ -90,15 +90,15 @@ function AccountData() {
           <SheetContent className="sm:max-w-2xl">
             <SheetHeader>
               <h3 className="text-muted-foreground text-2xl leading-none tracking-tight font-medium">
-                {state.sheet.title}
+                {sheet.title}
               </h3>
             </SheetHeader>
             
-            {['new', 'edit'].includes(state.sheet.action) && (
+            {['new', 'edit'].includes(sheet.action) && (
               <AccountForm formData={selected} handleAction={handleActionForm} />
             )}
             
-            {state.sheet.action === 'remove' && (
+            {sheet.action === 'remove' && (
               <ConfirmDelete
                 item={selected.name!}
                 handleAction={handleActionDelete}

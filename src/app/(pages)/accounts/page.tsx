@@ -1,28 +1,25 @@
-import { request } from '@/server/request'
+import { Suspense } from 'react'
 
-import { useAppStore } from '@/store'
+import { request } from '@/server/request'
 
 import AccountData from '@/components/layout/account/data'
 import StoreInitializer from '@/components/layout/store-initializer'
 
-async function fetchAccountData(): Promise<void> {
+async function AccountInitializer() {
   const accountsResponse = await request('/account', { cache: 'no-store' })
   const accountTypesResponse = await request('/account-type', { cache: 'no-store' })
   
   const accounts = await accountsResponse.json()
   const accountTypes = await accountTypesResponse.json()
   
-  useAppStore.setState({
-    state: {
-      ...useAppStore.getState().state,
-      accounts,
-      accountTypes
-    }
-  })
+  return {
+    accounts,
+    accountTypes
+  }
 }
 
 export default async function Accounts() {
-  await fetchAccountData()
+  const { accountTypes, accounts } = await AccountInitializer()
   
   return (
     <>
@@ -30,8 +27,14 @@ export default async function Accounts() {
         Contas
       </h1>
       
-      <StoreInitializer state={useAppStore.getState().state}  />
-      <AccountData />
+      <Suspense fallback={<div>Loading...</div>}>
+        <StoreInitializer
+          accountTypes={accountTypes}
+          accounts={accounts}
+        >
+          <AccountData />
+        </StoreInitializer>
+      </Suspense>
     </>
   )
 }

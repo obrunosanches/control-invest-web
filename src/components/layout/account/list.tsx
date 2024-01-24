@@ -20,7 +20,7 @@ interface AccountListProps {
 }
 
 function AccountList({ handleAction }: AccountListProps) {
-  const { state:{ accounts } } = useAppStore()
+  const { state: { accounts } } = useAppStore()
   
   return (
     <div className="grid grid-cols-2 grid-rows-1 gap-4 mt-6">
