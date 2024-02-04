@@ -20,6 +20,7 @@ async function CategoryInitializer() {
 
 export default async function Categories() {
   const { transactionTypes, categories } = await CategoryInitializer()
+  
   return (
     <>
       <h1 className="text-3xl font-bold">

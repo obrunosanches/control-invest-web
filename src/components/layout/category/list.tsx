@@ -1,37 +1,74 @@
 'use client'
 
-import type { PageActions } from '@/types/pages'
-import type { CategoryWithRelationsProps } from '@/types/schema'
-import { useAppStore } from '@/store'
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { ChevronsUpDownIcon } from 'lucide-react'
+import * as Accordion from '@radix-ui/react-accordion'
 
-interface CategoryListProps {
-  handleAction: (
-    action: PageActions,
-    selected: CategoryWithRelationsProps
-  ) => void
-}
-function CategoryList({ handleAction }: CategoryListProps) {
+import { useAppStore } from '@/store'
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import PageActionButtons from '@/components/layout/page-action-buttons'
+
+interface CategoryListProps {}
+
+function CategoryList({}: CategoryListProps) {
   const { state: { categories } } = useAppStore()
   
   return (
-    <div className="grid grid-cols-2 grid-rows-1 gap-4 mt-6">
-      {categories.map(category => {
+    <div className="mt-6">
+      {categories.map((category) => {
+        const { subCategories } = category
+        
         return (
-          <Card key={category.id}>
-            <CardHeader>
-              <div className="flex">
-                <div className="flex-auto">
-                  <CardTitle className="font-medium">
-                    {category.name}
-                  </CardTitle>
-                  <CardDescription className="mt-0.5">
-                    {category.type.description}
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-          </Card>
+          <div key={category.id} className="rounded-lg border bg-card text-card-foreground shadow-sm p-4 mt-2">
+            <Accordion.Root type="multiple" className="w-full">
+              <Accordion.Item value={`${category.id}-${category.name}`}>
+                <Accordion.Header>
+                  <div className="flex gap-2">
+                    <span className="flex items-center flex-auto">
+                      {category.name}
+                    </span>
+                    
+                    <PageActionButtons
+                      selected={category}
+                      actionTitle="categoria"
+                      actionTitleNew="sub categoria"
+                    />
+                    
+                    <Accordion.Trigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                      >
+                        <ChevronsUpDownIcon strokeWidth={1.5} size={20} />
+                      </Button>
+                    </Accordion.Trigger>
+                  </div>
+                </Accordion.Header>
+                
+                <Accordion.Content>
+                  <div className="rounded-md border mt-4">
+                    <Table>
+                      <TableBody>
+                        {subCategories.map(subCategory => {
+                          return (
+                            <TableRow key={subCategory.id}>
+                              <TableCell>{subCategory.name}</TableCell>
+                              <TableCell className="w-32">
+                                <PageActionButtons
+                                  selected={subCategory}
+                                  actionTitle="sub categoria" showButtons={['edit', 'remove']}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          )
+                        })}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </Accordion.Content>
+              </Accordion.Item>
+            </Accordion.Root>
+          </div>
         )
       })}
     </div>
