@@ -20,18 +20,10 @@ function TransactinoSheetForm() {
   
   return (
     <SheetForm>
-      <SheetContent className="sm:max-w-2xl">
-        <SheetHeader>
-          <h3 className="text-muted-foreground text-2xl leading-none tracking-tight font-medium">
-            {sheet.title}
-          </h3>
-        </SheetHeader>
-        
-        <Card className="mt-4">
-          <CardContent className="p-6 grid gap-6" />
-          <TrasactionForm formData={selected} handleAction={handleActionForm} />
-        </Card>
-      </SheetContent>
+      <Card className="mt-4">
+        <CardContent className="p-6 grid gap-6" />
+        <TrasactionForm formData={selected} handleAction={handleActionForm} />
+      </Card>
     </SheetForm>
   )
 }

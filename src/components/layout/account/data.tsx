@@ -5,11 +5,9 @@ import AccountList from '@/components/layout/account/list'
 import ButtomNewItem from '@/components/layout/buttom-new-item'
 import ConfirmDelete from '@/components/layout/confirm-delete'
 import SheetForm from '@/components/layout/sheet-form'
-import { SheetContent, SheetHeader } from '@/components/ui/sheet'
-import TransactinoSheetForm from '@/components/layout/transaction/sheet-form'
+import TransactionSheetForm from '@/components/layout/transaction/sheet-form'
 
 import { useAppStore } from '@/store'
-import { GetFormActionTitles } from '@/consts/pages'
 import { createOrUpdateAccount, deleteAccount } from '@/services/account'
 
 import type { AccountProps, AccountWithTypeProps } from '@/types/schema'
@@ -19,36 +17,12 @@ function AccountData() {
   const { actions, state: { accounts, accountTypes, sheet } } = useAppStore()
   const selected = sheet.selected as AccountWithTypeProps
   
-  function shouldShowTransaction (action = sheet.action) {
-    return ['earning', 'expense', 'transaction'].includes(action)
-  }
-  
   function getAccount() {
     if (selected.id) {
       return accounts.filter(item => item.id !== selected.id)
     }
     
     return accounts
-  }
-  
-  function handleActionList(action: PageActions, selected: AccountWithTypeProps) {
-    const page = {
-      title: GetFormActionTitles({ page: 'conta' })[action],
-      selected
-    }
-    
-    if (shouldShowTransaction(action)) {
-      page.title = GetFormActionTitles({ prefix: 'Nova' })[action]
-      page.selected = {} as any
-    }
-    
-    actions.setSheetOptions({
-      action,
-      title: page.title,
-      selected: page.selected
-    })
-    
-    actions.setSheetToggle(!sheet.toggle)
   }
   
   async function handleActionDelete(action: FormActions) {
@@ -83,28 +57,20 @@ function AccountData() {
       <ButtomNewItem sheetTitle="Conta" buttonTitle="Adicionar conta" />
       <AccountList handleAction={handleActionList} />
       
-      {shouldShowTransaction() ? (
-        <TransactinoSheetForm />
+      {['earning', 'expense', 'transaction'].includes(sheet.action) ? (
+        <TransactionSheetForm />
       ) : (
         <SheetForm>
-          <SheetContent className="sm:max-w-2xl">
-            <SheetHeader>
-              <h3 className="text-muted-foreground text-2xl leading-none tracking-tight font-medium">
-                {sheet.title}
-              </h3>
-            </SheetHeader>
-            
-            {['new', 'edit'].includes(sheet.action) && (
-              <AccountForm formData={selected} handleAction={handleActionForm} />
-            )}
-            
-            {sheet.action === 'remove' && (
-              <ConfirmDelete
-                item={selected.name!}
-                handleAction={handleActionDelete}
-              />
-            )}
-          </SheetContent>
+          {['new', 'edit' as PageActions].includes(sheet.action) && (
+            <AccountForm formData={selected} handleAction={handleActionForm} />
+          )}
+          
+          {sheet.action === 'remove' && (
+            <ConfirmDelete
+              item={selected.name!}
+              handleAction={handleActionDelete}
+            />
+          )}
         </SheetForm>
       )}
     </>

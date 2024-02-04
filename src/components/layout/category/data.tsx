@@ -1,21 +1,27 @@
 'use client'
 
 import { useAppStore } from '@/store'
-import ButtomNewItem from '@/components/layout/buttom-new-item'
-import CategoryList from '@/components/layout/category/list'
 
-import type { CategoryWithRelationsProps } from '@/types/schema'
-import type { PageActions } from '@/types/pages'
+import CategoryList from '@/components/layout/category/list'
+import ButtomNewItem from '@/components/layout/buttom-new-item'
+import SheetForm from '@/components/layout/sheet-form'
+import { PageActions } from '@/types/pages'
+import { CategoryWithRelationsProps } from '@/types/schema'
 
 function CategoryData() {
-  const { state: { sheet } } = useAppStore()
-  const selected = sheet.selected as CategoryWithRelationsProps
+  const { state: { categories,  sheet } } = useAppStore()
   
   function handleActionList(action: PageActions, selected: CategoryWithRelationsProps) {}
   
   return (
     <>
+      <ButtomNewItem sheetTitle="Categoria" buttonTitle="Adicionar categoria" />
+      
       <CategoryList handleAction={handleActionList} />
+      
+      <SheetForm>
+        {sheet.selected.name}
+      </SheetForm>
     </>
   )
 }
