@@ -1,7 +1,7 @@
 'use client'
 
 import CategoryList from '@/components/layout/category/list'
-import ButtomNewItem from '@/components/layout/buttom-new-item'
+import ButtonNewItem from '@/components/layout/button-new-item'
 import SheetForm from '@/components/layout/sheet-form'
 import {
   Select,
@@ -51,7 +51,7 @@ function CategoryData() {
           </SelectContent>
         </Select>
         
-        <ButtomNewItem sheetTitle="Categoria" buttonTitle="Adicionar categoria" />
+        <ButtonNewItem sheetTitle="Categoria" buttonTitle="Adicionar categoria" />
       </div>
       
       <CategoryList />

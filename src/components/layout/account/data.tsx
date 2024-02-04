@@ -2,7 +2,7 @@
 
 import AccountForm from '@/components/layout/account/form'
 import AccountList from '@/components/layout/account/list'
-import ButtomNewItem from '@/components/layout/buttom-new-item'
+import ButtonNewItem from '@/components/layout/button-new-item'
 import ConfirmDelete from '@/components/layout/confirm-delete'
 import SheetForm from '@/components/layout/sheet-form'
 import TransactionSheetForm from '@/components/layout/transaction/sheet-form'
@@ -61,7 +61,7 @@ function AccountData() {
   
   return (
     <>
-      <ButtomNewItem sheetTitle="Conta" buttonTitle="Adicionar conta" />
+      <ButtonNewItem sheetTitle="Conta" buttonTitle="Adicionar conta" />
       <AccountList />
       
       {['earning', 'expense', 'transaction'].includes(sheet.action) ? (

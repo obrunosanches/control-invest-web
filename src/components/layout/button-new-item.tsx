@@ -14,7 +14,7 @@ interface ButtomNewItemProps extends ComponentProps<'button'> {
   buttonTitle: string
 }
 
-function ButtomNewItem({ sheetTitle, buttonTitle, className }: ButtomNewItemProps) {
+function ButtonNewItem({ sheetTitle, buttonTitle, className }: ButtomNewItemProps) {
   const sheet = useSheetFormStore(state => state.sheet)
   const setSheetToggle = useSheetFormStore(state => state.actions.setSheetToggle)
   const setSheetOptions = useSheetFormStore(state => state.actions.setSheetOptions)
@@ -40,4 +40,4 @@ function ButtomNewItem({ sheetTitle, buttonTitle, className }: ButtomNewItemProp
   )
 }
 
-export default ButtomNewItem
+export default ButtonNewItem
