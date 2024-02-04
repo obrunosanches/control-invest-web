@@ -1,25 +1,14 @@
 'use client'
 
-import { BadgeDollarSignIcon, PenSquare, PlusCircleIcon, Trash2Icon } from 'lucide-react'
-
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
 import { formatCurrency } from '@/utils/currency'
-
-import type { AccountWithTypeProps } from '@/types/schema'
-import type { PageActions } from '@/types/pages'
-
 import { useAppStore } from '@/store'
+import PageActionButtons from '@/components/layout/page-action-buttons'
 
-interface AccountListProps {
-  handleAction: (
-    action: PageActions,
-    selected: AccountWithTypeProps
-  ) => void
-}
+interface AccountListProps {}
 
-function AccountList({ handleAction }: AccountListProps) {
+function AccountList({}: AccountListProps) {
   const { state: { accounts } } = useAppStore()
   
   return (
@@ -37,21 +26,13 @@ function AccountList({ handleAction }: AccountListProps) {
                     {account.type.description}
                   </CardDescription>
                 </div>
+                
                 <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleAction('edit', account)}
-                  >
-                    <PenSquare strokeWidth={1.5} color="#3B82F6" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleAction('remove', account)}
-                  >
-                    <Trash2Icon strokeWidth={1.5} color="#DC2626" />
-                  </Button>
+                  <PageActionButtons
+                    showButtons={['edit', 'remove']}
+                    actionTitle="conta"
+                    selected={account}
+                  />
                 </div>
               </div>
             </CardHeader>
@@ -66,40 +47,12 @@ function AccountList({ handleAction }: AccountListProps) {
               </div>
             </CardContent>
             <CardFooter>
-              <div className="flex w-full">
-                <div className="flex basis-1/3">
-                  <Button
-                    variant="ghost"
-                    onClick={() => handleAction('earning', account)}
-                  >
-                    <PlusCircleIcon strokeWidth={1} color="#22C55E" className="mr-2" />
-                    <span className="font-light">
-                      Receitas
-                    </span>
-                  </Button>
-                </div>
-                <div className="flex basis-1/3">
-                  <Button
-                    variant="ghost"
-                    onClick={() => handleAction('expense', account)}
-                  >
-                    <PlusCircleIcon strokeWidth={1} color="#DC2626" className="mr-2" />
-                    <span className="font-light">
-                      Despesas
-                    </span>
-                  </Button>
-                </div>
-                <div className="flex basis-1/3">
-                  <Button
-                    variant="ghost"
-                    onClick={() => handleAction('transaction', account)}
-                  >
-                    <BadgeDollarSignIcon strokeWidth={1} color="#64748B" className="mr-2" />
-                    <span className="font-light">
-                      Transações
-                    </span>
-                  </Button>
-                </div>
+              <div className="flex justify-between w-full">
+                <PageActionButtons
+                  showButtons={['earning', 'expense', 'transaction']}
+                  actionTitle="conta"
+                  selected={account}
+                />
               </div>
             </CardFooter>
           </Card>

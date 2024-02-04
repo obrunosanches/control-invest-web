@@ -55,7 +55,7 @@ function AccountData() {
   return (
     <>
       <ButtomNewItem sheetTitle="Conta" buttonTitle="Adicionar conta" />
-      <AccountList handleAction={handleActionList} />
+      <AccountList />
       
       {['earning', 'expense', 'transaction'].includes(sheet.action) ? (
         <TransactionSheetForm />
