@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/select'
 import { useCallback, useState } from 'react'
 
-import { useTransactionTypeStore } from '@/store/useTransactionStore'
+import { useTransactionTypeStore } from '@/store/useTransactionTypeStore'
 import { useSheetFormStore } from '@/store/useSheetFormStore'
 
 import type { TransactionTypeProps } from '@/types/schema'

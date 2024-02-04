@@ -2,7 +2,7 @@
 
 import { PropsWithChildren, useRef } from 'react'
 
-import { useTransactionTypeStore } from '@/store/useTransactionStore'
+import { useTransactionTypeStore } from '@/store/useTransactionTypeStore'
 import { useCategoryStore } from '@/store/useCategoryStore'
 import { useAccountStore } from '@/store/useAccountStore'
 import { useAccountTypeStore } from '@/store/useAccountTypeStore'
