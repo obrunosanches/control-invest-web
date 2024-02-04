@@ -28,8 +28,6 @@ interface CategoryFormProps {
 }
 
 function CategoryForm({ formData, handleAction }: CategoryFormProps) {
-  const accountTypes = useAccountTypeStore(state => state.accountTypes)
-  
   const [loading, setLoading] = useState(false)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

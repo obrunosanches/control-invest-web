@@ -6,14 +6,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 import { useAccountTypeStore } from '@/store/useAccountTypeStore'
 import { cn } from '@/lib/utils'
 
-import type { AccountProps, AccountTypeProps } from '@/types/schema'
+import type { AccountProps } from '@/types/schema'
 import type { FormActions } from '@/types/pages'
 
 const formSchema = z.object({

@@ -16,7 +16,7 @@ type Getters = {
   getters: {}
 }
 
-export const useCategoryStore = create<State & Actions & Getters>()((set, get) => ({
+export const useCategoryStore = create<State & Actions & Getters>()((set) => ({
   categories: [],
   getters: {},
   actions: {

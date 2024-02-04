@@ -6,7 +6,7 @@ import SheetForm from '@/components/layout/sheet-form'
 import TrasactionForm from '@/components/layout/transaction/form'
 
 import type { AccountProps, TransactionWithRelationsProps } from '@/types/schema'
-import { Card, CardContent, CardFooter } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import type { FormActions } from '@/types/pages'
 
 function TransactinoSheetForm() {

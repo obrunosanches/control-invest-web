@@ -16,7 +16,7 @@ type Getters = {
   getters: {}
 }
 
-export const useAccountTypeStore = create<State & Actions & Getters>()((set, get) => ({
+export const useAccountTypeStore = create<State & Actions & Getters>()((set) => ({
   accountTypes: [],
   getters: {},
   actions: {
