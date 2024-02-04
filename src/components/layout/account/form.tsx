@@ -10,11 +10,11 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
+import { useAccountTypeStore } from '@/store/useAccountTypeStore'
 import { cn } from '@/lib/utils'
 
 import type { AccountProps, AccountTypeProps } from '@/types/schema'
 import type { FormActions } from '@/types/pages'
-import { useAppStore } from '@/store'
 
 const formSchema = z.object({
   name: z.string().min(3, 'Informe um nome válido'),
@@ -31,7 +31,8 @@ interface AccountFormProps {
 }
 
 function AccountForm({ formData = {}, handleAction }: AccountFormProps) {
-  const { state: { accountTypes } } = useAppStore()
+  const accountTypes = useAccountTypeStore(state => state.accountTypes)
+  
   const [loading, setLoading] = useState(false)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

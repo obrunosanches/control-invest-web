@@ -5,7 +5,7 @@ import { PlusCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { GetFormActionTitles } from '@/consts/pages'
 import { cn } from '@/lib/utils'
-import { useAppStore } from '@/store'
+import { useSheetFormStore } from '@/store/useSheetFormStore'
 
 import type { ComponentProps } from 'react'
 
@@ -15,20 +15,22 @@ interface ButtomNewItemProps extends ComponentProps<'button'> {
 }
 
 function ButtomNewItem({ sheetTitle, buttonTitle, className }: ButtomNewItemProps) {
-  const { actions, state: { sheet } } = useAppStore()
+  const sheet = useSheetFormStore(state => state.sheet)
+  const setSheetToggle = useSheetFormStore(state => state.actions.setSheetToggle)
+  const setSheetOptions = useSheetFormStore(state => state.actions.setSheetOptions)
   
   return (
     <div className="flex justify-end">
       <Button
         className={cn("bg-purple-600 text-primary-foreground hover:bg-purple-500", className)}
         onClick={() => {
-          actions.setSheetOptions({
+          setSheetOptions({
             action: 'new',
             title: GetFormActionTitles({ page: sheetTitle })['new'],
             selected: {}
           })
 
-          actions.setSheetToggle(!sheet.toggle)
+          setSheetToggle(!sheet.toggle)
         }}
       >
         <PlusCircle className="mr-2" size={16} strokeWidth={1.5} />

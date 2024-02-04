@@ -1,15 +1,15 @@
 'use client'
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import PageActionButtons from '@/components/layout/page-action-buttons'
 
 import { formatCurrency } from '@/utils/currency'
-import { useAppStore } from '@/store'
-import PageActionButtons from '@/components/layout/page-action-buttons'
+import { useAccountStore } from '@/store/useAccountStore'
 
 interface AccountListProps {}
 
 function AccountList({}: AccountListProps) {
-  const { state: { accounts } } = useAppStore()
+  const accounts = useAccountStore(state => state.accounts)
   
   return (
     <div className="grid grid-cols-2 grid-rows-1 gap-4 mt-6">

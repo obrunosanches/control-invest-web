@@ -7,14 +7,21 @@ import ConfirmDelete from '@/components/layout/confirm-delete'
 import SheetForm from '@/components/layout/sheet-form'
 import TransactionSheetForm from '@/components/layout/transaction/sheet-form'
 
-import { useAppStore } from '@/store'
+import { useSheetFormStore } from '@/store/useSheetFormStore'
+import { useAccountStore } from '@/store/useAccountStore'
+import { useAccountTypeStore } from '@/store/useAccountTypeStore'
 import { createOrUpdateAccount, deleteAccount } from '@/services/account'
 
 import type { AccountProps, AccountWithTypeProps } from '@/types/schema'
 import type { FormActions, PageActions } from '@/types/pages'
 
 function AccountData() {
-  const { actions, state: { accounts, accountTypes, sheet } } = useAppStore()
+  const accounts = useAccountStore(state => state.accounts)
+  const accountTypes = useAccountTypeStore(state => state.accountTypes)
+  const sheet = useSheetFormStore(state => state.sheet)
+  const setSheetToggle = useSheetFormStore(state => state.actions.setSheetToggle)
+  const setAccounts = useAccountStore(state => state.actions.setAccounts)
+  
   const selected = sheet.selected as AccountWithTypeProps
   
   function getAccount() {
@@ -29,10 +36,10 @@ function AccountData() {
     if (action === 'confirm') {
       await deleteAccount(selected.id!)
       
-      actions.setAccounts(getAccount())
+      setAccounts(getAccount())
     }
     
-    actions.setSheetToggle(!sheet.toggle)
+    setSheetToggle(!sheet.toggle)
   }
   
   async function handleActionForm(formAction: FormActions, formData?: AccountProps) {
@@ -46,10 +53,10 @@ function AccountData() {
       
       const type = accountTypes.find(type => type.id === account.account_type_id)
       
-      actions.setAccounts([...getAccount(), { ...account, type }])
+      setAccounts([...getAccount(), { ...account, type }])
     }
     
-    actions.setSheetToggle(!sheet.toggle)
+    setSheetToggle(!sheet.toggle)
   }
   
   return (

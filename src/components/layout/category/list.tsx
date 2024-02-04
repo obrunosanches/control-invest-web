@@ -3,15 +3,15 @@
 import { ChevronsUpDownIcon } from 'lucide-react'
 import * as Accordion from '@radix-ui/react-accordion'
 
-import { useAppStore } from '@/store'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import PageActionButtons from '@/components/layout/page-action-buttons'
+import { useCategoryStore } from '@/store/useCategoryStore'
 
 interface CategoryListProps {}
 
 function CategoryList({}: CategoryListProps) {
-  const { state: { categories } } = useAppStore()
+  const categories = useCategoryStore(state => state.categories)
   
   return (
     <div className="mt-6">

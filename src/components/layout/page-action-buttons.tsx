@@ -2,7 +2,7 @@
 
 import { BadgeDollarSignIcon, PenSquare, PlusCircleIcon, Trash2Icon } from 'lucide-react'
 
-import { useAppStore } from '@/store'
+import { useSheetFormStore } from '@/store/useSheetFormStore'
 import { FormActionTitles, GetFormActionTitles } from '@/consts/pages'
 import { Button } from '@/components/ui/button'
 
@@ -28,7 +28,9 @@ function PageActionButtons({
   showButtons = ['new', 'edit', 'remove'],
   selected
 }: PageActionsButtonsProps) {
-  const { actions, state: { sheet } } = useAppStore()
+  const sheet = useSheetFormStore(state => state.sheet)
+  const setSheetToggle = useSheetFormStore(state => state.actions.setSheetToggle)
+  const setSheetOptions = useSheetFormStore(state => state.actions.setSheetOptions)
   
   const formActionTitles = useMemo(() => ({
     earning: { page: actionTitle, prefix: 'Nova' },
@@ -40,13 +42,13 @@ function PageActionButtons({
   } as Record<PageActions, FormActionTitles>), [actionTitle, actionTitleEdit, actionTitleNew, actionTitleRemove])
   
   function handleAction(action: PageActions) {
-    actions.setSheetOptions({
+    setSheetOptions({
       action,
       title: GetFormActionTitles({ ...formActionTitles[action] })[action],
       selected: selected
     })
     
-    actions.setSheetToggle(!sheet.toggle)
+    setSheetToggle(!sheet.toggle)
   }
   
   return (

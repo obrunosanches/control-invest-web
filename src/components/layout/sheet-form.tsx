@@ -1,15 +1,17 @@
 'use client'
 
+import { useSheetFormStore } from '@/store/useSheetFormStore'
+
 import { Sheet, SheetContent, SheetHeader } from '@/components/ui/sheet'
-import { useAppStore } from '@/store'
 
 import type { ReactNode } from 'react'
 
 function SheetForm({ children, header = true }: { children: ReactNode, header?: boolean }) {
-  const { actions, state: { sheet } } = useAppStore()
+  const sheet = useSheetFormStore(state => state.sheet)
+  const setSheetToggle = useSheetFormStore(state => state.actions.setSheetToggle)
   
   return (
-    <Sheet open={sheet.toggle} onOpenChange={(open) => actions.setSheetToggle(open)}>
+    <Sheet open={sheet.toggle} onOpenChange={setSheetToggle}>
       <SheetContent className="sm:max-w-2xl">
         {header && (
           <SheetHeader>
