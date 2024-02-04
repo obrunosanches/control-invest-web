@@ -9,12 +9,12 @@ import { useSheetFormStore } from '@/store/useSheetFormStore'
 
 import type { ComponentProps } from 'react'
 
-interface ButtomNewItemProps extends ComponentProps<'button'> {
+interface ButtonNewItemProps extends ComponentProps<'button'> {
   sheetTitle: string
   buttonTitle: string
 }
 
-function ButtonNewItem({ sheetTitle, buttonTitle, className }: ButtomNewItemProps) {
+function ButtonNewItem({ sheetTitle, buttonTitle, className }: ButtonNewItemProps) {
   const sheet = useSheetFormStore(state => state.sheet)
   const setSheetToggle = useSheetFormStore(state => state.actions.setSheetToggle)
   const setSheetOptions = useSheetFormStore(state => state.actions.setSheetOptions)
