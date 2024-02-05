@@ -6,11 +6,12 @@ import StoreInitializer from '@/components/layout/store-initializer'
 import CategoryData from '@/components/layout/category/data'
 
 async function CategoryInitializer() {
-  const categoriesResponse = await request('/category', { cache: 'no-store' })
   const transactionTypesResponse = await request('/transaction-type', { cache: 'no-store' })
-  
-  const categories = await categoriesResponse.json()
   const transactionTypes = await transactionTypesResponse.json()
+  const transactionType = transactionTypes.find(() => true)
+  
+  const categoriesResponse = await request(`/category/type/${transactionType.id}`, { cache: 'no-store' })
+  const categories = await categoriesResponse.json()
   
   return {
     categories,

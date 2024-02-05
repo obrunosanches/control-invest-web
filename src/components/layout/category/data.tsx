@@ -14,10 +14,14 @@ import { useCallback, useState } from 'react'
 
 import { useTransactionTypeStore } from '@/store/useTransactionTypeStore'
 import { useSheetFormStore } from '@/store/useSheetFormStore'
+import { useCategoryStore } from '@/store/useCategoryStore'
+
+import { request } from '@/server/request'
 
 import type { TransactionTypeProps } from '@/types/schema'
 
 function CategoryData() {
+  const setCategories = useCategoryStore(state => state.actions.setCategories)
   const sheet = useSheetFormStore(state => state.sheet)
   const { getters: { getDefaultTransactionTypes } } = useTransactionTypeStore()
   
@@ -25,11 +29,14 @@ function CategoryData() {
     getDefaultTransactionTypes()[0]
   )
   
-  const handleSelectTransactionType = useCallback((value: string) => {
+  const handleSelectTransactionType = useCallback(async (value: string) => {
     const [transactionType] = getDefaultTransactionTypes().filter(type => type.slug === value)
+    const categoriesResponse = await request(`/category/type/${transactionType.id}`, { cache: 'no-store' })
+    const categories = await categoriesResponse.json()
     
     setSelectedTransactionType(transactionType)
-  }, [getDefaultTransactionTypes])
+    setCategories(categories)
+  }, [getDefaultTransactionTypes, setCategories])
   
   return (
     <>

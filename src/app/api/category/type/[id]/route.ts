@@ -9,8 +9,13 @@ import { category } from '@/database/schema'
 export async function GET(_: NextRequest, context: Context) {
   const typeId = Number(context.params.id)
   
-  const query = db.select().from(category).where(eq(category.type_id, typeId))
-  const result = await query.execute()
+  const result = await db.query.category.findMany({
+    with: {
+      type: true,
+      subCategories: true
+    },
+    where: eq(category.type_id, typeId)
+  })
   
   return NextResponse.json(result)
 }
