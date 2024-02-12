@@ -13,8 +13,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAccountTypeStore } from '@/store/useAccountTypeStore'
 import { cn } from '@/lib/utils'
 
-import type { AccountProps } from '@/types/schema'
+import type { AccountProps, AccountWithTypeProps } from '@/types/schema'
 import type { FormActions } from '@/types/pages'
+import { useSheetFormStore } from '@/store/useSheetFormStore'
 
 const formSchema = z.object({
   name: z.string().min(3, 'Informe um nome válido'),
@@ -23,23 +24,24 @@ const formSchema = z.object({
 })
 
 interface AccountFormProps {
-  formData: Partial<AccountProps>
   handleAction: (
     formAction: FormActions,
     formData?: AccountProps
   ) => void
 }
 
-function AccountForm({ formData = {}, handleAction }: AccountFormProps) {
+function AccountForm({ handleAction }: AccountFormProps) {
   const accountTypes = useAccountTypeStore(state => state.accountTypes)
+  const sheet = useSheetFormStore(state => state.sheet)
+  const selected = sheet.selected as AccountWithTypeProps
   
   const [loading, setLoading] = useState(false)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: formData.name ?? '',
-      initial_balance: String(formData.initial_balance ?? ''),
-      account_type_id: String(formData.account_type_id ?? '')
+      name: selected.name ?? '',
+      initial_balance: String(selected.initial_balance ?? ''),
+      account_type_id: String(selected.account_type_id ?? '')
     }
   })
   
@@ -58,7 +60,7 @@ function AccountForm({ formData = {}, handleAction }: AccountFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <Card className="mt-4">
           <CardContent className="p-6 grid gap-6">
-            <div className={cn('grid gap-4', !formData.id ? 'sm:grid-cols-2' : '')}>
+            <div className={cn('grid gap-4', !selected.id ? 'sm:grid-cols-2' : '')}>
               <FormField
                 control={form.control}
                 name="name"
@@ -73,7 +75,7 @@ function AccountForm({ formData = {}, handleAction }: AccountFormProps) {
                 )}
               />
               
-              {!formData.id && (
+              {!selected.id && (
                 <FormField
                   control={form.control}
                   name="initial_balance"

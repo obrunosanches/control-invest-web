@@ -10,11 +10,15 @@ import { useSheetFormStore } from '@/store/useSheetFormStore'
 import type { ComponentProps } from 'react'
 
 interface ButtonNewItemProps extends ComponentProps<'button'> {
-  sheetTitle: string
   buttonTitle: string
+  sheetTitle: string
 }
 
-function ButtonNewItem({ sheetTitle, buttonTitle, className }: ButtonNewItemProps) {
+function ButtonNewItem({
+  buttonTitle,
+  className,
+  sheetTitle,
+}: ButtonNewItemProps) {
   const sheet = useSheetFormStore(state => state.sheet)
   const setSheetToggle = useSheetFormStore(state => state.actions.setSheetToggle)
   const setSheetOptions = useSheetFormStore(state => state.actions.setSheetOptions)
@@ -26,8 +30,8 @@ function ButtonNewItem({ sheetTitle, buttonTitle, className }: ButtonNewItemProp
         onClick={() => {
           setSheetOptions({
             action: 'new',
-            title: GetFormActionTitles({ page: sheetTitle })['new'],
-            selected: {}
+            selected: {},
+            title: GetFormActionTitles({ page: sheetTitle })['new']
           })
 
           setSheetToggle(!sheet.toggle)

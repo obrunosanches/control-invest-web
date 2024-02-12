@@ -29,15 +29,15 @@ function StoreInitializer(props: PropsWithChildren & Partial<StoreInitializerPro
   const { actions: transactionTypeActions } = useTransactionTypeStore()
   const {
     accountTypes,
-    transactionTypes,
     accounts,
-    categories
+    categories,
+    transactionTypes
   } = props
   
   
   if (!initialized.current) {
-    accounts && accountActions.setAccounts(accounts)
     accountTypes && accountTypeActions.setAccountTypes(accountTypes)
+    accounts && accountActions.setAccounts(accounts)
     categories && categoryActions.setCategories(categories)
     transactionTypes &&  transactionTypeActions.setTransactionTypes(transactionTypes)
     

@@ -69,7 +69,7 @@ function AccountData() {
       ) : (
         <SheetForm>
           {['new', 'edit' as PageActions].includes(sheet.action) && (
-            <AccountForm formData={selected} handleAction={handleActionForm} />
+            <AccountForm handleAction={handleActionForm} />
           )}
           
           {sheet.action === 'remove' && (
