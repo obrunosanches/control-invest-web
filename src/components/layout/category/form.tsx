@@ -4,34 +4,36 @@ import { Loader2Icon } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
-import { cn } from '@/lib/utils'
-
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
-import type { CategoryProps } from '@/types/schema'
+import type { CategoryProps, TransactionTypeProps } from '@/types/schema'
 import type { FormActions } from '@/types/pages'
+import { useSheetFormStore } from '@/store/useSheetFormStore'
 
 const formSchema = z.object({
   name: z.string().min(3, 'Informe um nome válido')
 })
 
 interface CategoryFormProps {
-  formData: Partial<CategoryProps>
+  transactionTypeSelected: TransactionTypeProps
   handleAction: (
     formAction: FormActions,
     formData?: CategoryProps
   ) => void
 }
 
-function CategoryForm({ formData, handleAction }: CategoryFormProps) {
+function CategoryForm({ transactionTypeSelected, handleAction }: CategoryFormProps) {
+  const sheet = useSheetFormStore(state => state.sheet)
+  const selected = sheet.selected as CategoryProps
+  
   const [loading, setLoading] = useState(false)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: formData.name ?? ''
+      name: selected.name ?? ''
     }
   })
   
@@ -40,7 +42,7 @@ function CategoryForm({ formData, handleAction }: CategoryFormProps) {
     
     handleAction('confirm', {
       name: values.name,
-      type_id: 1
+      type_id: transactionTypeSelected.id!
     })
   }
   
@@ -48,22 +50,20 @@ function CategoryForm({ formData, handleAction }: CategoryFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <Card className="mt-4">
-          <CardContent className="p-6 grid gap-6">
-            <div className={cn('grid gap-4', !formData.id ? 'sm:grid-cols-2' : '')}>
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nome</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Nome da conta" {...field} autoComplete="off" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+          <CardContent className="p-6">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nome</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nome da conta" {...field} autoComplete="off" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </CardContent>
           
           <CardFooter className="flex gap-4 justify-end">

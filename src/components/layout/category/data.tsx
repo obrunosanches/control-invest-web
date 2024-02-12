@@ -18,12 +18,18 @@ import { useCategoryStore } from '@/store/useCategoryStore'
 
 import { request } from '@/server/request'
 
-import type { TransactionTypeProps } from '@/types/schema'
+import type { CategoryProps, SubCategoryProps, TransactionTypeProps } from '@/types/schema'
+import CategoryForm from '@/components/layout/category/form'
+import type { FormActions } from '@/types/pages'
+import SubCategoryForm from '@/components/layout/sub-category/form'
 
 function CategoryData() {
-  const setCategories = useCategoryStore(state => state.actions.setCategories)
   const sheet = useSheetFormStore(state => state.sheet)
+  const setSheetToggle = useSheetFormStore(state => state.actions.setSheetToggle)
+  const setCategories = useCategoryStore(state => state.actions.setCategories)
   const { getters: { getDefaultTransactionTypes } } = useTransactionTypeStore()
+  
+  const selected = sheet.selected
   
   const [transactionTypeSelected, setSelectedTransactionType] = useState<TransactionTypeProps>(
     getDefaultTransactionTypes()[0]
@@ -37,6 +43,18 @@ function CategoryData() {
     setSelectedTransactionType(transactionType)
     setCategories(categories)
   }, [getDefaultTransactionTypes, setCategories])
+  
+  async function handleActionForm(formAction: FormActions, formData?: CategoryProps) {
+    console.log('handleActionForm:formData', formData)
+    
+    setSheetToggle(!sheet.toggle)
+  }
+  
+  async function handleActionSubCategoryForm(formAction: FormActions, formData?: SubCategoryProps) {
+    console.log('handleActionSubCategoryForm:formData', formData)
+    
+    setSheetToggle(!sheet.toggle)
+  }
   
   return (
     <>
@@ -64,7 +82,14 @@ function CategoryData() {
       <CategoryList />
       
       <SheetForm>
-        {sheet.selected.name}
+        {Object.prototype.hasOwnProperty.call(selected, 'type') ? (
+          <CategoryForm
+            transactionTypeSelected={transactionTypeSelected}
+            handleAction={handleActionForm}
+          />
+        ) : (
+          <SubCategoryForm handleAction={handleActionSubCategoryForm} />
+        )}
       </SheetForm>
     </>
   )
