@@ -10,23 +10,14 @@ import SubCategoryForm from '@/components/layout/sub-category/form'
 import CategoryList from '@/components/layout/category/list'
 import ButtonNewItem from '@/components/layout/button-new-item'
 import SheetForm from '@/components/layout/sheet-form'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 import { request } from '@/server/request'
+import { createOrUpdateCategory, deleteCategory } from '@/services/category'
 
-import type {
-  CategoryProps,
-  CategoryWithRelationsProps,
-  SubCategoryProps,
-  TransactionTypeProps
-} from '@/types/schema'
+import type { CategoryProps, CategoryWithRelationsProps, SubCategoryProps, TransactionTypeProps } from '@/types/schema'
 import type { FormActions, PageActions } from '@/types/pages'
+import type { TransactionSlug } from '@/types/database'
 
 interface CategoryDataProps {
   categoriesData: CategoryWithRelationsProps[]
@@ -38,42 +29,78 @@ function CategoryData({ categoriesData, transactionTypesData }: CategoryDataProp
   const sheet = store.sheet
   const transactionTypesDefault = store.getters.getDefaultTransactionTypes()
   
-  const storeData = useCallback(({ categories, types }: { categories: CategoryWithRelationsProps[], types: TransactionTypeProps[] }) => {
-    store.actions.setCategories(categories)
-    store.actions.setTransactionTypes(types)
-  }, [store.actions])
-  
-  useEffect(() => storeData({ categories: categoriesData, types: transactionTypesData }), [categoriesData, transactionTypesData, storeData])
-  
   const [transactionTypeSelected, setSelectedTransactionType] = useState<TransactionTypeProps>(
     transactionTypesDefault[0]
   )
   
-  const handleSelectTransactionType = useCallback(async (value: string) => {
-    const [transactionType] = transactionTypesDefault.filter(type => type.slug === value)
-    const categoriesResponse = await request(`/category/type/${transactionType.id}`, { cache: 'no-store' })
+  const storeData = useCallback(({ categories, types }: { categories: CategoryWithRelationsProps[], types: TransactionTypeProps[] }) => {
+    store.actions.setCategories(categories)
+    store.actions.setTransactionTypes(types)
+    
+    setSelectedTransactionType(types[0])
+  }, [store.actions])
+  
+  const fetchCategories = useCallback(async (typeId: number) => {
+    const categoriesResponse = await request(`/category/type/${typeId}`, { cache: 'no-store' })
     const categories = await categoriesResponse.json()
     
-    setSelectedTransactionType(transactionType)
     store.actions.setCategories(categories)
-  }, [store.actions, transactionTypesDefault])
+  }, [store.actions])
   
-  async function handleActionForm(formAction: FormActions, formData?: CategoryProps) {
-    console.log('handleActionForm:formData', formData)
+  const handleSelectTransactionType = useCallback(async (slug: TransactionSlug) => {
+    const transactionType = transactionTypesDefault.find(type => type.slug === slug)
+    
+    if (transactionType?.id) {
+      await fetchCategories(transactionType.id)
+      setSelectedTransactionType(transactionType)
+    }
+  }, [store.actions, transactionTypesDefault, fetchCategories])
+  
+  useEffect(() => {
+    storeData({ categories: categoriesData, types: transactionTypesData })
+  }, [categoriesData, transactionTypesData, storeData])
+  
+  async function handleActionCategoryForm(formAction: FormActions, formData?: CategoryProps) {
+    if (formData && formAction === 'confirm') {
+      const selected = store.sheet.selected as CategoryWithRelationsProps
+      
+      await createOrUpdateCategory({
+        ...(selected.id && { id: selected.id }),
+        name: formData.name,
+        type_id: formData.type_id
+      })
+      
+      if (transactionTypeSelected?.id) {
+        await fetchCategories(transactionTypeSelected.id)
+      }
+    }
     
     store.actions.setSheetToggle(!sheet.toggle)
   }
   
   async function handleActionSubCategoryForm(formAction: FormActions, formData?: SubCategoryProps) {
-    console.log('handleActionSubCategoryForm:formData', formData)
+    if (formData && formAction === 'confirm') {
+      const subCategoryForm = {
+        ...formData,
+        category_id: formData?.category_id ?? sheet.selected.id
+      } as SubCategoryProps
+    }
     
     store.actions.setSheetToggle(!sheet.toggle)
   }
   
-  async function handleActionDelete(action: FormActions) {
+  async function handleActionCategoryDelete(action: FormActions) {
+    if (action === 'confirm') {
+      await deleteCategory(sheet.selected.id)
+      await fetchCategories(sheet.selected.type_id)
+    }
+    
+    store.actions.setSheetToggle(!sheet.toggle)
+  }
+  
+  async function handleActionSubCategoryDelete(action: FormActions) {
     if (action === 'confirm') {
       // await deleteAccount(sheet.selected.id)
-      
       // store.actions.setAccounts(getAccount())
     }
     
@@ -85,7 +112,7 @@ function CategoryData({ categoriesData, transactionTypesData }: CategoryDataProp
       <div className="flex justify-between mt-6">
         <Select
           onValueChange={handleSelectTransactionType}
-          defaultValue={transactionTypeSelected?.slug}
+          value={transactionTypeSelected?.slug}
           aria-label="Categories type"
         >
           <SelectTrigger className="w-[240px]">
@@ -111,7 +138,7 @@ function CategoryData({ categoriesData, transactionTypesData }: CategoryDataProp
             {sheet.pageSource === 'category' && (
               <CategoryForm
                 transactionTypeSelected={transactionTypeSelected}
-                handleAction={handleActionForm}
+                handleAction={handleActionCategoryForm}
               />
             )}
             
@@ -121,10 +148,17 @@ function CategoryData({ categoriesData, transactionTypesData }: CategoryDataProp
           </>
         )}
         
-        {sheet.action === 'remove' && (
+        {sheet.action === 'remove' && sheet.pageSource === 'category' && (
           <ConfirmDelete
             item={sheet.selected.name!}
-            handleAction={handleActionDelete}
+            handleAction={handleActionCategoryDelete}
+          />
+        )}
+
+        {sheet.action === 'remove' && sheet.pageSource === 'sub-category' && (
+          <ConfirmDelete
+            item={sheet.selected.name!}
+            handleAction={handleActionSubCategoryDelete}
           />
         )}
       </SheetForm>

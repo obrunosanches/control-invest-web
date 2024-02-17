@@ -38,7 +38,7 @@ export async function PUT(request: NextRequest, context: Context) {
   const query = db.update(category).set(data).where(eq(category.id, categoryId))
   const newData = await query.returning()
   
-  return NextResponse.json(newData)
+  return NextResponse.json(newData[0], { status: 201 })
 }
 
 export async function DELETE(_: NextRequest, context: Context) {
