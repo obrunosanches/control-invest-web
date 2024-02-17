@@ -1,15 +1,15 @@
 import { PageActions } from '@/types/pages'
 
-export type FormActionTitles = {
+export type SheetTitleForm = {
   prefix?: string
-  page?: string
+  title?: string
 }
 
-export const GetFormActionTitles = ({ prefix, page }: FormActionTitles): Record<PageActions, string> => ({
+export const GenerateSheetTitleForm = ({ prefix, title }: SheetTitleForm): Record<PageActions, string> => ({
   earning: `${prefix} receita`,
-  edit: `Editar ${page}`,
+  edit: `Editar ${title}`,
   expense: `${prefix} despesa`,
-  new: `Nova ${page}`,
-  remove: `Remover ${page}`,
+  new: `Nova ${title}`,
+  remove: `Remover ${title}`,
   transaction: `${prefix} transação`
 })

@@ -30,7 +30,7 @@ function AccountList({}: AccountListProps) {
                 <div className="flex gap-2">
                   <PageActionButtons
                     showButtons={['edit', 'remove']}
-                    actionTitle="conta"
+                    sheetTitle="conta"
                     selected={account}
                   />
                 </div>
@@ -50,7 +50,7 @@ function AccountList({}: AccountListProps) {
               <div className="flex justify-between w-full">
                 <PageActionButtons
                   showButtons={['earning', 'expense', 'transaction']}
-                  actionTitle="conta"
+                  sheetTitle="conta"
                   selected={account}
                 />
               </div>

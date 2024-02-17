@@ -30,8 +30,8 @@ function CategoryList({}: CategoryListProps) {
                     
                     <PageActionButtons
                       selected={category}
-                      actionTitle="categoria"
-                      actionTitleNew="sub categoria"
+                      sheetTitle="categoria"
+                      sheetTitleNew="sub categoria"
                     />
                     
                     <Accordion.Trigger asChild>
@@ -56,7 +56,7 @@ function CategoryList({}: CategoryListProps) {
                               <TableCell className="w-32">
                                 <PageActionButtons
                                   selected={subCategory}
-                                  actionTitle="sub categoria" showButtons={['edit', 'remove']}
+                                  sheetTitle="sub categoria" showButtons={['edit', 'remove']}
                                 />
                               </TableCell>
                             </TableRow>

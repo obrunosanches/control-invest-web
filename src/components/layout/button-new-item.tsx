@@ -5,7 +5,7 @@ import { PlusCircle } from 'lucide-react'
 import { useCIStore } from '@/hooks/control-invest-store-provider'
 
 import { Button } from '@/components/ui/button'
-import { GetFormActionTitles } from '@/consts/pages'
+import { GenerateSheetTitleForm } from '@/consts/pages'
 import { cn } from '@/lib/utils'
 
 import type { ComponentProps } from 'react'
@@ -31,7 +31,7 @@ function ButtonNewItem({
           store.actions.setSheetOptions({
             action: 'new',
             selected: {},
-            title: GetFormActionTitles({ page: sheetTitle })['new']
+            title: GenerateSheetTitleForm({ title: sheetTitle })['new']
           })
 
           store.actions.setSheetToggle(!sheet.toggle)

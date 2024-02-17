@@ -4,48 +4,50 @@ import { useMemo } from 'react'
 import { BadgeDollarSignIcon, PenSquare, PlusCircleIcon, Trash2Icon } from 'lucide-react'
 
 import { useCIStore } from '@/hooks/control-invest-store-provider'
-import { GetFormActionTitles } from '@/consts/pages'
+import { GenerateSheetTitleForm } from '@/consts/pages'
 import { Button } from '@/components/ui/button'
 
 import type { ComponentProps } from 'react'
 import type { PageActions } from '@/types/pages'
-import type { FormActionTitles } from '@/consts/pages'
+import type { SheetTitleForm } from '@/consts/pages'
 
 interface PageActionsButtonsProps extends ComponentProps<'div'> {
-  actionTitle: string
-  actionTitleNew?: string
-  actionTitleEdit?: string
-  actionTitleRemove?: string
   classNameButtons?: HTMLElement['className']
-  showButtons?: PageActions[]
   selected: any
+  sheetTitle: string
+  sheetTitleEdit?: string
+  sheetTitleNew?: string
+  sheetTitleRemove?: string
+  showButtons?: PageActions[]
 }
 
 function PageActionButtons({
-  actionTitle,
-  actionTitleNew = actionTitle,
-  actionTitleEdit = actionTitle,
-  actionTitleRemove = actionTitle,
   classNameButtons,
+  selected,
+  sheetTitle,
+  sheetTitleEdit = sheetTitle,
+  sheetTitleNew = sheetTitle,
+  sheetTitleRemove = sheetTitle,
   showButtons = ['new', 'edit', 'remove'],
-  selected
 }: PageActionsButtonsProps) {
   const store = useCIStore((store) => store)
   const sheet = store.sheet
   
-  const formActionTitles = useMemo(() => ({
-    earning: { page: actionTitle, prefix: 'Nova' },
-    edit: { page: actionTitleEdit },
-    expense: { page: actionTitleRemove, prefix: 'Nova' },
-    new: { page: actionTitleNew },
-    remove: { page: actionTitleRemove },
-    transaction: { page: actionTitleRemove, prefix: 'Nova' }
-  } as Record<PageActions, FormActionTitles>), [actionTitle, actionTitleEdit, actionTitleNew, actionTitleRemove])
+  const sheetTitles = useMemo(() => ({
+    earning: { title: sheetTitle, prefix: 'Nova' },
+    edit: { title: sheetTitleEdit },
+    expense: { title: sheetTitleRemove, prefix: 'Nova' },
+    new: { title: sheetTitleNew },
+    remove: { title: sheetTitleRemove },
+    transaction: { title: sheetTitleRemove, prefix: 'Nova' }
+  } as Record<PageActions, SheetTitleForm>), [sheetTitle, sheetTitleEdit, sheetTitleNew, sheetTitleRemove])
   
   function handleAction(action: PageActions) {
+    const sheetTitleFormData = sheetTitles[action]
+    
     store.actions.setSheetOptions({
       action,
-      title: GetFormActionTitles({ ...formActionTitles[action] })[action],
+      title: GenerateSheetTitleForm(sheetTitleFormData)[action],
       selected: selected
     })
     
