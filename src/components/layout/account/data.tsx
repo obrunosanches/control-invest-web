@@ -7,39 +7,46 @@ import ConfirmDelete from '@/components/layout/confirm-delete'
 import SheetForm from '@/components/layout/sheet-form'
 import TransactionSheetForm from '@/components/layout/transaction/sheet-form'
 
-import { useSheetFormStore } from '@/store/useSheetFormStore'
-import { useAccountStore } from '@/store/useAccountStore'
-import { useAccountTypeStore } from '@/store/useAccountTypeStore'
 import { createOrUpdateAccount, deleteAccount } from '@/services/account'
 
-import type { AccountProps, AccountWithTypeProps } from '@/types/schema'
+import type { AccountProps, AccountTypeProps, AccountWithTypeProps } from '@/types/schema'
 import type { FormActions, PageActions } from '@/types/pages'
+import { useCIStore } from '@/hooks/control-invest-store-provider'
+import { useCallback, useEffect } from 'react'
 
-function AccountData() {
-  const accounts = useAccountStore(state => state.accounts)
-  const accountTypes = useAccountTypeStore(state => state.accountTypes)
-  const sheet = useSheetFormStore(state => state.sheet)
-  const setSheetToggle = useSheetFormStore(state => state.actions.setSheetToggle)
-  const setAccounts = useAccountStore(state => state.actions.setAccounts)
+interface AccountDataProps {
+  accountsData: AccountWithTypeProps[]
+  accountTypesData: AccountTypeProps[]
+}
+
+function AccountData({ accountsData, accountTypesData }: AccountDataProps) {
+  const store = useCIStore((store) => store)
+  const sheet = store.sheet
+  const selected = store.sheet.selected as AccountWithTypeProps
   
-  const selected = sheet.selected as AccountWithTypeProps
+  const storeData = useCallback(({ accounts, types }: { accounts: AccountWithTypeProps[], types: AccountTypeProps[] }) => {
+    store.actions.setAccounts(accounts)
+    store.actions.setAccountTypes(types)
+  }, [store.actions])
+  
+  useEffect(() => storeData({ accounts: accountsData, types: accountTypesData }), [accountTypesData, accountsData, storeData])
   
   function getAccount() {
     if (selected.id) {
-      return accounts.filter(item => item.id !== selected.id)
+      return store.accounts.filter(item => item.id !== selected.id)
     }
     
-    return accounts
+    return store.accounts
   }
   
   async function handleActionDelete(action: FormActions) {
     if (action === 'confirm') {
       await deleteAccount(selected.id!)
       
-      setAccounts(getAccount())
+      store.actions.setAccounts(getAccount())
     }
     
-    setSheetToggle(!sheet.toggle)
+    store.actions.setSheetToggle(!sheet.toggle)
   }
   
   async function handleActionForm(formAction: FormActions, formData?: AccountProps) {
@@ -51,12 +58,12 @@ function AccountData() {
         account_type_id: formData.account_type_id,
       })
       
-      const type = accountTypes.find(type => type.id === account.account_type_id)
+      const type = store.accountTypes.find(type => type.id === account.account_type_id)
       
-      setAccounts([...getAccount(), { ...account, type }])
+      store.actions.setAccounts([...getAccount(), { ...account, type }])
     }
     
-    setSheetToggle(!sheet.toggle)
+    store.actions.setSheetToggle(!sheet.toggle)
   }
   
   return (

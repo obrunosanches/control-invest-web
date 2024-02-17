@@ -4,18 +4,18 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
+import { useCIStore } from '@/hooks/control-invest-store-provider'
+
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
-import { useAccountTypeStore } from '@/store/useAccountTypeStore'
 import { cn } from '@/lib/utils'
 
 import type { AccountProps, AccountWithTypeProps } from '@/types/schema'
 import type { FormActions } from '@/types/pages'
-import { useSheetFormStore } from '@/store/useSheetFormStore'
 
 const formSchema = z.object({
   name: z.string().min(3, 'Informe um nome válido'),
@@ -31,8 +31,9 @@ interface AccountFormProps {
 }
 
 function AccountForm({ handleAction }: AccountFormProps) {
-  const accountTypes = useAccountTypeStore(state => state.accountTypes)
-  const sheet = useSheetFormStore(state => state.sheet)
+  const store = useCIStore((store) => store)
+  const accountTypes = store.accountTypes
+  const sheet = store.sheet
   const selected = sheet.selected as AccountWithTypeProps
   
   const [loading, setLoading] = useState(false)

@@ -4,12 +4,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import PageActionButtons from '@/components/layout/page-action-buttons'
 
 import { formatCurrency } from '@/utils/currency'
-import { useAccountStore } from '@/store/useAccountStore'
+import { useCIStore } from '@/hooks/control-invest-store-provider'
 
 interface AccountListProps {}
 
 function AccountList({}: AccountListProps) {
-  const accounts = useAccountStore(state => state.accounts)
+  const accounts = useCIStore((store) => store.accounts)
   
   return (
     <div className="grid grid-cols-2 grid-rows-1 gap-4 mt-6">

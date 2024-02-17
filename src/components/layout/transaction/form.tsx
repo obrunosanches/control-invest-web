@@ -15,7 +15,7 @@ interface TrasactinoFormProps {
   ) => void
 }
 
-function TrasactionForm({ handleAction }: TrasactinoFormProps) {
+function TransactionForm({ handleAction }: TrasactinoFormProps) {
   const form = useForm()
   
   function onSubmit(values: any) {}
@@ -41,4 +41,4 @@ function TrasactionForm({ handleAction }: TrasactinoFormProps) {
   )
 }
 
-export default TrasactionForm
+export default TransactionForm

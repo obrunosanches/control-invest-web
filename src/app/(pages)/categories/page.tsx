@@ -2,7 +2,6 @@ import { Suspense } from 'react'
 
 import { request } from '@/server/request'
 
-import StoreInitializer from '@/components/layout/store-initializer'
 import CategoryData from '@/components/layout/category/data'
 
 async function CategoryInitializer() {
@@ -20,7 +19,7 @@ async function CategoryInitializer() {
 }
 
 export default async function Categories() {
-  const { transactionTypes, categories } = await CategoryInitializer()
+  const { categories, transactionTypes } = await CategoryInitializer()
   
   return (
     <>
@@ -29,12 +28,7 @@ export default async function Categories() {
       </h1>
       
       <Suspense fallback={<div>Loading...</div>}>
-        <StoreInitializer
-          categories={categories}
-          transactionTypes={transactionTypes}
-        >
-          <CategoryData />
-        </StoreInitializer>
+        <CategoryData categoriesData={categories} transactionTypesData={transactionTypes} />
       </Suspense>
     </>
   )

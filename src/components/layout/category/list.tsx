@@ -6,12 +6,12 @@ import * as Accordion from '@radix-ui/react-accordion'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import PageActionButtons from '@/components/layout/page-action-buttons'
-import { useCategoryStore } from '@/store/useCategoryStore'
+import { useCIStore } from '@/hooks/control-invest-store-provider'
 
 interface CategoryListProps {}
 
 function CategoryList({}: CategoryListProps) {
-  const categories = useCategoryStore(state => state.categories)
+  const categories = useCIStore(store => store.categories)
   
   return (
     <div className="mt-6">

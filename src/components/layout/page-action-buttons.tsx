@@ -1,13 +1,15 @@
 'use client'
 
+import { useMemo } from 'react'
 import { BadgeDollarSignIcon, PenSquare, PlusCircleIcon, Trash2Icon } from 'lucide-react'
 
-import { useSheetFormStore } from '@/store/useSheetFormStore'
-import { FormActionTitles, GetFormActionTitles } from '@/consts/pages'
+import { useCIStore } from '@/hooks/control-invest-store-provider'
+import { GetFormActionTitles } from '@/consts/pages'
 import { Button } from '@/components/ui/button'
 
-import { ComponentProps, useMemo } from 'react'
+import type { ComponentProps } from 'react'
 import type { PageActions } from '@/types/pages'
+import type { FormActionTitles } from '@/consts/pages'
 
 interface PageActionsButtonsProps extends ComponentProps<'div'> {
   actionTitle: string
@@ -28,9 +30,8 @@ function PageActionButtons({
   showButtons = ['new', 'edit', 'remove'],
   selected
 }: PageActionsButtonsProps) {
-  const sheet = useSheetFormStore(state => state.sheet)
-  const setSheetToggle = useSheetFormStore(state => state.actions.setSheetToggle)
-  const setSheetOptions = useSheetFormStore(state => state.actions.setSheetOptions)
+  const store = useCIStore((store) => store)
+  const sheet = store.sheet
   
   const formActionTitles = useMemo(() => ({
     earning: { page: actionTitle, prefix: 'Nova' },
@@ -42,13 +43,13 @@ function PageActionButtons({
   } as Record<PageActions, FormActionTitles>), [actionTitle, actionTitleEdit, actionTitleNew, actionTitleRemove])
   
   function handleAction(action: PageActions) {
-    setSheetOptions({
+    store.actions.setSheetOptions({
       action,
       title: GetFormActionTitles({ ...formActionTitles[action] })[action],
       selected: selected
     })
     
-    setSheetToggle(!sheet.toggle)
+    store.actions.setSheetToggle(!sheet.toggle)
   }
   
   return (

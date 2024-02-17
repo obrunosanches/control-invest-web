@@ -1,5 +1,6 @@
 import { Manrope as FontSans } from 'next/font/google'
 
+import { CIStoreProvider } from '@/hooks/control-invest-store-provider'
 import Sidebar from '@/components/layout/sidebar'
 
 import type { Metadata } from 'next'
@@ -27,7 +28,9 @@ export default function RootLayout({ children }: PropsWithChildren) {
           </div>
           
           <main className="p-8 w-full max-w-screen-2xl mx-auto">
-            {children}
+            <CIStoreProvider>
+              {children}
+            </CIStoreProvider>
           </main>
         </div>
       </body>

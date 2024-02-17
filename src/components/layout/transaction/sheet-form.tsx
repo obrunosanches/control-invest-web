@@ -1,31 +1,31 @@
 'use client'
 
-import { useSheetFormStore } from '@/store/useSheetFormStore'
 
 import SheetForm from '@/components/layout/sheet-form'
-import TrasactionForm from '@/components/layout/transaction/form'
+import TransactionForm from '@/components/layout/transaction/form'
 
 import type { AccountProps, TransactionWithRelationsProps } from '@/types/schema'
 import { Card, CardContent } from '@/components/ui/card'
 import type { FormActions } from '@/types/pages'
+import { useCIStore } from '@/hooks/control-invest-store-provider'
 
-function TransactinoSheetForm() {
-  const sheet = useSheetFormStore(state => state.sheet)
-  const setSheetToggle = useSheetFormStore(state => state.actions.setSheetToggle)
-  const selected = sheet.selected as TransactionWithRelationsProps
+function TransactionSheetForm() {
+  const store = useCIStore((store) => store)
+  const sheet = store.sheet
+  const selected = store.sheet.selected as TransactionWithRelationsProps
   
   async function handleActionForm(formAction: FormActions, formData?: AccountProps) {
-    setSheetToggle(!sheet.toggle)
+    store.actions.setSheetToggle(!sheet.toggle)
   }
   
   return (
     <SheetForm>
       <Card className="mt-4">
         <CardContent className="p-6 grid gap-6" />
-        <TrasactionForm formData={selected} handleAction={handleActionForm} />
+        <TransactionForm formData={selected} handleAction={handleActionForm} />
       </Card>
     </SheetForm>
   )
 }
 
-export default TransactinoSheetForm
+export default TransactionSheetForm

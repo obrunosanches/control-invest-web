@@ -3,7 +3,6 @@ import { Suspense } from 'react'
 import { request } from '@/server/request'
 
 import AccountData from '@/components/layout/account/data'
-import StoreInitializer from '@/components/layout/store-initializer'
 
 async function AccountInitializer() {
   const accountsResponse = await request('/account', { cache: 'no-store' })
@@ -19,7 +18,7 @@ async function AccountInitializer() {
 }
 
 export default async function Accounts() {
-  const { accountTypes, accounts } = await AccountInitializer()
+  const { accounts, accountTypes } = await AccountInitializer()
   
   return (
     <>
@@ -28,12 +27,7 @@ export default async function Accounts() {
       </h1>
       
       <Suspense fallback={<div>Loading...</div>}>
-        <StoreInitializer
-          accountTypes={accountTypes}
-          accounts={accounts}
-        >
-          <AccountData />
-        </StoreInitializer>
+        <AccountData accountsData={accounts} accountTypesData={accountTypes} />
       </Suspense>
     </>
   )
