@@ -15,7 +15,7 @@ import type { CategoryProps, TransactionTypeProps } from '@/types/schema'
 import type { FormActions } from '@/types/pages'
 
 const formSchema = z.object({
-  name: z.string().min(3, 'Informe um nome válido')
+  name: z.string().min(3, 'Informe uma categoria válida')
 })
 
 interface CategoryFormProps {
@@ -60,7 +60,7 @@ function CategoryForm({ transactionTypeSelected, handleAction }: CategoryFormPro
                 <FormItem>
                   <FormLabel>Nome</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nome da conta" {...field} autoComplete="off" />
+                    <Input placeholder="Nome da categoria" {...field} autoComplete="off" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

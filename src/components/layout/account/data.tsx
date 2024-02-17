@@ -68,7 +68,7 @@ function AccountData({ accountsData, accountTypesData }: AccountDataProps) {
   
   return (
     <>
-      <ButtonNewItem sheetTitle="Conta" buttonTitle="Adicionar conta" />
+      <ButtonNewItem sheetTitle="Conta" pageSource="account" buttonTitle="Adicionar conta" />
       <AccountList />
       
       {['earning', 'expense', 'transaction'].includes(sheet.action) ? (

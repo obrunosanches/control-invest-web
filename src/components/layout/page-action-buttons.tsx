@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { BadgeDollarSignIcon, PenSquare, PlusCircleIcon, Trash2Icon } from 'lucide-react'
 
 import { useCIStore } from '@/hooks/control-invest-store-provider'
@@ -8,11 +8,15 @@ import { GenerateSheetTitleForm } from '@/consts/pages'
 import { Button } from '@/components/ui/button'
 
 import type { ComponentProps } from 'react'
-import type { PageActions } from '@/types/pages'
+import type { PageActions, PagesSources } from '@/types/pages'
 import type { SheetTitleForm } from '@/consts/pages'
 
 interface PageActionsButtonsProps extends ComponentProps<'div'> {
   classNameButtons?: HTMLElement['className']
+  pageSource: PagesSources
+  pageSourceNew?: PagesSources
+  pageSourceEdit?: PagesSources
+  pageSourceRemove?: PagesSources
   selected: any
   sheetTitle: string
   sheetTitleEdit?: string
@@ -23,12 +27,16 @@ interface PageActionsButtonsProps extends ComponentProps<'div'> {
 
 function PageActionButtons({
   classNameButtons,
+  pageSource,
+  pageSourceNew = pageSource,
+  pageSourceEdit = pageSource,
+  pageSourceRemove = pageSource,
   selected,
   sheetTitle,
   sheetTitleEdit = sheetTitle,
   sheetTitleNew = sheetTitle,
   sheetTitleRemove = sheetTitle,
-  showButtons = ['new', 'edit', 'remove'],
+  showButtons = ['new', 'edit', 'remove']
 }: PageActionsButtonsProps) {
   const store = useCIStore((store) => store)
   const sheet = store.sheet
@@ -42,17 +50,39 @@ function PageActionButtons({
     transaction: { title: sheetTitleRemove, prefix: 'Nova' }
   } as Record<PageActions, SheetTitleForm>), [sheetTitle, sheetTitleEdit, sheetTitleNew, sheetTitleRemove])
   
-  function handleAction(action: PageActions) {
+  const pageSources = useMemo(() => ({
+    earning: pageSource,
+    edit: pageSourceEdit,
+    expense: pageSource,
+    new: pageSourceNew,
+    remove: pageSourceRemove,
+    transaction: pageSource
+  } as Record<PageActions, PagesSources>), [pageSource, pageSourceEdit, pageSourceNew, pageSourceRemove])
+  
+  const handleAction = useCallback((action: PageActions) => {
     const sheetTitleFormData = sheetTitles[action]
     
     store.actions.setSheetOptions({
       action,
       title: GenerateSheetTitleForm(sheetTitleFormData)[action],
-      selected: selected
+      selected: selected,
+      pageSource: pageSources[action]
     })
     
     store.actions.setSheetToggle(!sheet.toggle)
-  }
+  }, [pageSources, selected, sheet.toggle, sheetTitles, store.actions])
+  
+  const handleActionNew = useCallback(() => handleAction('new'), [handleAction])
+  
+  const handleActionEdit = useCallback(() => handleAction('edit'), [handleAction])
+  
+  const handleActionRemove = useCallback(() => handleAction('remove'), [handleAction])
+  
+  const handleActionEarning = useCallback(() => handleAction('earning'), [handleAction])
+  
+  const handleActionExpense = useCallback(() => handleAction('expense'), [handleAction])
+  
+  const handleActionTransaction = useCallback(() => handleAction('transaction'), [handleAction])
   
   return (
     <>
@@ -60,7 +90,7 @@ function PageActionButtons({
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => handleAction('new')}
+          onClick={handleActionNew}
           className={classNameButtons}
         >
           <PlusCircleIcon strokeWidth={1.5} size={20} color="#22C55E" />
@@ -72,7 +102,7 @@ function PageActionButtons({
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => handleAction('edit')}
+          onClick={handleActionEdit}
           className={classNameButtons}
         >
           <PenSquare strokeWidth={1.5} size={20} color="#3B82F6" />
@@ -84,7 +114,7 @@ function PageActionButtons({
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => handleAction('remove')}
+          onClick={handleActionRemove}
           className={classNameButtons}
         >
           <Trash2Icon strokeWidth={1.5} size={20} color="#DC2626" />
@@ -95,7 +125,7 @@ function PageActionButtons({
       {showButtons?.includes('earning') && (
         <Button
           variant="ghost"
-          onClick={() => handleAction('earning')}
+          onClick={handleActionEarning}
           className={classNameButtons}
         >
           <PlusCircleIcon strokeWidth={1} color="#22C55E" className="mr-2" />
@@ -107,7 +137,7 @@ function PageActionButtons({
       {showButtons?.includes('expense') && (
         <Button
           variant="ghost"
-          onClick={() => handleAction('expense')}
+          onClick={handleActionExpense}
           className={classNameButtons}
         >
           <PlusCircleIcon strokeWidth={1} color="#DC2626" className="mr-2" />
@@ -119,7 +149,7 @@ function PageActionButtons({
       {showButtons?.includes('transaction') && (
         <Button
           variant="ghost"
-          onClick={() => handleAction('transaction')}
+          onClick={handleActionTransaction}
           className={classNameButtons}
         >
           <BadgeDollarSignIcon strokeWidth={1} color="#64748B" className="mr-2" />

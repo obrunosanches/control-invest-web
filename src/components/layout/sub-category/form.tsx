@@ -11,11 +11,11 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
-import type { SubCategoryProps, TransactionTypeProps } from '@/types/schema'
+import type { SubCategoryProps } from '@/types/schema'
 import type { FormActions } from '@/types/pages'
 
 const formSchema = z.object({
-  name: z.string().min(3, 'Informe um nome válido')
+  name: z.string().min(3, 'Informe uma sub categoria válida')
 })
 
 interface SubCategoryFormProps {

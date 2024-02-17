@@ -3,14 +3,13 @@
 import { ChevronsUpDownIcon } from 'lucide-react'
 import * as Accordion from '@radix-ui/react-accordion'
 
+import { useCIStore } from '@/hooks/control-invest-store-provider'
+
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import PageActionButtons from '@/components/layout/page-action-buttons'
-import { useCIStore } from '@/hooks/control-invest-store-provider'
 
-interface CategoryListProps {}
-
-function CategoryList({}: CategoryListProps) {
+function CategoryList() {
   const categories = useCIStore(store => store.categories)
   
   return (
@@ -32,6 +31,8 @@ function CategoryList({}: CategoryListProps) {
                       selected={category}
                       sheetTitle="categoria"
                       sheetTitleNew="sub categoria"
+                      pageSource="category"
+                      pageSourceNew="sub-category"
                     />
                     
                     <Accordion.Trigger asChild>
@@ -56,7 +57,9 @@ function CategoryList({}: CategoryListProps) {
                               <TableCell className="w-32">
                                 <PageActionButtons
                                   selected={subCategory}
-                                  sheetTitle="sub categoria" showButtons={['edit', 'remove']}
+                                  sheetTitle="sub categoria"
+                                  showButtons={['edit', 'remove']}
+                                  pageSource="sub-category"
                                 />
                               </TableCell>
                             </TableRow>

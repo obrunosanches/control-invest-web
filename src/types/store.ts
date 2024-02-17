@@ -4,12 +4,13 @@ import type {
   CategoryWithRelationsProps,
   TransactionTypeProps
 } from '@/types/schema'
-import type { PageActions } from '@/types/pages'
+import { PageActions, PagesSources } from '@/types/pages'
 
 type SheetOption = {
   action: PageActions
   selected: any
   title: string
+  pageSource: PagesSources | null
 }
 
 export type CIState = {
@@ -36,8 +37,6 @@ type CIActions = {
 type CIGetters = {
   getters: {
     getDefaultTransactionTypes: () => TransactionTypeProps[]
-    getSheetOptions: () => SheetOption
-    getSheetToggle: () => boolean
   }
 }
 

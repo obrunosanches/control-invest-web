@@ -9,16 +9,19 @@ import { GenerateSheetTitleForm } from '@/consts/pages'
 import { cn } from '@/lib/utils'
 
 import type { ComponentProps } from 'react'
+import { PagesSources } from '@/types/pages'
 
 interface ButtonNewItemProps extends ComponentProps<'button'> {
   buttonTitle: string
   sheetTitle: string
+  pageSource: PagesSources
 }
 
 function ButtonNewItem({
   buttonTitle,
   className,
   sheetTitle,
+  pageSource
 }: ButtonNewItemProps) {
   const store = useCIStore((store) => store)
   const sheet = store.sheet
@@ -31,7 +34,8 @@ function ButtonNewItem({
           store.actions.setSheetOptions({
             action: 'new',
             selected: {},
-            title: GenerateSheetTitleForm({ title: sheetTitle })['new']
+            title: GenerateSheetTitleForm({ title: sheetTitle })['new'],
+            pageSource
           })
 
           store.actions.setSheetToggle(!sheet.toggle)

@@ -32,6 +32,7 @@ function AccountList({}: AccountListProps) {
                     showButtons={['edit', 'remove']}
                     sheetTitle="conta"
                     selected={account}
+                    pageSource="account"
                   />
                 </div>
               </div>
@@ -52,6 +53,7 @@ function AccountList({}: AccountListProps) {
                   showButtons={['earning', 'expense', 'transaction']}
                   sheetTitle="conta"
                   selected={account}
+                  pageSource="account"
                 />
               </div>
             </CardFooter>

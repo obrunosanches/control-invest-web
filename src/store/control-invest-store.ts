@@ -11,7 +11,8 @@ export const initStateDefault: CIState = {
     action: 'new',
     toggle: false,
     title: '',
-    selected: {}
+    selected: {},
+    pageSource: null
   },
 }
 
@@ -21,17 +22,7 @@ export const createCIStore = (initState: CIState = initStateDefault) => {
     getters: {
       getDefaultTransactionTypes: () => {
         return getState().transactionTypes.filter(type => !type.slug.includes('transfer'))
-      },
-      getSheetOptions: () => {
-        const sheet = getState().sheet
-        
-        return {
-          action: sheet.action,
-          selected: sheet.selected,
-          title: sheet.title
-        }
-      },
-      getSheetToggle: () => getState().sheet.toggle
+      }
     },
     actions: {
       setAccounts: (data) => {

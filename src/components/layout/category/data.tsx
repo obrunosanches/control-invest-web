@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useCIStore } from '@/hooks/control-invest-store-provider'
 
 import CategoryForm from '@/components/layout/category/form'
+import ConfirmDelete from '@/components/layout/confirm-delete'
 import SubCategoryForm from '@/components/layout/sub-category/form'
 import CategoryList from '@/components/layout/category/list'
 import ButtonNewItem from '@/components/layout/button-new-item'
@@ -25,7 +26,7 @@ import type {
   SubCategoryProps,
   TransactionTypeProps
 } from '@/types/schema'
-import type { FormActions } from '@/types/pages'
+import type { FormActions, PageActions } from '@/types/pages'
 
 interface CategoryDataProps {
   categoriesData: CategoryWithRelationsProps[]
@@ -35,7 +36,6 @@ interface CategoryDataProps {
 function CategoryData({ categoriesData, transactionTypesData }: CategoryDataProps) {
   const store = useCIStore((store) => store)
   const sheet = store.sheet
-  const selected = sheet.selected
   const transactionTypesDefault = store.getters.getDefaultTransactionTypes()
   
   const storeData = useCallback(({ categories, types }: { categories: CategoryWithRelationsProps[], types: TransactionTypeProps[] }) => {
@@ -70,6 +70,16 @@ function CategoryData({ categoriesData, transactionTypesData }: CategoryDataProp
     store.actions.setSheetToggle(!sheet.toggle)
   }
   
+  async function handleActionDelete(action: FormActions) {
+    if (action === 'confirm') {
+      // await deleteAccount(sheet.selected.id)
+      
+      // store.actions.setAccounts(getAccount())
+    }
+    
+    store.actions.setSheetToggle(!sheet.toggle)
+  }
+  
   return (
     <>
       <div className="flex justify-between mt-6">
@@ -90,19 +100,32 @@ function CategoryData({ categoriesData, transactionTypesData }: CategoryDataProp
           </SelectContent>
         </Select>
         
-        <ButtonNewItem sheetTitle="Categoria" buttonTitle="Adicionar categoria" />
+        <ButtonNewItem sheetTitle="Categoria" pageSource="category" buttonTitle="Adicionar categoria" />
       </div>
       
       <CategoryList />
       
       <SheetForm>
-        {Object.prototype.hasOwnProperty.call(selected, 'type') ? (
-          <CategoryForm
-            transactionTypeSelected={transactionTypeSelected}
-            handleAction={handleActionForm}
+        {['new', 'edit' as PageActions].includes(sheet.action) && sheet.pageSource && (
+          <>
+            {sheet.pageSource === 'category' && (
+              <CategoryForm
+                transactionTypeSelected={transactionTypeSelected}
+                handleAction={handleActionForm}
+              />
+            )}
+            
+            {sheet.pageSource === 'sub-category' && (
+              <SubCategoryForm handleAction={handleActionSubCategoryForm} />
+            )}
+          </>
+        )}
+        
+        {sheet.action === 'remove' && (
+          <ConfirmDelete
+            item={sheet.selected.name!}
+            handleAction={handleActionDelete}
           />
-        ) : (
-          <SubCategoryForm handleAction={handleActionSubCategoryForm} />
         )}
       </SheetForm>
     </>
