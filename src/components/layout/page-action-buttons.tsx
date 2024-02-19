@@ -15,13 +15,10 @@ interface PageActionsButtonsProps extends ComponentProps<'div'> {
   classNameButtons?: HTMLElement['className']
   pageSource: PagesSources
   pageSourceNew?: PagesSources
-  pageSourceEdit?: PagesSources
-  pageSourceRemove?: PagesSources
   selected: any
+  selectedNew?: any
   sheetTitle: string
-  sheetTitleEdit?: string
   sheetTitleNew?: string
-  sheetTitleRemove?: string
   showButtons?: PageActions[]
 }
 
@@ -29,13 +26,10 @@ function PageActionButtons({
   classNameButtons,
   pageSource,
   pageSourceNew = pageSource,
-  pageSourceEdit = pageSource,
-  pageSourceRemove = pageSource,
   selected,
+  selectedNew = selected,
   sheetTitle,
-  sheetTitleEdit = sheetTitle,
   sheetTitleNew = sheetTitle,
-  sheetTitleRemove = sheetTitle,
   showButtons = ['new', 'edit', 'remove']
 }: PageActionsButtonsProps) {
   const store = useCIStore((store) => store)
@@ -43,21 +37,30 @@ function PageActionButtons({
   
   const sheetTitles = useMemo(() => ({
     earning: { title: sheetTitle, prefix: 'Nova' },
-    edit: { title: sheetTitleEdit },
-    expense: { title: sheetTitleRemove, prefix: 'Nova' },
+    edit: { title: sheetTitle },
+    expense: { title: sheetTitle, prefix: 'Nova' },
     new: { title: sheetTitleNew },
-    remove: { title: sheetTitleRemove },
-    transaction: { title: sheetTitleRemove, prefix: 'Nova' }
-  } as Record<PageActions, SheetTitleForm>), [sheetTitle, sheetTitleEdit, sheetTitleNew, sheetTitleRemove])
+    remove: { title: sheetTitle },
+    transaction: { title: sheetTitle, prefix: 'Nova' }
+  } as Record<PageActions, SheetTitleForm>), [sheetTitle, sheetTitleNew])
   
   const pageSources = useMemo(() => ({
     earning: pageSource,
-    edit: pageSourceEdit,
+    edit: pageSource,
     expense: pageSource,
     new: pageSourceNew,
-    remove: pageSourceRemove,
+    remove: pageSource,
     transaction: pageSource
-  } as Record<PageActions, PagesSources>), [pageSource, pageSourceEdit, pageSourceNew, pageSourceRemove])
+  } as Record<PageActions, PagesSources>), [pageSource, pageSourceNew])
+
+  const currentSelected = useMemo(() => ({
+    earning: selected,
+    edit: selected,
+    expense: selected,
+    new: selectedNew,
+    remove: selected,
+    transaction: selected
+  } as Record<PageActions, any>), [selected, selectedNew])
   
   const handleAction = useCallback((action: PageActions) => {
     const sheetTitleFormData = sheetTitles[action]
@@ -65,12 +68,12 @@ function PageActionButtons({
     store.actions.setSheetOptions({
       action,
       title: GenerateSheetTitleForm(sheetTitleFormData)[action],
-      selected: selected,
+      selected: currentSelected[action],
       pageSource: pageSources[action]
     })
     
     store.actions.setSheetToggle(!sheet.toggle)
-  }, [pageSources, selected, sheet.toggle, sheetTitles, store.actions])
+  }, [currentSelected, pageSources, sheet.toggle, sheetTitles, store.actions])
   
   const handleActionNew = useCallback(() => handleAction('new'), [handleAction])
   

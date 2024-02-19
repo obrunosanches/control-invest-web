@@ -18,6 +18,7 @@ import { createOrUpdateCategory, deleteCategory } from '@/services/category'
 import type { CategoryProps, CategoryWithRelationsProps, SubCategoryProps, TransactionTypeProps } from '@/types/schema'
 import type { FormActions, PageActions } from '@/types/pages'
 import type { TransactionSlug } from '@/types/database'
+import { createOrUpdateSubCategory, deleteSubCategory } from '@/services/sub-category'
 
 interface CategoryDataProps {
   categoriesData: CategoryWithRelationsProps[]
@@ -54,7 +55,7 @@ function CategoryData({ categoriesData, transactionTypesData }: CategoryDataProp
       await fetchCategories(transactionType.id)
       setSelectedTransactionType(transactionType)
     }
-  }, [store.actions, transactionTypesDefault, fetchCategories])
+  }, [transactionTypesDefault, fetchCategories])
   
   useEffect(() => {
     storeData({ categories: categoriesData, types: transactionTypesData })
@@ -79,11 +80,18 @@ function CategoryData({ categoriesData, transactionTypesData }: CategoryDataProp
   }
   
   async function handleActionSubCategoryForm(formAction: FormActions, formData?: SubCategoryProps) {
+    const selected = store.sheet.selected as SubCategoryProps
+    
     if (formData && formAction === 'confirm') {
-      const subCategoryForm = {
-        ...formData,
-        category_id: formData?.category_id ?? sheet.selected.id
-      } as SubCategoryProps
+      await createOrUpdateSubCategory({
+        ...(selected.id && { id: selected.id }),
+        name: formData.name,
+        category_id: formData.category_id
+      })
+      
+      if (transactionTypeSelected?.id) {
+        await fetchCategories(transactionTypeSelected.id)
+      }
     }
     
     store.actions.setSheetToggle(!sheet.toggle)
@@ -100,8 +108,11 @@ function CategoryData({ categoriesData, transactionTypesData }: CategoryDataProp
   
   async function handleActionSubCategoryDelete(action: FormActions) {
     if (action === 'confirm') {
-      // await deleteAccount(sheet.selected.id)
-      // store.actions.setAccounts(getAccount())
+      await deleteSubCategory(sheet.selected.id)
+    }
+    
+    if (transactionTypeSelected?.id) {
+      await fetchCategories(transactionTypeSelected.id)
     }
     
     store.actions.setSheetToggle(!sheet.toggle)

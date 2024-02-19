@@ -29,6 +29,7 @@ function CategoryList() {
                     
                     <PageActionButtons
                       selected={category}
+                      selectedNew={{ category_id: category.id }}
                       sheetTitle="categoria"
                       sheetTitleNew="sub categoria"
                       pageSource="category"

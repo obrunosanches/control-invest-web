@@ -43,7 +43,7 @@ function SubCategoryForm({ handleAction }: SubCategoryFormProps) {
     
     handleAction('confirm', {
       name: values.name,
-      category_id: selected?.category_id
+      category_id: selected.category_id
     })
   }
   
