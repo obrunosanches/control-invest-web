@@ -4,7 +4,7 @@
   "items": [
     {
       "type": "http",
-      "name": "api-nuxt",
+      "name": "request-nuxt",
       "seq": 1,
       "request": {
         "url": "http://localhost:3001/api/account",
@@ -246,12 +246,116 @@
     },
     {
       "type": "folder",
+      "name": "category-sub",
+      "items": [
+        {
+          "type": "http",
+          "name": "[create]",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:3000/api/category/sub",
+            "method": "POST",
+            "headers": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"teste 59\",\n  \"category_id\": 17\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        },
+        {
+          "type": "folder",
+          "name": "[id]",
+          "items": [
+            {
+              "type": "http",
+              "name": "[delete]",
+              "seq": 2,
+              "request": {
+                "url": "http://localhost:3000/api/category/sub/68",
+                "method": "DELETE",
+                "headers": [],
+                "body": {
+                  "mode": "none",
+                  "formUrlEncoded": [],
+                  "multipartForm": []
+                },
+                "auth": {
+                  "mode": "none",
+                  "basic": {
+                    "username": "",
+                    "password": ""
+                  },
+                  "bearer": {
+                    "token": ""
+                  }
+                },
+                "script": {},
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "query": []
+              }
+            },
+            {
+              "type": "http",
+              "name": "[update]",
+              "seq": 1,
+              "request": {
+                "url": "http://localhost:3000/api/category/sub/18",
+                "method": "PUT",
+                "headers": [],
+                "body": {
+                  "mode": "json",
+                  "json": "{\n  \"category_id\": 5,\n  \"id\": 18,\n  \"name\": \"Cinema\"\n}",
+                  "formUrlEncoded": [],
+                  "multipartForm": []
+                },
+                "auth": {
+                  "mode": "none",
+                  "basic": {
+                    "username": "",
+                    "password": ""
+                  },
+                  "bearer": {
+                    "token": ""
+                  }
+                },
+                "script": {},
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "query": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "folder",
       "name": "category",
       "items": [
         {
           "type": "http",
           "name": "create",
-          "seq": 2,
+          "seq": 1,
           "request": {
             "url": "http://localhost:3000/api/category",
             "method": "POST",
@@ -282,7 +386,7 @@
         {
           "type": "http",
           "name": "show",
-          "seq": 1,
+          "seq": 2,
           "request": {
             "url": "http://localhost:3000/api/category",
             "method": "GET",
@@ -373,13 +477,25 @@
                 "tests": "",
                 "query": []
               }
-            },
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "category-type",
+      "items": [
+        {
+          "type": "folder",
+          "name": "[id]",
+          "items": [
             {
               "type": "http",
               "name": "show",
               "seq": 1,
               "request": {
-                "url": "http://localhost:3000/api/category/1",
+                "url": "http://localhost:3000/api/category-type/2",
                 "method": "GET",
                 "headers": [],
                 "body": {
@@ -405,116 +521,6 @@
               }
             }
           ]
-        },
-        {
-          "type": "folder",
-          "name": "type",
-          "items": [
-            {
-              "type": "folder",
-              "name": "[id]",
-              "items": [
-                {
-                  "type": "http",
-                  "name": "show",
-                  "seq": 1,
-                  "request": {
-                    "url": "http://localhost:3000/api/category/type/1",
-                    "method": "GET",
-                    "headers": [],
-                    "body": {
-                      "mode": "none",
-                      "formUrlEncoded": [],
-                      "multipartForm": []
-                    },
-                    "auth": {
-                      "mode": "none",
-                      "basic": {
-                        "username": "",
-                        "password": ""
-                      },
-                      "bearer": {
-                        "token": ""
-                      }
-                    },
-                    "script": {},
-                    "vars": {},
-                    "assertions": [],
-                    "tests": "",
-                    "query": []
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "folder",
-      "name": "sub-category",
-      "items": [
-        {
-          "type": "http",
-          "name": "[delete]",
-          "seq": 2,
-          "request": {
-            "url": "http://localhost:3000/api/category/17/sub-category/60",
-            "method": "DELETE",
-            "headers": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"name\": \"teste\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "auth": {
-              "mode": "none",
-              "basic": {
-                "username": "",
-                "password": ""
-              },
-              "bearer": {
-                "token": ""
-              }
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "[update]",
-          "seq": 1,
-          "request": {
-            "url": "http://localhost:3000/api/category/17/sub-category/59",
-            "method": "PUT",
-            "headers": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"name\": \"teste 59\",\n  \"category_id\": 17\n}",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "auth": {
-              "mode": "none",
-              "basic": {
-                "username": "",
-                "password": ""
-              },
-              "bearer": {
-                "token": ""
-              }
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "query": []
-          }
         }
       ]
     },
@@ -532,7 +538,7 @@
             "headers": [],
             "body": {
               "mode": "json",
-              "json": "{\n  \"type_id\": 4,\n  \"category_id\": 1,\n  \"sub_category_id\": 1,\n  \"account_id\": 1,\n  \"description\": \"transação via api\",\n  \"note\": \"nota via api\",\n  \"date\": \"2023-01-16T02:59:59.999Z\",\n  \"value\": \"1000\"\n}\n",
+              "json": "{\n  \"type_id\": 4,\n  \"category_id\": 1,\n  \"sub_category_id\": 1,\n  \"account_id\": 1,\n  \"description\": \"transação via request\",\n  \"note\": \"nota via request\",\n  \"date\": \"2023-01-16T02:59:59.999Z\",\n  \"value\": \"1000\"\n}\n",
               "formUrlEncoded": [],
               "multipartForm": []
             },
@@ -695,42 +701,6 @@
     },
     {
       "type": "folder",
-      "name": "transaction-type",
-      "items": [
-        {
-          "type": "http",
-          "name": "show",
-          "seq": 1,
-          "request": {
-            "url": "http://localhost:3000/api/transaction-type",
-            "method": "GET",
-            "headers": [],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "auth": {
-              "mode": "none",
-              "basic": {
-                "username": "",
-                "password": ""
-              },
-              "bearer": {
-                "token": ""
-              }
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "query": []
-          }
-        }
-      ]
-    },
-    {
-      "type": "folder",
       "name": "transfer",
       "items": [
         {
@@ -799,6 +769,42 @@
               }
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "transaction-type",
+      "items": [
+        {
+          "type": "http",
+          "name": "show",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:3000/api/transaction-type",
+            "method": "GET",
+            "headers": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
         }
       ]
     }

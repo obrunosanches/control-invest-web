@@ -5,7 +5,7 @@
   },
   "item": [
     {
-      "name": "api-nuxt",
+      "name": "request-nuxt",
       "event": [],
       "request": {
         "method": "GET",
@@ -123,6 +123,61 @@
       ]
     },
     {
+      "name": "category-sub",
+      "item": [
+        {
+          "name": "[create]",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "http://localhost:3000/api/category/sub",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"teste 59\",\n  \"category_id\": 17\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "[id]",
+          "item": [
+            {
+              "name": "[delete]",
+              "event": [],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": "http://localhost:3000/api/category/sub/68"
+              }
+            },
+            {
+              "name": "[update]",
+              "event": [],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": "http://localhost:3000/api/category/sub/18",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"category_id\": 5,\n  \"id\": 18,\n  \"name\": \"Cinema\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "category",
       "item": [
         {
@@ -181,77 +236,27 @@
                   }
                 }
               }
-            },
-            {
-              "name": "show",
-              "event": [],
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": "http://localhost:3000/api/category/1"
-              }
-            }
-          ]
-        },
-        {
-          "name": "type",
-          "item": [
-            {
-              "name": "[id]",
-              "item": [
-                {
-                  "name": "show",
-                  "event": [],
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "url": "http://localhost:3000/api/category/type/1"
-                  }
-                }
-              ]
             }
           ]
         }
       ]
     },
     {
-      "name": "sub-category",
+      "name": "category-type",
       "item": [
         {
-          "name": "[delete]",
-          "event": [],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": "http://localhost:3000/api/category/17/sub-category/60",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"teste\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
+          "name": "[id]",
+          "item": [
+            {
+              "name": "show",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "http://localhost:3000/api/category-type/2"
               }
             }
-          }
-        },
-        {
-          "name": "[update]",
-          "event": [],
-          "request": {
-            "method": "PUT",
-            "header": [],
-            "url": "http://localhost:3000/api/category/17/sub-category/59",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"teste 59\",\n  \"category_id\": 17\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
+          ]
         }
       ]
     },
@@ -267,7 +272,7 @@
             "url": "http://localhost:3000/api/transaction",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"type_id\": 4,\n  \"category_id\": 1,\n  \"sub_category_id\": 1,\n  \"account_id\": 1,\n  \"description\": \"transação via api\",\n  \"note\": \"nota via api\",\n  \"date\": \"2023-01-16T02:59:59.999Z\",\n  \"value\": \"1000\"\n}\n",
+              "raw": "{\n  \"type_id\": 4,\n  \"category_id\": 1,\n  \"sub_category_id\": 1,\n  \"account_id\": 1,\n  \"description\": \"transação via request\",\n  \"note\": \"nota via request\",\n  \"date\": \"2023-01-16T02:59:59.999Z\",\n  \"value\": \"1000\"\n}\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -329,20 +334,6 @@
       ]
     },
     {
-      "name": "transaction-type",
-      "item": [
-        {
-          "name": "show",
-          "event": [],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "http://localhost:3000/api/transaction-type"
-          }
-        }
-      ]
-    },
-    {
       "name": "transfer",
       "item": [
         {
@@ -376,6 +367,20 @@
               }
             }
           ]
+        }
+      ]
+    },
+    {
+      "name": "transaction-type",
+      "item": [
+        {
+          "name": "show",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:3000/api/transaction-type"
+          }
         }
       ]
     }
