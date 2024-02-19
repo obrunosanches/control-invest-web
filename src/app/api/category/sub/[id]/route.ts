@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import type { ContextCategory } from '@/types/api'
+import type { Context } from '@/types/api'
 
 import { eq } from 'drizzle-orm'
 import { createInsertSchema } from 'drizzle-zod'
@@ -7,7 +7,7 @@ import { createInsertSchema } from 'drizzle-zod'
 import { db } from '@/database/connect'
 import { subCategory } from '@/database/schema'
 
-export async function PUT(request: NextRequest, context: ContextCategory) {
+export async function PUT(request: NextRequest, context: Context) {
   const body = await request.json()
   
   const subCategoryId = Number(context.params.id)
@@ -27,8 +27,8 @@ export async function PUT(request: NextRequest, context: ContextCategory) {
   return NextResponse.json(newData[0], { status: 200 })
 }
 
-export async function DELETE(resquest: NextRequest, context: ContextCategory) {
-  const subCategoryId = Number(context.params.subId)
+export async function DELETE(resquest: NextRequest, context: Context) {
+  const subCategoryId = Number(context.params.id)
   
   const query = db.delete(subCategory).where(eq(subCategory.id, subCategoryId))
   const data = await query.returning()
