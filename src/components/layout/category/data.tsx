@@ -20,12 +20,7 @@ import type { FormActions, PageActions } from '@/types/pages'
 import type { TransactionSlug } from '@/types/database'
 import { createOrUpdateSubCategory, deleteSubCategory } from '@/services/sub-category'
 
-interface CategoryDataProps {
-  categoriesData: CategoryWithRelationsProps[]
-  transactionTypesData: TransactionTypeProps[]
-}
-
-function CategoryData({ categoriesData, transactionTypesData }: CategoryDataProps) {
+function CategoryData() {
   const store = useCIStore((store) => store)
   const sheet = store.sheet
   const transactionTypesDefault = store.getters.getDefaultTransactionTypes()
@@ -33,13 +28,6 @@ function CategoryData({ categoriesData, transactionTypesData }: CategoryDataProp
   const [transactionTypeSelected, setSelectedTransactionType] = useState<TransactionTypeProps>(
     transactionTypesDefault[0]
   )
-  
-  const storeData = useCallback(({ categories, types }: { categories: CategoryWithRelationsProps[], types: TransactionTypeProps[] }) => {
-    store.actions.setCategories(categories)
-    store.actions.setTransactionTypes(types)
-    
-    setSelectedTransactionType(types[0])
-  }, [store.actions])
   
   const fetchCategories = useCallback(async (typeId: number) => {
     const categoriesResponse = await request(`/category/type/${typeId}`, { cache: 'no-store' })
@@ -56,10 +44,6 @@ function CategoryData({ categoriesData, transactionTypesData }: CategoryDataProp
       setSelectedTransactionType(transactionType)
     }
   }, [transactionTypesDefault, fetchCategories])
-  
-  useEffect(() => {
-    storeData({ categories: categoriesData, types: transactionTypesData })
-  }, [categoriesData, transactionTypesData, storeData])
   
   async function handleActionCategoryForm(formAction: FormActions, formData?: CategoryProps) {
     if (formData && formAction === 'confirm') {

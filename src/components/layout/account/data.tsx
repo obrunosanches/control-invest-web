@@ -14,22 +14,10 @@ import type { FormActions, PageActions } from '@/types/pages'
 import { useCIStore } from '@/hooks/control-invest-store-provider'
 import { useCallback, useEffect } from 'react'
 
-interface AccountDataProps {
-  accountsData: AccountWithTypeProps[]
-  accountTypesData: AccountTypeProps[]
-}
-
-function AccountData({ accountsData, accountTypesData }: AccountDataProps) {
+function AccountData() {
   const store = useCIStore((store) => store)
   const sheet = store.sheet
   const selected = store.sheet.selected as AccountWithTypeProps
-  
-  const storeData = useCallback(({ accounts, types }: { accounts: AccountWithTypeProps[], types: AccountTypeProps[] }) => {
-    store.actions.setAccounts(accounts)
-    store.actions.setAccountTypes(types)
-  }, [store.actions])
-  
-  useEffect(() => storeData({ accounts: accountsData, types: accountTypesData }), [accountTypesData, accountsData, storeData])
   
   function getAccount() {
     if (selected.id) {
