@@ -9,7 +9,7 @@ import { GenerateSheetTitleForm } from '@/consts/pages'
 import { cn } from '@/lib/utils'
 
 import type { ComponentProps } from 'react'
-import { PagesSources } from '@/types/pages'
+import type { PagesSources } from '@/types/pages'
 
 interface ButtonNewItemProps extends ComponentProps<'button'> {
   buttonTitle: string
