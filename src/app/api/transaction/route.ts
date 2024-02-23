@@ -5,25 +5,26 @@ import { createInsertSchema } from 'drizzle-zod'
 
 import { db } from '@/database/connect'
 import { transaction } from '@/database/schema'
-import { MONTH } from '@/consts/global'
+import { monthsByLocale } from '@/utils/date'
 
 function getFilterParams(searchParams: URLSearchParams) {
   const currentDate = new Date()
+  const MONTHS = monthsByLocale('en')
   const year = searchParams.get('year')
   const month = searchParams.get('month')
   const params = {
     year: currentDate.getFullYear(),
-    month: MONTH[currentDate.getMonth()],
-    monthIndex: MONTH.findIndex(item => item === MONTH[currentDate.getMonth()])
+    month: MONTHS[currentDate.getMonth()],
+    monthIndex: MONTHS.findIndex(item => item.toLowerCase() === MONTHS[currentDate.getMonth()])
   }
   
   const hasYearValid = Boolean(year && Number(year) && year?.length === 4)
-  const hasMonthValid = Boolean(month && MONTH.find(item => item === month))
+  const hasMonthValid = Boolean(month && MONTHS.find(item => item === month))
   
   if (hasYearValid && hasMonthValid) {
     params.year = Number(year)
-    params.monthIndex = MONTH.findIndex(item => item === month)
-    params.month = MONTH[params.monthIndex]
+    params.monthIndex = MONTHS.findIndex(item => item === month)
+    params.month = MONTHS[params.monthIndex]
   }
   
   const initialDate = new Date(params.year, params.monthIndex, 1).setUTCHours(0, 0, 0, 0)

@@ -6,6 +6,7 @@ export const initStateDefault: CIState = {
   accounts: [],
   accountTypes: [],
   categories: [],
+  transactions: [],
   transactionTypes: [],
   sheet: {
     action: 'new',
@@ -22,7 +23,18 @@ export const createCIStore = (initState: CIState = initStateDefault) => {
     getters: {
       getDefaultTransactionTypes: () => {
         return getState().transactionTypes.filter(type => !type.slug.includes('transfer'))
-      }
+      },
+      getAccountBalance: () => {
+        const accounts = getState().accounts
+        
+        return accounts.map(account => Number(account.balance) ?? 0).reduce((prev, value) => prev + value, 0)
+      },
+      getTransactionBalanceByType: (slug) => {
+        const transactions = getState().transactions
+        const transactionValues = transactions.map(transaction => transaction.type.slug === slug ? Number(transaction.value) : 0)
+        
+        return transactionValues.reduce((prev, value) => prev + value, 0)
+      },
     },
     actions: {
       setAccounts: (data) => {

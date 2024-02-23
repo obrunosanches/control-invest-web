@@ -2,9 +2,10 @@ import type {
   AccountTypeProps,
   AccountWithTypeProps,
   CategoryWithRelationsProps,
-  TransactionTypeProps
+  TransactionTypeProps, TransactionWithRelationsProps
 } from '@/types/schema'
 import { PageActions, PagesSources } from '@/types/pages'
+import { TransactionSlug } from '@/types/database'
 
 type SheetOption = {
   action: PageActions
@@ -17,6 +18,7 @@ export type CIState = {
   accounts: AccountWithTypeProps[]
   accountTypes: AccountTypeProps[]
   categories: CategoryWithRelationsProps[]
+  transactions: TransactionWithRelationsProps[]
   transactionTypes: TransactionTypeProps[]
   sheet: SheetOption & {
     toggle: boolean
@@ -37,6 +39,8 @@ type CIActions = {
 type CIGetters = {
   getters: {
     getDefaultTransactionTypes: () => TransactionTypeProps[]
+    getAccountBalance: () => number
+    getTransactionBalanceByType: (slug: TransactionSlug) => number
   }
 }
 
