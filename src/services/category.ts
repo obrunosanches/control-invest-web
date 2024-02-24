@@ -2,6 +2,16 @@ import { request } from '@/server/request'
 
 import type { CategoryProps } from '@/types/schema'
 
+export async function fetchCategories(typeId: number): Promise<any> {
+  try {
+    const response = await request(`/category/type/${typeId}`, { cache: 'no-store' })
+    
+    return await response.json()
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export async function createOrUpdateCategory(category: CategoryProps): Promise<any> {
   const apiUrl = `/category${category.id ? `/${category.id}` : ''}`
   const categoryData: CategoryProps = {

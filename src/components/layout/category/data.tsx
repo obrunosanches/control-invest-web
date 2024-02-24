@@ -2,16 +2,16 @@
 
 import { useCallback, useState } from 'react'
 
+import type { TransactionTypeProps } from '@/types/schema'
+import type { TransactionSlug } from '@/types/database'
+
 import { useCIStore } from '@/hooks/control-invest-store-provider'
-import { request } from '@/server/request'
+import { fetchCategories } from '@/services/category'
 
 import CategoryList from '@/components/layout/category/list'
 import ButtonNewItem from '@/components/layout/button-new-item'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import ContainerSheetForm from '@/components/layout/category/container-sheet-form'
-
-import type { TransactionTypeProps } from '@/types/schema'
-import type { TransactionSlug } from '@/types/database'
 
 function CategoryData() {
   const store = useCIStore((store) => store)
@@ -21,29 +21,27 @@ function CategoryData() {
     transactionTypesDefault[0]
   )
   
-  const fetchCategories = useCallback(async (typeId: number) => {
-    const categoriesResponse = await request(`/category/type/${typeId}`, { cache: 'no-store' })
-    const categories = await categoriesResponse.json()
-    
-    store.actions.setCategories(categories)
-  }, [store.actions])
-  
   const refreshCategories = useCallback(() => {
     new Promise(async (resolve) => {
       if (transactionTypeSelected.id) {
-        resolve(await fetchCategories(transactionTypeSelected.id))
+        const categories = await fetchCategories(transactionTypeSelected.id)
+        
+        store.actions.setCategories(categories)
+        resolve(categories)
       }
     }).catch(e => console.log(e))
-  },[fetchCategories, transactionTypeSelected.id])
+  },[store.actions, transactionTypeSelected.id])
   
   const handleSelectTransactionType = useCallback(async (slug: TransactionSlug) => {
     const transactionType = transactionTypesDefault.find(type => type.slug === slug)
     
     if (transactionType?.id) {
-      await fetchCategories(transactionType.id)
+      const categories = await fetchCategories(transactionType.id)
       setSelectedTransactionType(transactionType)
+      
+      store.actions.setCategories(categories)
     }
-  }, [transactionTypesDefault, fetchCategories])
+  }, [transactionTypesDefault, store.actions])
   
   return (
     <>
