@@ -1,6 +1,16 @@
 import { AccountProps } from '@/types/schema'
 import { request } from '@/server/request'
 
+export async function fetchAccounts(): Promise<any> {
+  try {
+    const response = await request('/account', { cache: 'no-store' })
+
+    return await response.json()
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export async function createOrUpdateAccount(account: AccountProps): Promise<any> {
   const apiUrl = `/account${account.id ? `/${account.id}` : ''}`
   const accountData: AccountProps = {
