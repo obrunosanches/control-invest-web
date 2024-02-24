@@ -8,6 +8,7 @@ import type { AccountProps, AccountWithTypeProps } from '@/types/schema'
 import type { FormActions } from '@/types/pages'
 
 import { useCIStore } from '@/hooks/control-invest-store-provider'
+import { useSheetStore } from '@/store/sheet-store'
 import { cn } from '@/lib/utils'
 
 import { Button } from '@/components/ui/button'
@@ -31,8 +32,9 @@ interface AccountFormProps {
 
 function AccountForm({ handleAction }: AccountFormProps) {
   const store = useCIStore((store) => store)
+  const sheet = useSheetStore((store) => store.sheet)
+  
   const accountTypes = store.accountTypes
-  const sheet = store.sheet
   const selected = sheet.selected as AccountWithTypeProps
   
   const [loading, setLoading] = useState(false)

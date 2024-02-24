@@ -7,14 +7,7 @@ export const initStateDefault: CIState = {
   accountTypes: [],
   categories: [],
   transactions: [],
-  transactionTypes: [],
-  sheet: {
-    action: 'new',
-    toggle: false,
-    title: '',
-    selected: {},
-    pageSource: null
-  },
+  transactionTypes: []
 }
 
 export const createCIStore = (initState: CIState = initStateDefault) => {
@@ -48,23 +41,7 @@ export const createCIStore = (initState: CIState = initStateDefault) => {
       },
       setTransactionTypes: (data) => {
         return setState({ transactionTypes: data })
-      },
-      setSheetToggle: (data) => {
-        return setState({
-          sheet: {
-            ...getState().sheet,
-            toggle: data
-          }
-        })
-      },
-      setSheetOptions: (data) => {
-        return setState({
-          sheet: {
-            ...getState().sheet,
-            ...data
-          }
-        })
-      },
+      }
     }
   }))
 }

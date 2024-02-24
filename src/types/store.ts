@@ -7,22 +7,12 @@ import type {
 import { PageActions, PagesSources } from '@/types/pages'
 import { TransactionSlug } from '@/types/database'
 
-type SheetOption = {
-  action: PageActions
-  selected: any
-  title: string
-  pageSource: PagesSources | null
-}
-
 export type CIState = {
   accounts: AccountWithTypeProps[]
   accountTypes: AccountTypeProps[]
   categories: CategoryWithRelationsProps[]
   transactions: TransactionWithRelationsProps[]
   transactionTypes: TransactionTypeProps[]
-  sheet: SheetOption & {
-    toggle: boolean
-  }
 }
 
 type CIActions = {
@@ -31,8 +21,6 @@ type CIActions = {
     setAccountTypes: (data: AccountTypeProps[]) => void
     setCategories: (data: CategoryWithRelationsProps[]) => void
     setTransactionTypes: (data: TransactionTypeProps[]) => void
-    setSheetToggle: (data: boolean) => void
-    setSheetOptions: (data: SheetOption) => void
   }
 }
 
