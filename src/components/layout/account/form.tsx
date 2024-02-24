@@ -4,7 +4,11 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
+import type { AccountProps, AccountWithTypeProps } from '@/types/schema'
+import type { FormActions } from '@/types/pages'
+
 import { useCIStore } from '@/hooks/control-invest-store-provider'
+import { cn } from '@/lib/utils'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
@@ -12,15 +16,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
-import { cn } from '@/lib/utils'
-
-import type { AccountProps, AccountWithTypeProps } from '@/types/schema'
-import type { FormActions } from '@/types/pages'
-
 const formSchema = z.object({
   name: z.string().min(3, 'Informe um nome válido'),
-  initial_balance: z.string({ required_error: 'Informe um valor inicial válido' }).optional(),
-  account_type_id: z.string({ required_error: 'Informe um tipo de conta válido' })
+  initial_balance: z.string().optional(),
+  account_type_id: z.string().min(1, 'Informe um tipo de conta válido')
 })
 
 interface AccountFormProps {
