@@ -3,8 +3,9 @@
 import { useCallback, useMemo } from 'react'
 import { BadgeDollarSignIcon, PenSquare, PlusCircleIcon, Trash2Icon } from 'lucide-react'
 
-import { useCIStore } from '@/hooks/control-invest-store-provider'
+import { useSheetStore } from '@/store/sheet-store'
 import { GenerateSheetTitleForm } from '@/consts/pages'
+
 import { Button } from '@/components/ui/button'
 
 import type { ComponentProps } from 'react'
@@ -32,8 +33,8 @@ function PageActionButtons({
   sheetTitleNew = sheetTitle,
   showButtons = ['new', 'edit', 'remove']
 }: PageActionsButtonsProps) {
-  const store = useCIStore((store) => store)
-  const sheet = store.sheet
+  const actions = useSheetStore((store) => store.actions)
+  const sheet = useSheetStore((store) => store.sheet)
   
   const sheetTitles = useMemo(() => ({
     earning: { title: sheetTitle, prefix: 'Nova' },
@@ -65,15 +66,15 @@ function PageActionButtons({
   const handleAction = useCallback((action: PageActions) => {
     const sheetTitleFormData = sheetTitles[action]
     
-    store.actions.setSheetOptions({
+    actions.setSheetOptions({
       action,
       title: GenerateSheetTitleForm(sheetTitleFormData)[action],
       selected: currentSelected[action],
       pageSource: pageSources[action]
     })
     
-    store.actions.setSheetToggle(!sheet.toggle)
-  }, [currentSelected, pageSources, sheet.toggle, sheetTitles, store.actions])
+    actions.setSheetToggle(!sheet.toggle)
+  }, [currentSelected, pageSources, sheet.toggle, sheetTitles, actions])
   
   const handleActionNew = useCallback(() => handleAction('new'), [handleAction])
   

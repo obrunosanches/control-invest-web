@@ -4,8 +4,7 @@ import { Loader2Icon } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
-import { useCIStore } from '@/hooks/control-invest-store-provider'
-
+import { useSheetStore } from '@/store/sheet-store'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -27,9 +26,7 @@ interface CategoryFormProps {
 }
 
 function CategoryForm({ transactionTypeSelected, handleAction }: CategoryFormProps) {
-  const store = useCIStore((store) => store)
-  const sheet = store.sheet
-  const selected = sheet.selected as CategoryProps
+  const selected = useSheetStore(state => state.sheet.selected) as CategoryProps
   
   const [loading, setLoading] = useState(false)
   const form = useForm<z.infer<typeof formSchema>>({

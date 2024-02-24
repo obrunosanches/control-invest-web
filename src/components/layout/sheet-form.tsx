@@ -1,17 +1,17 @@
 'use client'
 
-import { useCIStore } from '@/hooks/control-invest-store-provider'
+import type { ReactNode } from 'react'
+
+import { useSheetStore } from '@/store/sheet-store'
 
 import { Sheet, SheetContent, SheetHeader } from '@/components/ui/sheet'
 
-import type { ReactNode } from 'react'
-
 function SheetForm({ children, header = true }: { children: ReactNode, header?: boolean }) {
-  const store = useCIStore((store) => store)
-  const sheet = store.sheet
+  const sheet = useSheetStore(state => state.sheet)
+  const actions = useSheetStore(state => state.actions)
   
   return (
-    <Sheet open={sheet.toggle} onOpenChange={store.actions.setSheetToggle}>
+    <Sheet open={sheet.toggle} onOpenChange={actions.setSheetToggle}>
       <SheetContent className="sm:max-w-2xl">
         {header && (
           <SheetHeader>

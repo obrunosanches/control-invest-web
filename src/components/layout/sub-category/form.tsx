@@ -4,7 +4,7 @@ import { Loader2Icon } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
-import { useCIStore } from '@/hooks/control-invest-store-provider'
+import { useSheetStore } from '@/store/sheet-store'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
@@ -26,8 +26,7 @@ interface SubCategoryFormProps {
 }
 
 function SubCategoryForm({ handleAction }: SubCategoryFormProps) {
-  const store = useCIStore((store) => store)
-  const sheet = store.sheet
+  const sheet = useSheetStore(state => state.sheet)
   const selected = sheet.selected as SubCategoryProps
   
   const [loading, setLoading] = useState(false)
