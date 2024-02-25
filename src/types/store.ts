@@ -4,7 +4,6 @@ import type {
   CategoryWithRelationsProps,
   TransactionTypeProps, TransactionWithRelationsProps
 } from '@/types/schema'
-import { PageActions, PagesSources } from '@/types/pages'
 import { TransactionSlug } from '@/types/database'
 
 export type CIState = {
@@ -20,6 +19,7 @@ type CIActions = {
     setAccounts: (data: AccountWithTypeProps[]) => void
     setAccountTypes: (data: AccountTypeProps[]) => void
     setCategories: (data: CategoryWithRelationsProps[]) => void
+    setTransactions: (data: TransactionWithRelationsProps[]) => void
     setTransactionTypes: (data: TransactionTypeProps[]) => void
   }
 }

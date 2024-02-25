@@ -39,6 +39,9 @@ export const createCIStore = (initState: CIState = initStateDefault) => {
       setCategories: (data) => {
         return setState({ categories: data })
       },
+      setTransactions: (data) => {
+        return setState({ transactions: data })
+      },
       setTransactionTypes: (data) => {
         return setState({ transactionTypes: data })
       }

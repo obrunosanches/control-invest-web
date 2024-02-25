@@ -3,8 +3,13 @@ import { Manrope as FontSans } from 'next/font/google'
 import type { Metadata } from 'next'
 import type { PropsWithChildren } from 'react'
 
-import { request } from '@/server/request'
 import { CIStoreProvider } from '@/hooks/control-invest-store-provider'
+import { monthsByLocale } from '@/utils/date'
+import { fetchAccounts } from '@/services/account'
+import { fetchCategories } from '@/services/category'
+import { fetchAccountTypes } from '@/services/account-type'
+import { fetchTransactionType } from '@/services/transaction-type'
+import { fetchTransactions } from '@/services/transaction'
 
 import StoreInitializer from '@/components/layout/store-initializer'
 import Sidebar from '@/components/layout/sidebar'
@@ -22,23 +27,23 @@ export const metadata: Metadata = {
 }
 
 async function loadData() {
-  const accountTypesResponse = await request('/account-type', { cache: 'no-store' })
-  const accountsResponse = await request('/account', { cache: 'no-store' })
-  const transactionTypesResponse = await request('/transaction-type', { cache: 'no-store' })
-
-  const transactionTypes = await transactionTypesResponse.json()
+  const currentDate = new Date()
+  const month = monthsByLocale('en')[currentDate.getMonth()].toLowerCase()
+  const year = currentDate.getFullYear().toString()
+  
+  const transactions = await fetchTransactions({ month, year })
+  const transactionTypes = await fetchTransactionType()
   const transactionType = transactionTypes.find(() => true)
   
-  const categoriesResponse = await request(`/category/type/${transactionType.id}`, { cache: 'no-store' })
-  
-  const categories = await categoriesResponse.json()
-  const accounts = await accountsResponse.json()
-  const accountTypes = await accountTypesResponse.json()
+  const categories = await fetchCategories(transactionType.id)
+  const accounts = await fetchAccounts()
+  const accountTypes = await fetchAccountTypes()
   
   return {
     accountTypes,
     accounts,
     categories,
+    transactions,
     transactionTypes
   }
 }
