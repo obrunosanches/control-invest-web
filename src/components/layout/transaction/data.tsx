@@ -1,24 +1,32 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 
 import type { TransactionOptions } from '@/types/database'
 
 import { useCIStore } from '@/hooks/control-invest-store-provider'
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import ButtonNewItem from '@/components/layout/button-new-item'
-import ResultsByMonth from '@/components/layout/results-by-month'
-import MonthYearSelected from '@/components/layout/month-year-selected'
+import ResultsByMonth from '@/components/layout/transaction/results-by-month'
+import MonthYearSelected from '@/components/layout/transaction/month-year-selected'
+import { fetchTransactions } from '@/services/transaction'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import ContainerSheetForm from '@/components/layout/transaction/container-sheet-form'
 
 function TransactionData() {
   const store = useCIStore((store) => store)
   
-  const transactionTypesDefault = store.getters.getDefaultTransactionTypes()
-  
   const [transactionTypeSelected, setSelectedTransactionType] = useState<TransactionOptions>('transaction')
   
-  const handleSelectTransactionType = useCallback(async (slug: TransactionOptions) => setSelectedTransactionType(slug), [])
+  const transactionTypesDefault = store.getters.getDefaultTransactionTypes()
+  
+  const handleSelectTransactionType = (slug: TransactionOptions) => setSelectedTransactionType(slug)
+  
+  if (!store.accounts.length) {
+    return null
+  }
+  
+  console.log('transactionTypeSelected', transactionTypeSelected)
   
   return (
     <>
@@ -52,16 +60,20 @@ function TransactionData() {
         />
       </div>
       
-      {store.accounts.length ? <ResultsByMonth /> : null}
+      <ResultsByMonth />
       
       <div className="bg-slate-50 border border-black[0.07] rounded-2xl mt-4">
         <div className="px-6 py-6">
-          <MonthYearSelected onDateSelected={(month, year) => {
-            console.log('month', month)
-            console.log('year', year)
+          <MonthYearSelected onDateSelected={async (month, year) => {
+            const transactionType = store.transactionTypes.find(({ slug }) => slug === transactionTypeSelected)
+            const transactions = await fetchTransactions({ month, year, typeId: transactionType?.id })
+            
+            store.actions.setTransactions(transactions)
           }} />
         </div>
       </div>
+      
+      <ContainerSheetForm />
     </>
   )
 }

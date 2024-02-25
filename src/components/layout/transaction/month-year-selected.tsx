@@ -5,7 +5,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { formatDate, monthsByLocale } from '@/utils/date'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { firstLetterUppercase } from '@/utils/srting'
 
 const DATE_FORMAT_OPTIONS = { month: 'long', year: 'numeric' } as Intl.DateTimeFormatOptions
@@ -18,6 +18,15 @@ function MonthYearSelected({ onDateSelected }: { onDateSelected: (month: string,
   const [dateTimeFormatOptions, setDateTimeFormatOptions] = useState<Intl.DateTimeFormatOptions>(DATE_FORMAT_OPTIONS)
   const [shouldShowSelectDateByMonth, setShouldShowSelectDateByMonth] = useState(false)
   
+  const handleChangeDate = useCallback((value: number | Date) => {
+    const currentDate = new Date(value)
+    
+    onDateSelected(
+      monthsByLocale('en')[currentDate.getMonth()].toLowerCase(),
+      currentDate.getFullYear().toString()
+    )
+  }, [onDateSelected])
+  
   const handleShowMonths = useCallback(() => {
     if (!shouldShowSelectDateByMonth) {
       setDateTimeFormatOptions({ year: 'numeric' })
@@ -25,28 +34,34 @@ function MonthYearSelected({ onDateSelected }: { onDateSelected: (month: string,
     }
   }, [shouldShowSelectDateByMonth])
   
+  const handleNavigateCurrentDate = useCallback((): void => {
+    const currentDate = new Date()
+    
+    setDateSelected(currentDate)
+    setDateTimeFormatOptions(DATE_FORMAT_OPTIONS)
+    setShouldShowSelectDateByMonth(prevState => !prevState)
+  }, [])
+  
   const handleNavigateDate = useCallback((value: 'prev' | 'next' | null): void => {
     if (!value) {
-      setDateSelected(new Date())
+      const currentDate = new Date()
+      
+      setDateSelected(currentDate)
       setDateTimeFormatOptions(DATE_FORMAT_OPTIONS)
       setShouldShowSelectDateByMonth(prevState => !prevState)
+      handleChangeDate(currentDate)
+      
       return void 0
     }
     
     const currentDate = dateSelected
     const newYear = value === 'next' ? currentDate.getFullYear() + 1 : currentDate.getFullYear() - 1
     const newMonth = value === 'next' ? currentDate.getMonth() + 1 : currentDate.getMonth() - 1
-    const newDate = shouldShowSelectDateByMonth ? currentDate.setFullYear(newYear) : currentDate.setMonth(newMonth)
+    const newDate = new Date(shouldShowSelectDateByMonth ? currentDate.setFullYear(newYear) : currentDate.setMonth(newMonth))
     
-    setDateSelected(new Date(newDate))
-  }, [dateSelected, shouldShowSelectDateByMonth])
-  
-  useEffect(() => {
-    onDateSelected(
-      monthsByLocale('en')[dateSelected.getMonth()].toLowerCase(),
-      dateSelected.getFullYear().toString()
-    )
-  }, [dateSelected, onDateSelected])
+    setDateSelected(newDate)
+    handleChangeDate(newDate)
+  }, [dateSelected, handleChangeDate, shouldShowSelectDateByMonth])
   
   return (
     <>
@@ -72,7 +87,7 @@ function MonthYearSelected({ onDateSelected }: { onDateSelected: (month: string,
           <Button
             variant="ghost"
             className={BASE_BUTTON_CLASS}
-            onClick={() => handleNavigateDate(null)}
+            onClick={handleNavigateCurrentDate}
           >
             Hoje
           </Button>
@@ -92,11 +107,12 @@ function MonthYearSelected({ onDateSelected }: { onDateSelected: (month: string,
               className={BASE_BUTTON_CLASS}
               onClick={() => {
                 const currentDate = dateSelected
-                const newDate = currentDate.setFullYear(currentDate.getFullYear(), Number(month))
+                const newDate = new Date(currentDate.setFullYear(currentDate.getFullYear(), Number(month)))
                 
-                setDateSelected(new Date(newDate))
+                setDateSelected(newDate)
                 setDateTimeFormatOptions(DATE_FORMAT_OPTIONS)
                 setShouldShowSelectDateByMonth(prevState => !prevState)
+                handleChangeDate(newDate)
               }}
             >
               {monthsByLocale()[Number(month)]}

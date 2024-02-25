@@ -4,7 +4,7 @@ import type { FormActions, PageActions } from '@/types/pages'
 import { useSheetStore } from '@/store/sheet-store'
 import { createOrUpdateAccount, deleteAccount } from '@/services/account'
 
-import TransactionSheetForm from '@/components/layout/transaction/sheet-form'
+import TransactionContainerSheetForm from '@/components/layout/transaction/container-sheet-form'
 import SheetForm from '@/components/layout/sheet-form'
 import AccountForm from '@/components/layout/account/form'
 import ConfirmDelete from '@/components/layout/confirm-delete'
@@ -42,7 +42,7 @@ function ContainerSheetForm({ onConfirm }: { onConfirm: () => void }) {
   return (
     <>
       {['earning', 'expense', 'transaction'].includes(sheet.action) ? (
-        <TransactionSheetForm />
+        <TransactionContainerSheetForm />
       ) : (
         <SheetForm>
           {['new', 'edit' as PageActions].includes(sheet.action) && (
