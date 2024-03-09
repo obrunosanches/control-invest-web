@@ -4,19 +4,25 @@ import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { formatDate, monthsByLocale } from '@/utils/date'
+import { formatDate, monthsByLocale, YEARS } from '@/utils/date'
 import { useCallback, useState } from 'react'
 import { firstLetterUppercase } from '@/utils/srting'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 const DATE_FORMAT_OPTIONS = { month: 'long', year: 'numeric' } as Intl.DateTimeFormatOptions
-export const BASE_BUTTON_CLASS = 'border border-2 border-purple-700 hover:border-purple-500 '+
-  ' text-purple-700 text-sm text-purple-700 hover:text-purple-500 font-bold font-medium' +
-  ' py-2.5 px-5 rounded-full'
+const BASE_BUTTON_BORDER_CLASS = 'border border-2 border-purple-700 hover:border-purple-500'
+const BASE_BUTTON_FONT_CLASS = 'text-purple-700 text-sm text-purple-700 hover:text-purple-500 font-bold font-medium'
+const BASE_BUTTON_SPACING_CLASS = 'py-2.5 px-5 rounded-full'
+
+const BASE_BUTTON_CLASS = cn(BASE_BUTTON_BORDER_CLASS, BASE_BUTTON_FONT_CLASS, BASE_BUTTON_SPACING_CLASS)
  
 function MonthYearSelected({ onDateSelected }: { onDateSelected: (month: string, year: string) => void }) {
   const [dateSelected, setDateSelected] = useState(new Date())
   const [dateTimeFormatOptions, setDateTimeFormatOptions] = useState<Intl.DateTimeFormatOptions>(DATE_FORMAT_OPTIONS)
   const [shouldShowSelectDateByMonth, setShouldShowSelectDateByMonth] = useState(false)
+  const [shouldShowSelectDateByYear, setShouldShowSelectDateByYear] = useState(false)
+  
+  const currentYear = dateSelected.getFullYear()
   
   const handleChangeDate = useCallback((value: number | Date) => {
     const currentDate = new Date(value)
@@ -28,6 +34,11 @@ function MonthYearSelected({ onDateSelected }: { onDateSelected: (month: string,
   }, [onDateSelected])
   
   const handleShowMonths = useCallback(() => {
+    if (shouldShowSelectDateByMonth) {
+      setShouldShowSelectDateByYear(prevState => !prevState)
+      return
+    }
+    
     if (!shouldShowSelectDateByMonth) {
       setDateTimeFormatOptions({ year: 'numeric' })
       setShouldShowSelectDateByMonth(prevState => !prevState)
@@ -69,19 +80,48 @@ function MonthYearSelected({ onDateSelected }: { onDateSelected: (month: string,
         <Button variant="ghost" onClick={() => handleNavigateDate('prev')}>
           <ChevronLeftIcon color="#9333ea" />
         </Button>
-  
-        <Button
-          variant="ghost"
-          className={cn(BASE_BUTTON_CLASS, shouldShowSelectDateByMonth ? 'w-32' : 'w-52')}
-          onClick={handleShowMonths}
-        >
-          {firstLetterUppercase(
-            formatDate({
-              date: dateSelected,
-              formatOptions: dateTimeFormatOptions
-            })
+        
+        <div>
+          {shouldShowSelectDateByYear ? (
+            <Select
+              open
+              onValueChange={(value) => {
+                const currentDate = dateSelected
+                const newDate = new Date(currentDate.setFullYear(Number(value), currentDate.getMonth()))
+                
+                setDateSelected(newDate)
+                handleShowMonths()
+              }}
+              value={currentYear.toString()}
+              aria-label="years"
+            >
+              <SelectTrigger className={cn(BASE_BUTTON_CLASS, 'w-32')}>
+                <SelectValue placeholder="Selecione uma opção" />
+              </SelectTrigger>
+              <SelectContent>
+                {YEARS.map((year) => (
+                  <SelectItem key={year} value={year.toString()}>
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ) : (
+            <Button
+              variant="ghost"
+              className={cn(BASE_BUTTON_CLASS, shouldShowSelectDateByMonth ? 'w-32' : 'w-52')}
+              onClick={handleShowMonths}
+            >
+              {firstLetterUppercase(
+                formatDate({
+                  date: dateSelected,
+                  formatOptions: dateTimeFormatOptions
+                })
+              )}
+            </Button>
           )}
-        </Button>
+        </div>
+  
         
         {shouldShowSelectDateByMonth && (
           <Button
