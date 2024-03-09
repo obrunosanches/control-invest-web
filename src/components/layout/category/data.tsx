@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react'
 
 import type { TransactionTypeProps } from '@/types/schema'
-import type { TransactionSlug } from '@/types/database'
+import type { TransactionOptions } from '@/types/database'
 
 import { useCIStore } from '@/hooks/control-invest-store-provider'
 import { fetchCategories } from '@/services/category'
@@ -14,8 +14,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import ContainerSheetForm from '@/components/layout/category/container-sheet-form'
 
 function CategoryData() {
-  const store = useCIStore((store) => store)
-  const transactionTypesDefault = store.getters.getDefaultTransactionTypes()
+  const { getTransactionTypeBySlug, getDefaultTransactionTypes } = useCIStore((store) => store.getters)
+  const setCategories = useCIStore((store) => store.actions.setCategories)
+  
+  const transactionTypesDefault = getDefaultTransactionTypes()
   
   const [transactionTypeSelected, setSelectedTransactionType] = useState<TransactionTypeProps>(
     transactionTypesDefault[0]
@@ -26,22 +28,22 @@ function CategoryData() {
       if (transactionTypeSelected.id) {
         const categories = await fetchCategories(transactionTypeSelected.id)
         
-        store.actions.setCategories(categories)
+        setCategories(categories)
         resolve(categories)
       }
     }).catch(e => console.log(e))
-  },[store.actions, transactionTypeSelected.id])
+  },[setCategories, transactionTypeSelected.id])
   
-  const handleSelectTransactionType = useCallback(async (slug: TransactionSlug) => {
-    const transactionType = transactionTypesDefault.find(type => type.slug === slug)
+  const handleSelectTransactionType = useCallback(async (slug: TransactionOptions) => {
+    const transactionType = getTransactionTypeBySlug(slug)
     
     if (transactionType?.id) {
       const categories = await fetchCategories(transactionType.id)
       setSelectedTransactionType(transactionType)
       
-      store.actions.setCategories(categories)
+      setCategories(categories)
     }
-  }, [transactionTypesDefault, store.actions])
+  }, [getTransactionTypeBySlug, setCategories])
   
   return (
     <>

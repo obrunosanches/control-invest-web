@@ -28,6 +28,20 @@ export const createCIStore = (initState: CIState = initStateDefault) => {
         
         return transactionValues.reduce((prev, value) => prev + value, 0)
       },
+      getTransactionTypeBySlug: (slug) => {
+        const transactionTypes = getState().transactionTypes
+        
+        return transactionTypes.find(type => type.slug === slug) ?? null
+      },
+      getSubCategoriesByCategory: (categoryId) => {
+        const category = getState().categories.find(category => category.id === categoryId)
+        
+        if (!category) {
+          return []
+        }
+        
+        return category.subCategories
+      }
     },
     actions: {
       setAccounts: (data) => {

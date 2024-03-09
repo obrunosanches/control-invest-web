@@ -1,10 +1,10 @@
 import type {
   AccountTypeProps,
   AccountWithTypeProps,
-  CategoryWithRelationsProps,
+  CategoryWithRelationsProps, SubCategoryProps,
   TransactionTypeProps, TransactionWithRelationsProps
 } from '@/types/schema'
-import { TransactionSlug } from '@/types/database'
+import { TransactionOptions, TransactionSlug } from '@/types/database'
 
 export type CIState = {
   accounts: AccountWithTypeProps[]
@@ -29,6 +29,8 @@ type CIGetters = {
     getDefaultTransactionTypes: () => TransactionTypeProps[]
     getAccountBalance: () => number
     getTransactionBalanceByType: (slug: TransactionSlug) => number
+    getTransactionTypeBySlug: (slug: TransactionOptions) => TransactionTypeProps | null
+    getSubCategoriesByCategory: (categoryId: number) => SubCategoryProps[]
   }
 }
 

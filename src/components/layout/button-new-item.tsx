@@ -21,7 +21,8 @@ function ButtonNewItem({
   buttonTitle,
   className,
   sheetTitle,
-  pageSource
+  pageSource,
+  disabled
 }: ButtonNewItemProps) {
   const sheet = useSheetStore(state => state.sheet)
   const actions = useSheetStore(state => state.actions)
@@ -40,6 +41,7 @@ function ButtonNewItem({
 
           actions.setSheetToggle(!sheet.toggle)
         }}
+        disabled={disabled}
       >
         <PlusCircle className="mr-2" size={16} strokeWidth={1.5} />
         {buttonTitle}
