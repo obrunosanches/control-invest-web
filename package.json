@@ -25,7 +25,7 @@
     "@tanstack/react-table": "^8.15.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
-    "cmdk": "^0.2.1",
+    "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.30.7",
