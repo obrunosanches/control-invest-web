@@ -19,5 +19,5 @@ export const monthsByLocale = (locale = 'pt-BR') => [...Array(12).keys()].map(in
     locale
   })
   
-  return firstLetterUppercase(month).replace('.', '')
+  return firstLetterUppercase(month).replace('.', '').toLowerCase()
 })

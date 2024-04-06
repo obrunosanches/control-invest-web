@@ -5,6 +5,7 @@ import type {
   TransactionTypeProps, TransactionWithRelationsProps
 } from '@/types/schema'
 import { TransactionOptions, TransactionSlug } from '@/types/database'
+import { FetchTransactionFilter } from '@/types/transcation'
 
 export type CIState = {
   accounts: AccountWithTypeProps[]
@@ -12,6 +13,7 @@ export type CIState = {
   categories: CategoryWithRelationsProps[]
   transactions: TransactionWithRelationsProps[]
   transactionTypes: TransactionTypeProps[]
+  transactionFilters: FetchTransactionFilter
 }
 
 type CIActions = {
@@ -21,6 +23,7 @@ type CIActions = {
     setCategories: (data: CategoryWithRelationsProps[]) => void
     setTransactions: (data: TransactionWithRelationsProps[]) => void
     setTransactionTypes: (data: TransactionTypeProps[]) => void
+    setTransactionFilter: (filter: FetchTransactionFilter) => void
   }
 }
 

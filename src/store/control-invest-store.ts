@@ -7,7 +7,11 @@ export const initStateDefault: CIState = {
   accountTypes: [],
   categories: [],
   transactions: [],
-  transactionTypes: []
+  transactionTypes: [],
+  transactionFilters: {
+    month: new Date().getMonth().toString(),
+    year: new Date().getFullYear().toString(),
+  }
 }
 
 export const createCIStore = (initState: CIState = initStateDefault) => {
@@ -58,6 +62,9 @@ export const createCIStore = (initState: CIState = initStateDefault) => {
       },
       setTransactionTypes: (data) => {
         return setState({ transactionTypes: data })
+      },
+      setTransactionFilter: (filter) => {
+        return setState({ transactionFilters: filter })
       }
     }
   }))

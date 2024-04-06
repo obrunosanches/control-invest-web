@@ -83,6 +83,10 @@ function TransactionData() {
             const transactions = await fetchTransactions({ month, year })
             
             store.actions.setTransactions(transactions)
+            store.actions.setTransactionFilter({
+              month,
+              year
+            })
           }} />
         </div>
       </div>
