@@ -39,15 +39,15 @@ function getFilterParams(searchParams: URLSearchParams) {
 export async function GET(request: NextRequest) {
   const { initialDate, finishDate } = getFilterParams(request.nextUrl.searchParams)
   
-  const query = db
-    .select()
-    .from(transaction)
-    .where(and(
+  const result = await db.query.transaction.findMany({
+    with: {
+      type: true
+    },
+    where: and(
       gte(transaction.date, sql.raw(`'${new Date(initialDate).toISOString()}'`)),
       lte(transaction.date, sql.raw(`'${new Date(finishDate).toISOString()}'`))
-    ))
-  
-  const result = await query.execute()
+    )
+  })
   
   return NextResponse.json(result)
 }
