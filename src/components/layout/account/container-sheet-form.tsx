@@ -1,4 +1,4 @@
-import type { AccountProps, AccountWithTypeProps, TransactionTypeProps } from '@/types/schema'
+import type { AccountProps, AccountWithTypeProps } from '@/types/schema'
 import type { FormActions, PageActions } from '@/types/pages'
 
 import { useSheetStore } from '@/store/sheet-store'
@@ -43,7 +43,12 @@ function ContainerSheetForm({ onConfirm }: { onConfirm: () => void }) {
   return (
     <>
       {['earning', 'expense', 'transaction'].includes(sheet.action) ? (
-        <TransactionContainerSheetForm slug={sheet.action as TransactionOptions} />
+        <TransactionContainerSheetForm
+          slug={sheet.action as TransactionOptions}
+          onConfirm={() => {
+            console.log('include onConfirm function in account actions')
+          }}
+        />
       ) : (
         <SheetForm>
           {['new', 'edit' as PageActions].includes(sheet.action) && (

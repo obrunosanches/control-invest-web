@@ -1,18 +1,20 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import type { TransactionOptions } from '@/types/database'
 
 import { useCIStore } from '@/hooks/control-invest-store-provider'
+import { fetchAccounts } from '@/services/account'
+import { fetchTransactions } from '@/services/transaction'
+import { fetchCategories } from '@/services/category'
 
 import ButtonNewItem from '@/components/layout/button-new-item'
 import ResultsByMonth from '@/components/layout/transaction/results-by-month'
 import MonthYearSelected from '@/components/layout/transaction/month-year-selected'
-import { fetchTransactions } from '@/services/transaction'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import ContainerSheetForm from '@/components/layout/transaction/container-sheet-form'
-import { fetchCategories } from '@/services/category'
+import TransactionList from '@/components/layout/transaction/list'
 
 function TransactionData() {
   const store = useCIStore((store) => store)
@@ -27,6 +29,18 @@ function TransactionData() {
     earnings: 'Receita',
     expenses: 'Despesa'
   } as Record<TransactionOptions, any>), [])
+  
+  const refreshTransactions = useCallback(() => {
+    new Promise(async (resolve) => {
+      const transactions = await fetchTransactions(store.transactionFilters)
+      const accounts = await fetchAccounts()
+      
+      store.actions.setTransactions(transactions)
+      store.actions.setAccounts(accounts)
+      
+      resolve([transactions, accounts])
+    }).catch(e => console.log(e))
+  },[store.actions.setTransactions, store.actions.setAccounts])
   
   const handleSelectTransactionType = async (slug: TransactionOptions) => {
     setSlug(slug)
@@ -89,9 +103,14 @@ function TransactionData() {
             })
           }} />
         </div>
+        
+        <TransactionList />
       </div>
       
-      <ContainerSheetForm slug={slugSelected} />
+      <ContainerSheetForm
+        slug={slugSelected}
+        onConfirm={refreshTransactions}
+      />
     </>
   )
 }

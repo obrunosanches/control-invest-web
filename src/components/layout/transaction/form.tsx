@@ -223,7 +223,7 @@ function TransactionForm({ handleAction, slug }: TransactionFormProps) {
                 <FormItem>
                   <FormLabel>Observação</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Type your message here." />
+                    <Textarea placeholder="Observação" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

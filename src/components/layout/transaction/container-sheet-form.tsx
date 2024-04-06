@@ -1,23 +1,24 @@
 'use client'
 
-import SheetForm from '@/components/layout/sheet-form'
-import TransactionForm, { FormDataTransaction } from '@/components/layout/transaction/form'
-
 import type { TransactionProps, TransactionWithRelationsProps } from '@/types/schema'
-import type { FormActions } from '@/types/pages'
+import type { FormActions, PageActions } from '@/types/pages'
+import type { TransactionOptions } from '@/types/database'
 
 import { useSheetStore } from '@/store/sheet-store'
-import type { TransactionOptions } from '@/types/database'
-import { createOrUpdateTransaction, fetchTransactions } from '@/services/transaction'
+import { createOrUpdateTransaction, deleteTransaction } from '@/services/transaction'
 import { useCIStore } from '@/hooks/control-invest-store-provider'
-import { fetchAccounts } from '@/services/account'
+
+import SheetForm from '@/components/layout/sheet-form'
+import TransactionForm, { FormDataTransaction } from '@/components/layout/transaction/form'
+import ConfirmDelete from '@/components/layout/confirm-delete'
 
 interface ContainerSheetFormProps {
   slug: TransactionOptions
+  onConfirm: () => void
 }
 
-function ContainerSheetForm({ slug }: ContainerSheetFormProps) {
-  const { actions: { setTransactions, setAccounts }, getters, transactionFilters } = useCIStore((store) => store)
+function ContainerSheetForm({ slug, onConfirm }: ContainerSheetFormProps) {
+  const { getters, transactionFilters } = useCIStore((store) => store)
   const actions = useSheetStore((store) => store.actions)
   const sheet = useSheetStore((store) => store.sheet)
   const selected = sheet.selected as TransactionWithRelationsProps
@@ -41,18 +42,36 @@ function ContainerSheetForm({ slug }: ContainerSheetFormProps) {
       
       await createOrUpdateTransaction(transactionData)
       
-      setTransactions(await fetchTransactions(transactionFilters))
-      setAccounts(await fetchAccounts())
+      onConfirm()
     }
+  }
+  
+  async function handleTransactionTransactionDelete(action: FormActions) {
+    if (action === 'confirm') {
+      await deleteTransaction(sheet.selected.id)
+      
+      onConfirm()
+    }
+    
+    actions.setSheetToggle(!sheet.toggle)
   }
   
   return (
     <SheetForm>
-      <TransactionForm
-        slug={slug}
-        formData={selected}
-        handleAction={handleActionForm}
-      />
+      {['new', 'edit' as PageActions].includes(sheet.action) && (
+        <TransactionForm
+          slug={slug}
+          formData={selected}
+          handleAction={handleActionForm}
+        />
+      )}
+      
+      {sheet.action === 'remove' && (
+        <ConfirmDelete
+          item={sheet.selected.description!}
+          handleAction={handleTransactionTransactionDelete}
+        />
+      )}
     </SheetForm>
   )
 }
