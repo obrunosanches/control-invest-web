@@ -46,3 +46,13 @@ export async function createOrUpdateTransaction(transaction: TransactionProps): 
     console.error(error)
   }
 }
+
+export async function deleteTransaction(transaction: number){
+  try {
+    await request(`/transaction/${transaction}`, {
+      method: 'DELETE'
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}

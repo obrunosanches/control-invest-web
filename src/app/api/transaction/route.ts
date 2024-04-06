@@ -41,6 +41,9 @@ export async function GET(request: NextRequest) {
   
   const result = await db.query.transaction.findMany({
     with: {
+      account: true,
+      category: true,
+      subCategory: true,
       type: true
     },
     where: and(
